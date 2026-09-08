@@ -1,8 +1,59 @@
 # <============ IMPORTS ===============>
 from tkinterdnd2 import DND_FILES
+import new_player_engine
 # <====================================>
 
 thread_worker = None
+
+# ========================================================================================================================
+# ============================================ ALL DEPENDENCIES
+
+def _on_click(func, obj) -> None:
+    ''' Function to run whenever object is clicked '''
+    # --
+    obj.bind('<Button-1>', lambda e: func(e.x, obj))
+
+    #<_end of the function_>
+
+def _on_drag(func, obj) -> None:
+    ''' Function to run whenever object is clicked '''
+    # --
+    obj.bind('<B1-Motion>', lambda e: func(e.x, obj))
+
+    #<_end of the function_>
+
+def _on_release(func, obj) -> None:
+    ''' Function to run whenever object is clicked '''
+    # --
+    obj.bind('<ButtonRelease-1>', lambda e: func(e.x, obj))
+
+    #<_end of the function_>
+
+def on_seek(data: dict) -> None:
+    ''' Seeking event '''
+    # --
+    for canvas_id in data:
+        # -- Bind on click
+        obj = data[canvas_id][0]
+        func_on_click = data[canvas_id][1]['command']['on_click']
+        func_on_drag = data[canvas_id][1]['command']['on_drag']
+        func_on_release = data[canvas_id][1]['command']['on_release']
+
+        _on_click(func_on_click, obj)
+        _on_drag(func_on_drag, obj)
+
+        # --
+        if func_on_release is not None:
+            # --
+            _on_release(func_on_release, obj)
+
+            #<_>
+        
+    #<_end of the function_>
+
+
+# ========================================================================================================================
+# ========================================================================================================================
 
 class ProgramUIConfigurer():
     ''' Configures Elements In Main UI. Used to access configurers in the parent classes '''
@@ -317,10 +368,13 @@ class ProgramUIConfigurer():
         self.track_frames_data['active_frame'] = str(id(args[1]))
         
         # --
-        thread_worker(
-            target=self.app.pyr.initialise,
-            arguments=(False, args[0]),
-            daemon=True
+        self.app.pub.root.after(
+            0,
+            lambda: self.app.pyr.initialise(
+                build_mini_queue=False,
+                track_index=args[0],
+                build_data=[[], 0]
+            )
         )
 
         #<_end of the method_>
@@ -403,5 +457,59 @@ class ProgramUIConfigurer():
     def on_execute_query_press(self) -> None:
         ''' Search or download song at given URL '''
         print("I'll search or Download the query you pass")
+
+        #<_end of the method_>
+
+
+    def on_volume_canvas_click(self, set_point, volume_canvas) -> None:
+        ''' Search or download song at given URL '''
+        # -- Draw
+        vol: float = self.app.pub.show_volume_progress(
+            x_0=0, x_1=set_point,
+            y_0=0, y_1=volume_canvas.winfo_height()
+        )
+
+        # --
+        if vol is None:
+            return
+
+            #<_>
+
+        self.app.pyr.set_volume(vol)
+
+        #<_end of the method_>
+
+    def on_progress_canvas_click(self, set_point, progress_canvas) -> None:
+        ''' Search or download song at given URL '''
+        # -- Draw
+        self.app.pub.show_song_progress(
+            x_0=0, x_1=set_point,
+            y_0=0, y_1=progress_canvas.winfo_height()
+        )
+
+        #<_end of the method_>
+
+    def on_progress_canvas_drag(self, set_point, progress_canvas) -> None:
+        ''' Search or download song at given URL '''
+        # -- Draw
+        self.app.pub.show_song_progress(
+            x_0=0, x_1=set_point,
+            y_0=0, y_1=progress_canvas.winfo_height()
+        )
+        # -- user dragging
+        self.pyr.user_seeking = True
+
+        #<_end of the method_>
+
+    def on_progress_canvas_release(self, set_point, progress_canvas) -> None:
+        ''' Trigger playback from position '''
+        # -- not dragging
+        self.pyr.user_seeking = False
+
+        # -- ratio seeked
+        ratio: float = (set_point / progress_canvas.winfo_width())
+
+        # -- trigger playback
+        new_player_engine.play_song(start=(ratio * self.app.pyr.track_duration))
 
         #<_end of the method_>
