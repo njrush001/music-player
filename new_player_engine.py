@@ -1,6 +1,7 @@
 # <============ IMPORTS ===============>
 import pygame
 from typing import Optional
+from mutagen.mp3 import MP3
 from new_ui_updater import extract_metadata_for_track, extract_track_artwork
 # <====================================>
 
@@ -17,9 +18,25 @@ def fade_out_song(fade_out_time: int) -> None:
 
 	#<_end of the method_>
 
-def play_song() -> None:
+def get_track_duration(path) -> int:
+	''' Get the track duration of the given track path '''
+	# --
+	try:
+		# --
+		audio = MP3(path)
+
+		# -- return the audio duration
+		return int(audio.info.length)
+
+	except FileNotFoundError:
+		# -- return 0
+		return 0
+
+	#<_end of the function_>
+
+def play_song(start: float = 0.0, fade_ms: int = 600) -> None:
 	''' Play the passed song '''
-	pygame.mixer.music.play()
+	pygame.mixer.music.play(start=start, fade_ms=fade_ms)
 
 	#<_end of the method_>
 
@@ -42,9 +59,55 @@ class PlayerEngine:
 		# --
 		self.app = app
 
-		self.playing = ''         # -- Currently playing song
-		self.track_index = 0      # -- Position of the playing song
-		self.track_paused = False # -- Indicates when a track is paused or not
+		self.playing = ''            # -- Currently playing song
+		self.track_index = 0         # -- Position of the playing song
+		self.track_duration = 0      # -- Track duration of the currently playing
+		self.track_paused = False    # -- Indicates when a track is paused or not
+		self.user_seeking = False    # -- User dragging
+		self.progress_update = None  # --
+
+		#<_end of the method_>
+
+	def set_volume(self, vol: float) -> None:
+		''' Set volume level '''
+		# --
+		pygame.mixer.music.set_volume(vol)
+
+		self.app.pda.player_data['volume_level'] = vol
+
+		#<_end of the function_>
+
+	def update_progress(self) -> None:
+		'''
+		Displays progress ratio, time elapsed and remaining time.
+		'''
+		# --
+		if not pygame.mixer.music.get_busy() and not self.track_paused:
+			# -- Song ended naturally
+			self.app.pub.root.after_cancel(self.progress_update)
+			self.next_playable(hint=1)
+
+			#<_>
+
+		elif self.track_paused:
+			# -- Track is paused -> stop scheduling until unpaused
+			self.app.pub.root.after_cancel(self.progress_update)
+
+		elif self.user_seeking:
+			# -- Do not update UI
+			self.progress_update = self.root.after(50, self.update_progress)
+		else:
+			# -- Update UI
+			p_c = self.app.pub.progress_canvas
+			x_1: int = int(pygame.mixer.music.get_pos() / self.track_duration) * p_c.winfo_width()
+
+			self.app.puc.on_progress_canvas_click(
+				set_point=x_1,
+				progress_canvas=p_c
+			)
+
+			# --
+			self.progress_update = self.app.pub.root.after(50, self.update_progress)
 
 		#<_end of the method_>
 
@@ -55,6 +118,7 @@ class PlayerEngine:
 
 	def initialise(self, build_mini_queue: bool, track_index: Optional[int], build_data=None) -> None:
 		''' Load and play track. And initiate UI updates '''
+
 		# -- Update track index
 		self.track_index = track_index if track_index is not None else self.track_index
 		path = self.app.main_playlist[self.track_index]
@@ -66,6 +130,7 @@ class PlayerEngine:
 		# -- Get artist, song_name and artwork
 		track_name, artist = extract_metadata_for_track(path)
 		artwork = extract_track_artwork(path)
+		self.track_duration = get_track_duration(path)
 
 		# -- Update track name and artist
 		self.app.uiu.update_text_on(
@@ -191,60 +256,40 @@ class PlayerEngine:
 		passed, this method will decide which song to
 		play next.
 		'''
+		# -- Get play mode
+		loop_on: bool = self.app.pda.player_data['loop_on']
+		shuffle_on: bool = self.app.pda.player_data['shuffle_on']
 
-		# -- update current index (wrap-around incase we at the end)
-		prev_index: int = self.track_index
-		self.track_index = (self.track_index + hint) % len(self.app.main_playlist)
-
-		if ((self.track_index % 5) == 0) and (hint == 1):
-			# -- Build Mini queue
-
-			tracks: list[str] = self.app.main_basenames[self.track_index:]
-			start_point: int = self.app.main_basenames.index(tracks[0])
-
-			build_mini_queue: bool = True
-
-		elif (hint == -1) and ((prev_index % 5) == 0):
-			# -- Build Mini queue
-
-			# -- Check positions of indices
-			if self.track_index > prev_index:
-				# -- overlap: find starting point
-				if ((self.track_index % 5) == 0):
-					# -- Should display only one item
-					tracks: list[str] = [self.app.main_basenames[self.track_index]]
-
-				else:
-					# -- find previous int divisible by 5
-					pos: int = self.track_index
-
-					while ((pos % 5) != 0):
-						# -- Decrease number
-						pos -= 1
-
-					# -- Collect items from pos to end
-					tracks: list[str] = self.app.main_basenames[pos:]
-
-			else:
-				# -- Normal queue
-
-				tracks: list[str] = self.app.main_basenames[(prev_index - 5):]
-
-			start_point: int = self.app.main_basenames.index(tracks[0])
-
-			build_mini_queue: bool = True
-
-		else:
-			# -- Don't Build
+		if not loop_on:
+			# -- Repeat one mode
 			tracks: list = []
 			start_point: int = 0
 			build_mini_queue: bool = False
+			# --
+
+		elif loop_on and not shuffle_on:
+			# -- loop all and shuffle mode not on
+			data: tuple[list, int, bool] = self.app.repeat_all_mode_idx(hint=hint)
+			# --
+			tracks: list = data[0]
+			start_point: int = data[1]
+			build_mini_queue: bool = data[2]
+			# --
+
+		else:
+			# -- Shuffle On
+			data: tuple[list, int, bool] = self.app.shuffle_mode_idx(hint=hint)
+			# --
+			tracks: list = data[0]
+			start_point: int = data[1]
+			build_mini_queue: bool = data[2]
+			# --
 
 		# -- Initiate playback; also build mini_queue
 		self.initialise(
-			build_mini_queue=build_mini_queue,
 			track_index=None,
-			build_data=[tracks, start_point]
+			build_data=[tracks, start_point],
+			build_mini_queue=build_mini_queue
 		)
 
 		#<_end of the method_>
