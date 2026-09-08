@@ -5,6 +5,7 @@ from typing import Callable
 from PIL import Image, ImageTk
 from config import AlmaDataPaths
 from new_ui_updater import set_image
+from alma_ui_configurer import on_seek
 # <====================================>
 
 # ========================================================================================================================
@@ -1291,7 +1292,7 @@ class MainUI:
             bd=0
         )
 
-        song_progress = build_canvas(
+        self.progress_canvas = build_canvas(
             parent=progress_frame,
             highlightthickness=0,
             bd=0, bg='#2E2E2E',
@@ -1374,17 +1375,20 @@ class MainUI:
             highlightthickness=0, bd=0
         )
 
-        volume_canvas = build_canvas(
+        self.volume_canvas = build_canvas(
             parent=progress_frame,
             highlightthickness=0,
             bd=0, bg='#2E2E2E',
             cursor='hand2'
         )
 
-        volume_level = build_label(
+        # -- Get saved volume level
+        vol: float = self.app.pda.player_data['volume_level']
+
+        self.volume_level = build_label(
             parent=progress_frame,
             font=('Franklin Gothic Heavy', 11),
-            text='Volume: 100%', bg='#0F111D',
+            text='Volume: ', bg='#0F111D',
             fg='#FFFFFF',
             highlightthickness=0, bd=0
         )
@@ -1724,7 +1728,7 @@ class MainUI:
 
         self.root.after(
             5710,
-            lambda: song_progress.place(
+            lambda: self.progress_canvas.place(
                 x=170, y=15, width=700, height=5
             )
         )
@@ -1787,15 +1791,23 @@ class MainUI:
 
         self.root.after(
             6120,
-            lambda: volume_canvas.place(
+            lambda: self.volume_canvas.place(
                 x=885, y=23,
                 width=120, height=5
             )
         )
 
         self.root.after(
+            6135,
+            lambda: self.show_volume_progress(
+                x_0=0, x_1=(vol * self.volume_canvas.winfo_width()),
+                y_0=0, y_1=self.volume_canvas.winfo_height()
+            )
+        )
+
+        self.root.after(
             6150,
-            lambda: volume_level.place(
+            lambda: self.volume_level.place(
                 x=895, y=35
             )
         )
@@ -1967,16 +1979,6 @@ class MainUI:
                         'args': -1,
                         'item_type': 'label',
 
-                        'on_enter': {
-                            'fg': '#FFFFFF',
-                            'bg': '#0F111D'
-                        },
-
-                        'on_leave': {
-                            'fg': '#FFFFFF',
-                            'bg': '#0F111D'
-                        },
-
                         'on_click': {
                             'fg': '#FFFFFF',
                             'bg': '#0F111D',
@@ -1988,16 +1990,6 @@ class MainUI:
                     pause_btn, {
                         'args': pause_btn,
                         'item_type': 'label',
-
-                        'on_enter': {
-                            'fg': '#FFFFFF',
-                            'bg': '#0F111D'
-                        },
-
-                        'on_leave': {
-                            'fg': '#FFFFFF',
-                            'bg': '#0F111D'
-                        },
 
                         'on_click': {
                             'fg': '#FFFFFF',
@@ -2011,16 +2003,6 @@ class MainUI:
                         'args': 1,
                         'item_type': 'label',
 
-                        'on_enter': {
-                            'fg': '#FFFFFF',
-                            'bg': '#0F111D'
-                        },
-
-                        'on_leave': {
-                            'fg': '#FFFFFF',
-                            'bg': '#0F111D'
-                        },
-
                         'on_click': {
                             'fg': '#FFFFFF',
                             'bg': '#0F111D',
@@ -2032,16 +2014,6 @@ class MainUI:
                     shuffle_btn, {
                         'args': shuffle_btn,
                         'item_type': 'label',
-
-                        'on_enter': {
-                            'fg': '#FFFFFF',
-                            'bg': '#0F111D'
-                        },
-
-                        'on_leave': {
-                            'fg': '#FFFFFF',
-                            'bg': '#0F111D'
-                        },
 
                         'on_click': {
                             'fg': '#FFFFFF',
@@ -2055,16 +2027,6 @@ class MainUI:
                         'args': loop_btn,
                         'item_type': 'label',
 
-                        'on_enter': {
-                            'fg': '#FFFFFF',
-                            'bg': '#0F111D'
-                        },
-
-                        'on_leave': {
-                            'fg': '#FFFFFF',
-                            'bg': '#0F111D'
-                        },
-
                         'on_click': {
                             'fg': '#FFFFFF',
                             'bg': '#0F111D',
@@ -2077,20 +2039,34 @@ class MainUI:
                         'args': None,
                         'item_type': 'label',
 
-                        'on_enter': {
-                            'fg': '#FFFFFF',
-                            'bg': '#0F111D'
-                        },
-
-                        'on_leave': {
-                            'fg': '#FFFFFF',
-                            'bg': '#0F111D'
-                        },
-
                         'on_click': {
                             'fg': '#FFFFFF',
                             'bg': '#0F111D',
                             'command': lambda: print("I'll let you see full view!")
+                        }
+                    }
+                ]
+            }
+        )
+        
+        canvas_data = {}
+        canvas_data.update(
+            {
+                str(id(self.progress_canvas)): [
+                    self.progress_canvas, {
+                        'command': {
+                            'on_click': self.app.puc.on_progress_canvas_click,
+                            'on_drag': self.app.puc.on_progress_canvas_drag,
+                            'on_release': self.app.puc.on_progress_canvas_release
+                        }
+                    }
+                ],
+                str(id(self.volume_canvas)): [
+                    self.volume_canvas, {
+                        'command': {
+                            'on_click': self.app.puc.on_volume_canvas_click,
+                            'on_drag': self.app.puc.on_volume_canvas_click,
+                            'on_release': None
                         }
                     }
                 ]
@@ -2102,6 +2078,12 @@ class MainUI:
 
 
         # -- CONFIGURE
+        self.root.after(
+            7000,
+            on_seek,
+            canvas_data
+        )
+
         self.root.after(
             7500,
             self.app.puc.configure_frame_and_labels,
@@ -2305,6 +2287,57 @@ class MainUI:
 
         #<_end of the method_>
 
+    def show_volume_progress(self, x_0: int, y_0: int, x_1: int, y_1: int) -> float:
+        ''' Delete previous progress and create new one '''
+        # --
+        if x_1 < 0 or x_1 > self.volume_canvas.winfo_width():
+            return
+        
+        # -- Draw
+        try:
+            # --
+            self.volume_canvas.delete('volume_bar')
+        except KeyError:
+            # -- Previously not created
+            pass
+
+        # -- Create new bar
+        self.volume_canvas.create_rectangle(
+            x_0, y_0, x_1, y_1,
+            fill='green', outline='',
+            tags='volume_bar'
+        )
+
+        vol: float = x_1 / self.volume_canvas.winfo_width()
+        vol_percent = str(round((vol * 100), 0)).split('.')[0]
+        self.volume_level.config(text=f'Volume: {vol_percent}%')
+
+        return vol
+
+        #<_end of the method_>
+
+    def show_song_progress(self, x_0: int, y_0: int, x_1: int, y_1: int) -> None:
+        ''' Delete previous progress and create new one '''
+        # --
+        if x_1 < 0 or x_1 > self.progress_canvas.winfo_width():
+            return
+        # -- Draw
+        try:
+            # --
+            self.progress_canvas.delete('progress_bar')
+        except KeyError:
+            # -- Previously not created
+            pass
+
+        # -- Create new bar
+        self.progress_canvas.create_rectangle(
+            x_0, y_0, x_1, y_1,
+            fill='green', outline='',
+            tags='progress_bar'
+        )
+        
+        #<_end of the method_>
+
     def canvas_for_waveform(self) -> tk.Canvas:
         '''
         Return the canvas where waveform for current playing song
@@ -2312,7 +2345,7 @@ class MainUI:
         '''
         return build_canvas(
             parent=self.audio_info,
-            bg='#1B1E33', highlightthickness=0,
+            bg='green', highlightthickness=0,
             bd=0
         ).place(x=230, y=140, width=620, height=60)
 
