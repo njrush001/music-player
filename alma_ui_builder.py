@@ -2343,7 +2343,7 @@ class MainUI:
         Return the canvas where waveform for current playing song
         will be drawn.
         '''
-        return build_canvas(
+        self.waveform_canvas: tk.Canvas =  build_canvas(
             parent=self.audio_info,
             bg='green', highlightthickness=0,
             bd=0
