@@ -57,6 +57,7 @@ def on_seek(data: dict) -> None:
 
 class ProgramUIConfigurer():
     ''' Configures Elements In Main UI. Used to access configurers in the parent classes '''
+    
     def __init__(self, app) -> None:
         global thread_worker
         # --
