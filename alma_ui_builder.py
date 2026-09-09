@@ -6,6 +6,7 @@ from PIL import Image, ImageTk
 from config import AlmaDataPaths
 from new_ui_updater import set_image
 from alma_ui_configurer import on_seek
+from new_ui_updater import clean_title
 # <====================================>
 
 # ========================================================================================================================
@@ -617,9 +618,121 @@ class PlaylistManagerUI:
 class LastPlayedUI:
     ''' Create UI showing the last played song '''
 
-    def build_last_played_ui(self) -> None:
+    def build_last_played_ui(self, win: tk.Frame) -> None:
         '''Build the ui when needed '''
-        pass
+        # --
+        self.lastp_frame: tk.Frame = build_frame(
+            parent=win,
+            bg='#0F111D',
+            highlightthickness=0, bd=0
+        )
+
+        last_played_thumbnail: tk.Label = build_label(
+            parent=self.lastp_frame,
+            highlightthickness=0,
+            bd=0
+        )
+
+        prompt: tk.Label = build_label(
+            parent=self.lastp_frame,
+            highlightthickness=0,
+            bd=0, text='Continue?',
+            font=('Franklin Gothic Heavy', 13),
+            fg='#FFFFFF', bg='#0F111D'
+        )
+
+        s_n = 'Alan Walker Style x AVA - Not Alone (Official Music Video)'
+
+        song_name: tk.Label = build_label(
+            parent=self.lastp_frame,
+            text=clean_title(path=s_n, max_lmt=35, max_show=33),
+            font=('Tahoma', 9), highlightthickness=0,
+            bd=0, fg='#4DD4AC', bg='#0F111D'
+        )
+
+        confirmation: tk.Label = build_label(
+            parent=self.lastp_frame,
+            text='▶', bg='#0F111D', bd=0,
+            fg='#FFFFFF', highlightthickness=0,
+            font=('Franklin Gothic Heavy', 27)
+        )
+
+        # -------------------------------------------------------------------------------------
+        # -------------------------------------------------------------------------------------
+        # -- Placements
+
+        self.root.after(
+            10,
+            lambda: set_image(
+                label=last_played_thumbnail,
+                img=AlmaDataPaths.BG_DIR / 'alma_bgd.png',
+                size=(100, 100)
+            )
+        )
+
+        self.root.after(
+            20,
+            lambda: last_played_thumbnail.pack(
+                pady=(5, 0),
+                side='top'
+            )
+        )
+
+        self.root.after(
+            30,
+            lambda: prompt.pack(
+                pady=(5, 0),
+                side='top'
+            )
+        )
+
+        self.root.after(
+            40,
+            lambda: song_name.place(
+                x=2, y=135
+            )
+        )
+
+        self.root.after(
+            50,
+            lambda: confirmation.place(
+                x=90, y=155
+            )
+        )
+
+        self.root.after(
+            0,
+            lambda: self.lastp_frame.place(
+                x=2, y=200,
+                width=211,
+                height=214
+            )
+        )
+        # -------------------------------------------------------------------------------------
+        # -------------------------------------------------------------------------------------
+
+        # -- Data for configuration
+        data = {
+            str(id(confirmation)): [
+                confirmation, {
+                    'args': None,
+                    'item_type': 'label',
+
+                    'on_click': {
+                        'fg': '#FFFFFF',
+                        'bg': '#0F111D',
+                        'command': self.app.puc.on_last_play_press
+                    }
+                }
+            ]
+        }
+
+        # -- Configure
+        self.root.after(
+            70,
+            self.app.puc.configure_frame_and_labels,
+            data
+        )
 
         #<_end of the method_>
 
@@ -2088,6 +2201,13 @@ class MainUI:
             7500,
             self.app.puc.configure_frame_and_labels,
             self.app.puc.main_ui_data
+        )
+
+        # -- Show last played UI
+        self.root.after(
+            10000,
+            self.build_last_played_ui,
+            navigation
         )
 
         #<_end of the method_>
