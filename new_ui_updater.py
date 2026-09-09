@@ -59,7 +59,7 @@ def extract_track_artwork(path):
 
 	#<__ end of the function __>
 
-def _clean_title(path, max_lmt: int = 20, max_show: int = 17) -> str:
+def clean_title(path, max_lmt: int = 20, max_show: int = 17) -> str:
 	''' Return a song name to be displayed in the UI '''
 	base: str = os.path.basename(path)
 	clean_base: str = base.replace('.mp3', '').title()
@@ -103,9 +103,9 @@ def extract_metadata_for_track(path) -> tuple[str]:
 	# ==========================
 	
 	# -- Clean Title
-	clean_title: str = _clean_title(title, max_lmt=35, max_show=33)
+	c_t: str = clean_title(title, max_lmt=35, max_show=33)
 
-	return clean_title, artist
+	return c_t, artist
 
 # ========================================================================================================================
 # ========================================================================================================================
