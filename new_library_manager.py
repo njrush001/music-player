@@ -34,7 +34,7 @@ class LibraryManager:
 			for r, _, files in os.walk(user_folder):
 				for f in files:
 					if f.lower().endswith('.mp3'):
-						paths[f] = os.path.join(r, f)
+						paths[f.replace('.mp3', '')] = os.path.join(r, f)
 
 			if paths:
 				# -- Clear Playlist bags
