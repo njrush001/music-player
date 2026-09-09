@@ -461,6 +461,12 @@ class ProgramUIConfigurer():
 
         #<_end of the method_>
 
+    def on_last_play_press(self) -> None:
+        ''' Continue ewith last playback '''
+        print('Last played song shall bee played!')
+
+        #<_end of the method_>
+
 
     def on_volume_canvas_click(self, set_point, volume_canvas) -> None:
         ''' Search or download song at given URL '''
