@@ -463,7 +463,7 @@ class ProgramUIConfigurer():
 
     def on_last_play_press(self) -> None:
         ''' Continue ewith last playback '''
-        print('Last played song shall bee played!')
+        self.app.pyr.play_last_played_track()
 
         #<_end of the method_>
 
