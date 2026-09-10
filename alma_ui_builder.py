@@ -1,7 +1,6 @@
 # <============ IMPORTS ===============>
 import os
 import tkinter as tk
-from typing import Callable
 from PIL import Image, ImageTk
 from config import AlmaDataPaths
 from new_ui_updater import set_image
@@ -618,6 +617,26 @@ class PlaylistManagerUI:
 class LastPlayedUI:
     ''' Create UI showing the last played song '''
 
+    def get_last_played(self) -> str:
+        ''' Get the last played song from loaded data '''
+        last_played_data = self.app.pda.player_data['last_played_data']
+        track_path = last_played_data.get('song', None)
+
+        # --
+        if track_path is not None:
+            # -- clean title
+            return clean_title(
+                path=track_path,
+                max_lmt=35,
+                max_show=33
+            )
+
+            #<_>
+
+        return 'No Last Played'
+
+        #<_end of the method_>
+
     def build_last_played_ui(self, win: tk.Frame) -> None:
         '''Build the ui when needed '''
         # --
@@ -641,13 +660,13 @@ class LastPlayedUI:
             fg='#FFFFFF', bg='#0F111D'
         )
 
-        s_n = 'Alan Walker Style x AVA - Not Alone (Official Music Video)'
+        s_n: str = self.get_last_played()
 
         song_name: tk.Label = build_label(
             parent=self.lastp_frame,
-            text=clean_title(path=s_n, max_lmt=35, max_show=33),
-            font=('Tahoma', 9), highlightthickness=0,
-            bd=0, fg='#4DD4AC', bg='#0F111D'
+            text=s_n, font=('Tahoma', 9),
+            highlightthickness=0, bd=0,
+            fg='#4DD4AC', bg='#0F111D'
         )
 
         confirmation: tk.Label = build_label(
@@ -739,10 +758,10 @@ class LastPlayedUI:
 class SettingsUI:
     ''' Build settings ui '''
 
-    def build_settings_ui(self, configure_ui: Callable) -> None:
+    def build_settings_ui(self) -> None:
         ''' Build settings ui when needed '''
         # -- Configure UI
-        configure_ui()
+        pass
 
         #<_end of the method_>
 
