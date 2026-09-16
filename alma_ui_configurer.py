@@ -504,7 +504,7 @@ class ProgramUIConfigurer():
             y_0=0, y_1=progress_canvas.winfo_height()
         )
         # -- user dragging
-        self.pyr.user_seeking = True
+        self.app.pyr.user_seeking = True
 
         #<_end of the method_>
 
