@@ -6,6 +6,8 @@ from config import AlmaDataPaths
 from new_ui_updater import set_image
 from alma_ui_configurer import on_seek
 from new_ui_updater import clean_title
+from new_player_engine import get_track_duration
+from new_ui_updater import extract_track_artwork, extract_metadata_for_track
 # <====================================>
 
 # ========================================================================================================================
@@ -684,7 +686,7 @@ class LastPlayedUI:
             10,
             lambda: set_image(
                 label=last_played_thumbnail,
-                img=AlmaDataPaths.BG_DIR / 'alma_bgd.png',
+                img=extract_track_artwork(s_n),
                 size=(100, 100)
             )
         )
@@ -2353,6 +2355,8 @@ class MainUI:
 
 
         tracks = tracks[:5]
+        m_p = self.app.main_playlist
+        m_b = self.app.main_basenames
 
         # -- Clear everytime a new one is built
         data = {}
@@ -2365,9 +2369,50 @@ class MainUI:
                 height=32, cursor='hand2'
             )
 
+            # -------------------------------------------------------------------------------------
+            # -------------------------------------------------------------------------------------
+
             # -- Song Info
-            artist: str = 'Arvy Natcht'
-            time: str = '00:03:45'
+            pos = i - 1
+            try:
+                # -- Get song_name on current iteration
+                song_name = tracks[pos]
+            except IndexError:
+                # -- Translate position
+                if (pos % 5 == 0):
+                    # -- We at the starting point
+                    pos = 0
+                else:
+                    pos = 0
+                    check_pos = i - 1
+
+                    while ((check_pos % 5) != 0):
+                        # --
+                        check_pos -= 1
+                        pos += 1
+
+                song_name = tracks[pos]
+
+            # -- Get track details from saved data
+            try:
+                artist = self.app.pda.player_data['tracks_data'][song_name]['artist']
+                duration = self.app.pda.player_data['tracks_data'][song_name]['duration']
+            except KeyError:
+                # -- time formater
+                from alma_music_player import format_time as f_t
+
+                # -- Get the info from helpers
+                path = m_p[m_b.index(song_name)]
+                c_t, artist = extract_metadata_for_track(path)
+                duration = f_t(get_track_duration(path))
+
+                # -- Save
+                self.app.pda.player_data['tracks_data'][song_name] = {
+                    'artist': artist,
+                    'duration': duration
+                }
+            # -------------------------------------------------------------------------------------
+            # -------------------------------------------------------------------------------------
 
 
             num_of_song = build_label(
@@ -2393,7 +2438,7 @@ class MainUI:
 
             time_label = build_label(
                 parent=frame,
-                text=time, cursor='hand2',
+                text=duration, cursor='hand2',
                 font=('Franklin Gothic Heavy', 6),
                 fg='#FFFFFF', bg='#0F111D'
             ).place(x=645, y=8)
