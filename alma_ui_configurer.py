@@ -511,7 +511,7 @@ class ProgramUIConfigurer():
     def on_progress_canvas_release(self, set_point, progress_canvas) -> None:
         ''' Trigger playback from position '''
         # -- not dragging
-        self.pyr.user_seeking = False
+        self.app.pyr.user_seeking = False
 
         # -- ratio seeked
         ratio: float = (set_point / progress_canvas.winfo_width())
