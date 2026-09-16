@@ -24,6 +24,22 @@ def thread_worker(target, arguments, daemon: bool) -> None:
 
 	#<_end of the function_>
 
+def format_time(duration_in_seconds: int) -> str:
+	'''
+	Create a string showing how long a song will last
+	depending on the duration of seconds passed.
+	'''
+	seconds = duration_in_seconds
+
+	# --
+	hours: int = seconds // 3600
+	minutes: int = (seconds % 3600) // 60
+	sec = seconds % 60
+
+	return f"{hours:02}:{minutes:02}:{sec:02}"
+
+	#<_end of the function_>
+
 # ========================================================================================================================
 # ========================================================================================================================
 
