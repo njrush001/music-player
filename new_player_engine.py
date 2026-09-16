@@ -1,5 +1,5 @@
 # <============ IMPORTS ===============>
-import pygame
+import pygame, os
 from typing import Optional
 from mutagen.mp3 import MP3
 from new_ui_updater import extract_metadata_for_track, extract_track_artwork
@@ -65,6 +65,9 @@ class PlayerEngine:
 		self.track_paused = False    # -- Indicates when a track is paused or not
 		self.user_seeking = False    # -- User dragging
 		self.progress_update = None  # --
+
+		# -- Set startup volume
+		self.set_volume(vol=self.app.pda.player_data['volume_level'])
 
 		#<_end of the method_>
 
@@ -320,11 +323,6 @@ class PlayerEngine:
 	# -------------------------------------------------------------------------------------
 	# -------------------------------------------------------------------------------------
 	# ---------------------------------- LAST PLAYED --------------------------------------
-
-	def last_played_track(self) -> None:
-		pass
-
-		#<_end of the method_>
 
 	def play_last_played_track(self) -> None:
 		pass
