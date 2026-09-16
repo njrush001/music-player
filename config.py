@@ -73,7 +73,9 @@ class AlmaDataPaths:
             "Tip: Seeking Communicates A Lot",
             "Tip: Your Feedback Is Always Appreciated",
             "Tip: Alma Music Player ! The Best Personal Music Player ❤"
-		]
+		],
+
+		'tracks_data': {}
 	}
 
 #<_ END OF ALMADATAPATHS_>
