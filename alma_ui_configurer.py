@@ -318,8 +318,9 @@ class ProgramUIConfigurer():
         #<_end of the method_>
 
     def on_playlist_press(self) -> None:
-        print('I will show you playlist ui')
-
+        ''' Build the playlist UI '''
+        self.app.pst.load_playlist_manager()
+        
         #<_end of the method_>
 
     def on_settings_press(self) -> None:
