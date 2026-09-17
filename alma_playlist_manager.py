@@ -15,19 +15,13 @@ class PlaylistManager:
         '''
         playlists_data: dict = self.load_users_playlist()
 
-        self.app.ui.build_playlist_manager_ui()
+        self.app.pub.build_playlist_manager_ui()
 
 
         self.app.root.after(
-            self.app.ui.build_time + 500,
-            self.app.ui.playlist_name_ui,
+            1200,
+            self.app.pub.playlist_name_ui,
             playlists_data
-        )
-
-        self.app.root.after(
-            self.app.ui.build_time + 1000,
-            self.app.pgc.configure_playlist_UI,
-            self.app.pgc.playlist_manager_ui_data
         )
 
         #<_end of the method_>
@@ -72,7 +66,7 @@ class PlaylistManager:
         # -- Supply paths
         paths = [p for p in self.playlists[playlist_id].values()]
 
-        self.app.root.after(
+        self.app.pub.root.after(
             50,
             self.app.ui.playlist_items_ui,
             paths
@@ -83,6 +77,6 @@ class PlaylistManager:
     def close_playlist_manager(self) -> None:
         '''  Close the playlist UI then delete all data '''
         # -- Close the playlist UI
-        self.app.ui.destroy_playlist_manager_ui()
+        self.app.pub.destroy_playlist_manager_ui()
 
         #<_end of the method_>
