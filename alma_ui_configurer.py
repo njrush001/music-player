@@ -1,6 +1,6 @@
 # <============ IMPORTS ===============>
 from tkinterdnd2 import DND_FILES
-import new_player_engine
+import new_player_engine, time
 # <====================================>
 
 thread_worker = None
@@ -407,15 +407,22 @@ class ProgramUIConfigurer():
             # -- Indicate target
             func = self.app.pyr.resume_track
 
+            # -- Work in a thread
+            thread_worker(
+                target=func,
+                arguments=(btn, True),
+                daemon=True
+            )
+
         else:
             func = self.app.pyr.pause_track
 
-        # -- Work in a thread
-        thread_worker(
-            target=func,
-            arguments=(btn,),
-            daemon=True
-        )
+            # -- Work in a thread
+            thread_worker(
+                target=func,
+                arguments=(btn,),
+                daemon=True
+            )
 
         #<_end of the method_>
 
@@ -488,6 +495,9 @@ class ProgramUIConfigurer():
 
     def on_progress_canvas_click(self, set_point, progress_canvas) -> None:
         ''' Search or download song at given URL '''
+        # -- user dragging
+        self.app.pyr.user_seeking = True
+        
         # -- Draw
         self.app.pub.show_song_progress(
             x_0=0, x_1=set_point,
@@ -515,8 +525,10 @@ class ProgramUIConfigurer():
 
         # -- ratio seeked
         ratio: float = (set_point / progress_canvas.winfo_width())
+        delta = ratio * self.app.pyr.track_duration
+        self.app.pyr.start_time = time.time() - delta
 
         # -- trigger playback
-        new_player_engine.play_song(start=(ratio * self.app.pyr.track_duration))
+        new_player_engine.play_song(start=delta)
 
         #<_end of the method_>
