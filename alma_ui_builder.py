@@ -91,14 +91,14 @@ class PlaylistManagerUI:
         ''' Build elements in the playlist manager ui '''
         # -- Canvas
         # -- Create Canvas (All UI elements will be shown here)
-        self.main_canvas = build_canvas(
+        self.playlist_canvas = build_canvas(
             parent=win, bg='#1B1E33',
             highlightthickness=0, bd=0
         )
 
         self.root.after(
             0,
-            lambda: self.main_canvas.place(
+            lambda: self.playlist_canvas.place(
                 x=0, y=0,
                 width=1020,
                 height=540
@@ -109,7 +109,7 @@ class PlaylistManagerUI:
         # ------------------------------      PARTION        ----------------------------------
         self.root.after(
             1000,
-            lambda: self.main_canvas.create_line(
+            lambda: self.playlist_canvas.create_line(
                 0, 35, 1020, 35,
                 fill='#353A4F'
             )
@@ -117,7 +117,7 @@ class PlaylistManagerUI:
 
         self.root.after(
             1500,
-            lambda: self.main_canvas.create_line(
+            lambda: self.playlist_canvas.create_line(
                 270, 35, 270, 540,
                 fill='#353A4F'
             )
@@ -125,7 +125,7 @@ class PlaylistManagerUI:
 
         self.root.after(
             2000,
-            lambda: self.main_canvas.create_line(
+            lambda: self.playlist_canvas.create_line(
                 270, 55, 1020, 55,
                 fill='#353A4F'
             )
@@ -133,7 +133,7 @@ class PlaylistManagerUI:
 
         self.root.after(
             2500,
-            lambda: self.main_canvas.create_line(
+            lambda: self.playlist_canvas.create_line(
                 0, 480, 1020, 480,
                 fill='#353A4F'
             )
@@ -141,7 +141,7 @@ class PlaylistManagerUI:
 
         self.root.after(
             3000,
-            lambda: self.main_canvas.create_rectangle(
+            lambda: self.playlist_canvas.create_rectangle(
                 12, 70, 257, 100,
                 fill='#1B1E33',
                 outline='#353A4F'
@@ -150,7 +150,7 @@ class PlaylistManagerUI:
 
         self.root.after(
             3500,
-            lambda: self.main_canvas.create_rectangle(
+            lambda: self.playlist_canvas.create_rectangle(
                 300, 70, 995, 463,
                 fill='#1B1E33',
                 outline='#353A4F',
@@ -162,7 +162,7 @@ class PlaylistManagerUI:
 
         # -- QUIT (helps to exit the playlist manager)
         quit_label = build_label(
-            parent=self.main_canvas,
+            parent=self.playlist_canvas,
             text='CLOSE',
             font=('Franklin Gothic Heavy', 11),
             fg='#FFFFFF', bg='#1B1E33'
@@ -177,7 +177,7 @@ class PlaylistManagerUI:
 
         # -- UI_ICON (image)
         ui_icon = build_label(
-            parent=self.main_canvas,
+            parent=self.playlist_canvas,
             highlightthickness=0, bd=0
         )
         # -- Insert image
@@ -195,7 +195,7 @@ class PlaylistManagerUI:
         )
 
         ui_title = build_label(
-            parent=self.main_canvas,
+            parent=self.playlist_canvas,
             text='ALMA PLAYLIST MANAGER',
             font=('Franklin Gothic Heavy', 13),
             fg='#FFFFFF', bg='#1B1E33'
@@ -209,7 +209,7 @@ class PlaylistManagerUI:
         )
 
         section_title = build_label(
-            parent=self.main_canvas,
+            parent=self.playlist_canvas,
             text='PLAYLIST', bg='#1B1E33',
             fg='#FFFFFF', font=('Franklin Gothic Heavy', 11)
         )
@@ -222,7 +222,7 @@ class PlaylistManagerUI:
         )
 
         self.pst_search = build_entry(
-            parent=self.main_canvas,
+            parent=self.playlist_canvas,
             width=32, bg='#1B1E33',
             fg='#FFFFFF', insertbackground='#FFFFFF',
             relief='flat', font=('Segoe UI', 10)
@@ -246,7 +246,7 @@ class PlaylistManagerUI:
 
         # -- Base frame (hold the essentials in one place)
         base_frame = build_frame(
-            parent=self.main_canvas,
+            parent=self.playlist_canvas,
             bg='#1B1E33'
         )
 
@@ -367,7 +367,7 @@ class PlaylistManagerUI:
         # -------------------------------------------------------------------------------------
         # ----------------------------      DEFAULT VIEW     ----------------------------------
         default_view_frame = build_frame(
-            parent=self.main_canvas,
+            parent=self.playlist_canvas,
             bg='#1B1E33'
         )
 
@@ -447,7 +447,7 @@ class PlaylistManagerUI:
          be displayed on the window
         '''
         self.visible_frame = build_frame(
-            parent=self.main_canvas,
+            parent=self.playlist_canvas,
             bg='#1B1E33'
         )
         
@@ -545,7 +545,7 @@ class PlaylistManagerUI:
 
         # -- Create frame
         self.playlist_items_frame = build_frame(
-            parent=self.main_canvas,
+            parent=self.playlist_canvas,
             bg='#1B1E33', highlightthickness=0,
             bd=0
         )
@@ -1485,7 +1485,7 @@ class MainUI:
             highlightthickness=0, bd=0
         )
 
-        time_elapsed = build_label(
+        self.time_elapsed = build_label(
             parent=progress_frame,
             font=('Franklin Gothic Heavy', 12),
             text='00:00:00', bg='#0F111D',
@@ -1493,7 +1493,7 @@ class MainUI:
             highlightthickness=0, bd=0
         )
 
-        remaining_time = build_label(
+        self.remaining_time = build_label(
             parent=progress_frame,
             font=('Franklin Gothic Heavy', 12),
             text='00:00:00', bg='#0F111D',
@@ -1904,14 +1904,14 @@ class MainUI:
 
         self.root.after(
             5930,
-            lambda: time_elapsed.place(
+            lambda: self.time_elapsed.place(
                 x=195, y=33
             )
         )
 
         self.root.after(
             5960,
-            lambda: remaining_time.place(
+            lambda: self.remaining_time.place(
                 x=780, y=33
             )
         )
