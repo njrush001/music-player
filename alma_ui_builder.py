@@ -96,67 +96,9 @@ class PlaylistManagerUI:
             highlightthickness=0, bd=0
         )
 
-        self.root.after(
-            0,
-            lambda: self.playlist_canvas.place(
-                x=0, y=0,
-                width=1020,
-                height=540
-            )
-        )
-
         # -------------------------------------------------------------------------------------
         # ------------------------------      PARTION        ----------------------------------
-        self.root.after(
-            1000,
-            lambda: self.playlist_canvas.create_line(
-                0, 35, 1020, 35,
-                fill='#353A4F'
-            )
-        )
 
-        self.root.after(
-            1500,
-            lambda: self.playlist_canvas.create_line(
-                270, 35, 270, 540,
-                fill='#353A4F'
-            )
-        )
-
-        self.root.after(
-            2000,
-            lambda: self.playlist_canvas.create_line(
-                270, 55, 1020, 55,
-                fill='#353A4F'
-            )
-        )
-
-        self.root.after(
-            2500,
-            lambda: self.playlist_canvas.create_line(
-                0, 480, 1020, 480,
-                fill='#353A4F'
-            )
-        )
-
-        self.root.after(
-            3000,
-            lambda: self.playlist_canvas.create_rectangle(
-                12, 70, 257, 100,
-                fill='#1B1E33',
-                outline='#353A4F'
-            )
-        )
-
-        self.root.after(
-            3500,
-            lambda: self.playlist_canvas.create_rectangle(
-                300, 70, 995, 463,
-                fill='#1B1E33',
-                outline='#353A4F',
-                dash=(4, 6)
-            )
-        )
         # -------------------------------------------------------------------------------------
         # -------------------------------------------------------------------------------------
 
@@ -168,30 +110,10 @@ class PlaylistManagerUI:
             fg='#FFFFFF', bg='#1B1E33'
         )
 
-        self.root.after(
-            4000,
-            lambda: quit_label.place(
-                x=960, y=6
-            )
-        )
-
         # -- UI_ICON (image)
         ui_icon = build_label(
             parent=self.playlist_canvas,
             highlightthickness=0, bd=0
-        )
-        # -- Insert image
-        set_image(
-            label=ui_icon,                                 # -- where the icon will be displayed
-            img=AlmaDataPaths.BG_DIR / 'player_icon.png',  # -- location of the icon
-            size=(26, 26)                                  # -- the size to be displayed
-        )
-
-        self.root.after(
-            4500,
-            lambda: ui_icon.place(
-                x=8,  y=6
-            )
         )
 
         ui_title = build_label(
@@ -201,24 +123,10 @@ class PlaylistManagerUI:
             fg='#FFFFFF', bg='#1B1E33'
         )
 
-        self.root.after(
-            5000,
-            lambda: ui_title.place(
-                x=39, y=7
-            )
-        )
-
         section_title = build_label(
             parent=self.playlist_canvas,
             text='PLAYLIST', bg='#1B1E33',
             fg='#FFFFFF', font=('Franklin Gothic Heavy', 11)
-        )
-
-        self.root.after(
-            5500,
-            lambda: section_title.place(
-                x=8,  y=40
-            )
         )
 
         self.pst_search = build_entry(
@@ -226,19 +134,6 @@ class PlaylistManagerUI:
             width=32, bg='#1B1E33',
             fg='#FFFFFF', insertbackground='#FFFFFF',
             relief='flat', font=('Segoe UI', 10)
-        )
-    
-        self.root.after(
-            6000,
-            lambda: self.pst_search.place(
-                x=20,  y=76
-            )
-        )
-        self.root.after(
-            6500,
-            lambda: self.pst_search.insert(
-                0, '🔍 Search Playlists ...'
-            )
         )
 
         # -------------------------------------------------------------------------------------
@@ -248,14 +143,6 @@ class PlaylistManagerUI:
         base_frame = build_frame(
             parent=self.playlist_canvas,
             bg='#1B1E33'
-        )
-
-        self.root.after(
-            7000,
-            lambda: base_frame.place(
-                x=12, y=490,
-                width=245, height=40
-            )
         )
 
         self.new_pst = build_label(
@@ -286,96 +173,11 @@ class PlaylistManagerUI:
             fg='#FFFFFF', bg='#2A2B3D'
         )
 
-
-        self.pgc.playlist_manager_ui_data.update(
-            {
-                str(id(quit_label)): [
-                    quit_label, {
-                        'args': None,
-                        'item_type': 'label',
-                        'on_enter': 'red',
-                        'on_leave': '#1B1E33',
-                        'on_click': ('red', self.destroy_playlist_manager_ui)
-                    }
-                ],
-
-                str(id(self.new_pst)): [
-                    self.new_pst, {
-                        'args': None,
-                        'item_type': 'label',
-                        'on_enter': 'green',
-                        'on_leave': '#2A2B3D',
-                        'on_click': ('#B973F4', None)
-                    }
-                ],
-
-                str(id(self.refresh)): [
-                    self.refresh, {
-                        'args': None,
-                        'item_type': 'label',
-                        'on_enter': 'green',
-                        'on_leave': '#2A2B3D',
-                        'on_click': ('#B973F4', None)
-                    }
-                ],
-
-                str(id(self.edit)): [
-                    self.edit, {
-                        'args': None,
-                        'item_type': 'label',
-                        'on_enter': 'green',
-                        'on_leave': '#2A2B3D',
-                        'on_click': ('#B973F4', None)
-                    }
-                ]
-            }
-        )
-
-        # -- display the objects
-        self.root.after(
-            7500,
-            lambda: self.new_pst.pack(
-                side='left',
-                padx=(15, 0)
-            )
-        )
-
-        self.root.after(
-            8000,
-            lambda: self.refresh.pack(
-                side='left',
-                padx=(7, 0)
-            )
-        )
-
-        self.root.after(
-            8500,
-            lambda: self.delete.pack(
-                side='left',
-                padx=(7, 0)
-            )
-        )
-
-        self.root.after(
-            9000,
-            lambda: self.edit.pack(
-                side='left',
-                padx=(7, 0)
-            )
-        )
-
         # -------------------------------------------------------------------------------------
         # ----------------------------      DEFAULT VIEW     ----------------------------------
         default_view_frame = build_frame(
             parent=self.playlist_canvas,
             bg='#1B1E33'
-        )
-
-        self.root.after(
-            9500,
-            lambda: default_view_frame.place(
-                x=480, y=178, width=340, height=182
-            )
         )
 
         empty_icon = build_label(
@@ -384,34 +186,11 @@ class PlaylistManagerUI:
             bg='#1E1E2E'
         )
 
-        self.root.after(
-            10000,
-            lambda: empty_icon.place(
-                x=110, y=2
-            )
-        )
-
-        self.root.after(
-            10500,
-            lambda: set_image(
-                label=empty_icon,                                 # -- where the icon will be displayed
-                img=AlmaDataPaths.BG_DIR / 'empty_display.png',   # -- location of the icon
-                size=(120, 114)                                   # -- the size to be displayed
-            )
-        )
-
         prompt_1 = build_label(
             parent=default_view_frame,
             text='Select Playlist',
             font=('Franklin Gothic Heavy', 11),
             fg='#B973F4', bg='#1B1E33'
-        )
-        
-        self.root.after(
-            11000,
-            lambda: prompt_1.place(
-                x=117, y=115
-            )
         )
 
         text: str = 'Choose a playlist from the list or create a new one.'
@@ -421,15 +200,337 @@ class PlaylistManagerUI:
             fg='#FFFFFF', bg='#1B1E33', wraplength=190,
             justify='center', anchor='n'
         )
-        
+
+        # -------------------------------------------------------------------------------------
+        # -------------------------------------------------------------------------------------
+        # -- placements
+
+        # -- playlist canvas (where all playlist manager elements live)
         self.root.after(
-            11500,
+            0,
+            lambda: self.playlist_canvas.place(
+                x=0, y=0,
+                width=1020,
+                height=540
+            )
+        )
+
+        # -------------------------------------------------------------------------------------
+        # -- partition playlist canvas
+        self.root.after(
+            1000,
+            lambda: self.playlist_canvas.create_line(
+                0, 35, 1020, 35,
+                fill='#353A4F'
+            )
+        )
+
+        self.root.after(
+            100,
+            lambda: self.playlist_canvas.create_line(
+                270, 35, 270, 540,
+                fill='#353A4F'
+            )
+        )
+
+        self.root.after(
+            150,
+            lambda: self.playlist_canvas.create_line(
+                270, 55, 1020, 55,
+                fill='#353A4F'
+            )
+        )
+
+        self.root.after(
+            200,
+            lambda: self.playlist_canvas.create_line(
+                0, 480, 1020, 480,
+                fill='#353A4F'
+            )
+        )
+
+        self.root.after(
+            250,
+            lambda: self.playlist_canvas.create_rectangle(
+                12, 70, 257, 100,
+                fill='#1B1E33',
+                outline='#353A4F'
+            )
+        )
+
+        self.root.after(
+            300,
+            lambda: self.playlist_canvas.create_rectangle(
+                300, 70, 995, 463,
+                fill='#1B1E33',
+                outline='#353A4F',
+                dash=(4, 6)
+            )
+        )
+
+        # -------------------------------------------------------------------------------------
+        # --
+        self.root.after(
+            350,
+            lambda: quit_label.place(
+                x=960, y=6
+            )
+        )
+
+        self.root.after(
+            400,
+            lambda: set_image(
+                label=ui_icon,
+                img=AlmaDataPaths.BG_DIR / 'player_icon.png',
+                size=(26, 26)
+            )
+        )
+
+        self.root.after(
+            450,
+            lambda: ui_icon.place(
+                x=8,  y=6
+            )
+        )
+
+        # -------------------------------------------------------------------------------------
+        # --
+        self.root.after(
+            500,
+            lambda: ui_title.place(
+                x=39, y=7
+            )
+        )
+
+        self.root.after(
+            550,
+            lambda: section_title.place(
+                x=8,  y=40
+            )
+        )
+        # -------------------------------------------------------------------------------------
+        # --
+        self.root.after(
+            600,
+            lambda: self.pst_search.place(
+                x=20,  y=76
+            )
+        )
+        self.root.after(
+            650,
+            lambda: self.pst_search.insert(
+                0, '🔍 Search Playlists ...'
+            )
+        )
+
+        # -------------------------------------------------------------------------------------
+        # -- essentials
+        self.root.after(
+            750,
+            lambda: base_frame.place(
+                x=12, y=490,
+                width=245, height=40
+            )
+        )
+
+        self.root.after(
+            760,
+            lambda: self.new_pst.pack(
+                side='left',
+                padx=(15, 0)
+            )
+        )
+
+        self.root.after(
+            770,
+            lambda: self.refresh.pack(
+                side='left',
+                padx=(7, 0)
+            )
+        )
+
+        self.root.after(
+            780,
+            lambda: self.delete.pack(
+                side='left',
+                padx=(7, 0)
+            )
+        )
+
+        self.root.after(
+            790,
+            lambda: self.edit.pack(
+                side='left',
+                padx=(7, 0)
+            )
+        )
+
+        # -------------------------------------------------------------------------------------
+        # -- default view
+        self.root.after(
+            850,
+            lambda: default_view_frame.place(
+                x=480, y=178, width=340, height=182
+            )
+        )
+
+        self.root.after(
+            900,
+            lambda: empty_icon.place(
+                x=110, y=2
+            )
+        )
+
+        self.root.after(
+            1000,
+            lambda: set_image(
+                label=empty_icon,                                 # -- where the icon will be displayed
+                img=AlmaDataPaths.BG_DIR / 'empty_display.png',   # -- location of the icon
+                size=(120, 114)                                   # -- the size to be displayed
+            )
+        )
+
+        self.root.after(
+            1050,
+            lambda: prompt_1.place(
+                x=117, y=115
+            )
+        )
+
+        self.root.after(
+            1100,
             lambda: prompt_2.place(
                 x=45, y=140,
                 width=250,
                 height=40
             )
         )
+        # -------------------------------------------------------------------------------------
+        # -------------------------------------------------------------------------------------
+
+
+        # --
+        data = {}
+        data.update(
+            {
+                str(id(quit_label)): [
+                    quit_label, {
+                        'args': None,
+                        'item_type': 'label',
+
+                        'on_enter': {
+                            'fg': '#FFFFFF',
+                            'bg': 'red'
+                        },
+
+                        'on_leave': {
+                            'fg': '#FFFFFF',
+                            'bg': '#1B1E33'
+                        },
+
+                        'on_click': {
+                            'fg': '#FFFFFF',
+                            'bg': 'red',
+                            'command': self.destroy_playlist_manager_ui
+                        }
+                    }
+                ],
+
+                str(id(self.new_pst)): [
+                    self.new_pst, {
+                        'args': None,
+                        'item_type': 'label',
+
+                        'on_enter': {
+                            'fg': '#FFFFFF',
+                            'bg': 'green'
+                        },
+
+                        'on_leave': {
+                            'fg': '#FFFFFF',
+                            'bg': '#2A2B3D'
+                        },
+
+                        'on_click': {
+                            'fg': '#FFFFFF',
+                            'bg': '#B973F4',
+                            'command': lambda: print('Create New Playlists!!')
+                        }
+                    }
+                ],
+
+                str(id(self.refresh)): [
+                    self.refresh, {
+                        'args': None,
+                        'item_type': 'label',
+
+                        'on_enter': {
+                            'fg': '#FFFFFF',
+                            'bg': 'green'
+                        },
+
+                        'on_leave': {
+                            'fg': '#FFFFFF',
+                            'bg': '#2A2B3D'
+                        },
+
+                        'on_click': {
+                            'fg': '#FFFFFF',
+                            'bg': '#B973F4',
+                            'command': lambda: print('See if any new are created')
+                        }
+                    }
+                ],
+
+                str(id(self.edit)): [
+                    self.edit, {
+                        'args': None,
+                        'item_type': 'label',
+
+                        'on_enter': {
+                            'fg': '#FFFFFF',
+                            'bg': 'green'
+                        },
+
+                        'on_leave': {
+                            'fg': '#FFFFFF',
+                            'bg': '#2A2B3D'
+                        },
+
+                        'on_click': {
+                            'fg': '#FFFFFF',
+                            'bg': '#B973F4',
+                            'command': lambda: print('Edit Your Playlists!!')
+                        }
+                    }
+                ],
+                str(id(self.delete)): [
+                    self.delete, {
+                        'args': None,
+                        'item_type': 'label',
+
+                        'on_enter': {
+                            'fg': '#FFFFFF',
+                            'bg': 'green'
+                        },
+
+                        'on_leave': {
+                            'fg': '#FFFFFF',
+                            'bg': '#2A2B3D'
+                        },
+
+                        'on_click': {
+                            'fg': '#FFFFFF',
+                            'bg': '#B973F4',
+                            'command': lambda: print('Delete unwanted Playlists!!')
+                        }
+                    }
+                ]
+            }
+        )
+
+        # -- Configure
+        self.app.puc.configure_frame_and_labels(data)
 
         #<_end of the method_>
     
@@ -512,15 +613,28 @@ class PlaylistManagerUI:
 
                     total_songs.place(x=42, y=30)
 
-                    self.pgc.playlist_manager_ui_data.update(
+                    self.app.puc.playlist_manager_ui_data.update(
                         {
                             str(id(frame)): [
                                 frame, {
                                     'args': ID,
                                     'item_type': 'frame',
-                                    'on_enter': 'green',
-                                    'on_leave': '#2A2B3D',
-                                    'on_click': ('#B973F4', self.pmr.open_playlist)
+
+                                    'on_enter': {
+                                        'fg': '#FFFFFF',
+                                        'bg': 'green'
+                                    },
+
+                                    'on_leave': {
+                                        'fg': '#FFFFFF',
+                                        'bg': '#2A2B3D'
+                                    },
+
+                                    'on_click': {
+                                        'fg': '#FFFFFF',
+                                        'bg': '#B973F4',
+                                        'command': self.app.pst.open_playlist
+                                    }
                                 }
                             ]
                         }
@@ -609,7 +723,7 @@ class PlaylistManagerUI:
     def destroy_playlist_manager_ui(self) -> None:
         ''' Destroy playlist manager ui '''
         # -- Clear states
-        self.pgc.playlist_manager_ui_data = {}
+        self.app.pub.playlist_manager_ui_data = {}
 
         # -- Destroy
         self.playlist_ui.destroy()
