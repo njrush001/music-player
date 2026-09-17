@@ -1,5 +1,5 @@
 # <============ IMPORTS ===============>
-import pygame, os
+import pygame, os, time
 from typing import Optional
 from mutagen.mp3 import MP3
 from new_ui_updater import extract_metadata_for_track, extract_track_artwork
@@ -60,11 +60,16 @@ class PlayerEngine:
 		self.app = app
 
 		self.playing = ''            # -- Currently playing song
+		self.start_time = 0          # -- Tiime when playback of the current  song started
 		self.track_index = 0         # -- Position of the playing song
 		self.track_duration = 0      # -- Track duration of the currently playing
 		self.track_paused = False    # -- Indicates when a track is paused or not
 		self.user_seeking = False    # -- User dragging
 		self.progress_update = None  # --
+
+		# --
+		from alma_music_player import format_time
+		self.format_time = format_time
 
 		# -- Set startup volume
 		self.set_volume(vol=self.app.pda.player_data['volume_level'])
@@ -80,7 +85,7 @@ class PlayerEngine:
 
 		#<_end of the function_>
 
-	def update_progress(self) -> None:
+	def update_track_progress(self) -> None:
 		'''
 		Displays progress ratio, time elapsed and remaining time.
 		'''
@@ -97,20 +102,28 @@ class PlayerEngine:
 			self.app.pub.root.after_cancel(self.progress_update)
 
 		elif self.user_seeking:
-			# -- Do not update UI
-			self.progress_update = self.root.after(50, self.update_progress)
+			# -- Do not update UI67
+			self.progress_update = self.app.pub.root.after(90, self.update_track_progress)
 		else:
-			# -- Update UI
+			# -- Update time
 			p_c = self.app.pub.progress_canvas
-			x_1: int = int(pygame.mixer.music.get_pos() / self.track_duration) * p_c.winfo_width()
+			elapsed = int(time.time() - self.start_time)
+			displayable_time = self.format_time(elapsed)
+			progress = (elapsed * p_c.winfo_width()) / self.track_duration
 
-			self.app.puc.on_progress_canvas_click(
-				set_point=x_1,
-				progress_canvas=p_c
+			# -- Draw progress
+			self.app.pub.show_song_progress(
+				x_0=0, y_0=0,
+				x_1=progress, y_1=p_c.winfo_height()
+			)
+
+			self.app.uiu.update_text_on(
+				object=self.app.pub.time_elapsed,
+				text=displayable_time
 			)
 
 			# --
-			self.progress_update = self.app.pub.root.after(50, self.update_progress)
+			self.progress_update = self.app.pub.root.after(90, self.update_track_progress)
 
 		#<_end of the method_>
 
@@ -121,19 +134,38 @@ class PlayerEngine:
 
 	def initialise(self, build_mini_queue: bool, track_index: Optional[int], build_data=None) -> None:
 		''' Load and play track. And initiate UI updates '''
+		if build_mini_queue:
+
+			# -- Update queue
+			self.app.pub.mini_queue(
+				# -- tracks from the current playing to end
+				tracks=build_data[0],
+				start_point=build_data[1]
+			)
 
 		# -- Update track index
 		self.track_index = track_index if track_index is not None else self.track_index
 		path = self.app.main_playlist[self.track_index]
+		base = self.app.main_basenames[self.track_index]
 
 		# -- Load and play
 		load_song(path)
 		play_song()
 
+		# -- Set time
+		self.start_time = time.time()
+		self.app.uiu.update_text_on(
+			object=self.app.pub.remaining_time,
+			text=self.app.pda.player_data['tracks_data'][base]['duration']
+		)
+
+		# -- Update  progress
+		self.track_duration = get_track_duration(path)
+		self.update_track_progress()
+
 		# -- Get artist, song_name and artwork
 		track_name, artist = extract_metadata_for_track(path)
 		artwork = extract_track_artwork(path)
-		self.track_duration = get_track_duration(path)
 
 		# -- Update track name and artist
 		self.app.uiu.update_text_on(
@@ -158,15 +190,6 @@ class PlayerEngine:
 			new_img=artwork,
 			size=(55, 55)
 		)
-
-		if build_mini_queue:
-
-			# -- Update queue
-			self.app.pub.mini_queue(
-				# -- tracks from the current playing to end
-				tracks=build_data[0],
-				start_point=build_data[1]
-			)
 
 		# -- Highlight
 		try:
@@ -223,6 +246,7 @@ class PlayerEngine:
 		''' Pause the currently playing song '''
 		# --
 		pygame.mixer.music.pause()
+		self.pause_time = time.time()
 
 		# -- Configure button text
 		self.app.uiu.update_text_on(
@@ -235,7 +259,7 @@ class PlayerEngine:
 
 		#<_end of the method_>
 
-	def resume_track(self, unpause_btn) -> None:
+	def resume_track(self, unpause_btn, reset_start_time: bool = False) -> None:
 		''' Unpause the song '''
 		# --
 		pygame.mixer.music.unpause()
@@ -248,6 +272,12 @@ class PlayerEngine:
 
 		# -- Unpaused state
 		self.track_paused = False
+
+		# -- continue with progress update
+		if reset_start_time:
+			# --
+			self.start_time = (time.time() - self.pause_time) + self.start_time
+			self.update_track_progress()
 
 		#<_end of the method_>
 
@@ -313,6 +343,9 @@ class PlayerEngine:
 			self._delayed_song,
 			hint
 		)
+
+		# -- Finalise current song's session
+		self.app.pub.root.after_cancel(self.progress_update)
 
 		#<_end of the method_>
 
