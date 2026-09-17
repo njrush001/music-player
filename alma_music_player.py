@@ -5,6 +5,7 @@ from alma_ui_builder import ProgramUI
 from new_player_engine import PlayerEngine
 from alma_player_settings import PlayerData
 from new_library_manager import LibraryManager
+from alma_playlist_manager import PlaylistManager
 from alma_ui_configurer import ProgramUIConfigurer
 from alma_database_manager import AlmaDatabaseManager
 # <====================================>
@@ -216,6 +217,7 @@ class MusicApp(ProgramPlaylists):
 		# ============================================ ALL DEPENDENCIES
 		self.dbm = AlmaDatabaseManager(self)
 		self.pda = PlayerData(self)
+		self.pst = PlaylistManager(self)
 		self.lib = LibraryManager(self)
 		self.pyr = PlayerEngine(self)
 		self.uiu = UIUpdates(self)
