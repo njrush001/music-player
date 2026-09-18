@@ -238,7 +238,7 @@ class MusicApp(ProgramPlaylists):
 		# --
 		if self.pda.player_data['shuffle_on']:
 			# -- Toggle shuffle off
-			text: str = '🔁'
+			text: str = '🔀'
 			self.pda.player_data['shuffle_on'] = False
 
 		else:
