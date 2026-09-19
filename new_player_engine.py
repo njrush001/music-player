@@ -2,6 +2,7 @@
 import pygame, os, time
 from typing import Optional
 from mutagen.mp3 import MP3
+from pydub import AudioSegment
 from new_ui_updater import extract_metadata_for_track, extract_track_artwork
 # <====================================>
 
@@ -239,6 +240,14 @@ class PlayerEngine:
 		# --
 		self.app.puc.track_frames_data['active_frame'] = obj_id
 
+		# -- Wave
+		self.app.pub.canvas_for_waveform()
+		self.app.pub.root.after(
+			100,
+			self.app.uiu.draw_wave_for_track,
+			path
+		)
+
 
 		#<_end of the method_>
 
@@ -365,3 +374,37 @@ class PlayerEngine:
 	# -------------------------------------------------------------------------------------
 	# -------------------------------------------------------------------------------------
 	# -------------------------------------------------------------------------------------
+
+	def generate_waveform_data(self, path, width: int = 620, center: int = 30) -> None:
+		''' Generate waveform data of the given path '''
+		# -- audio object (contains track info)
+		audio = AudioSegment.from_mp3(path)
+		samples = audio.get_array_of_samples()
+
+		# -- get loudest sample
+		max_val = max(samples)
+
+		# --
+		step = max(1, len(samples) // width)
+
+		# --
+		waveform_data = []
+
+		for x in range(0, len(samples), step):
+			# --
+			val = samples[x]
+
+			norm = (val / max_val) * center
+
+			waveform_data.append(norm)
+
+		# -- Save waveform data
+		base = os.path.basename(path).replace('.mp3', '')
+		self.app.pda.player_data['tracks_data'][base]['waveform_data'] = waveform_data
+
+		self.app.pda.save_player_data()
+
+		# -- Not generating
+		self.app.uiu.generating_data = False
+
+		#<_end of the function_>
