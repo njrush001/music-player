@@ -113,6 +113,7 @@ def extract_metadata_for_track(path) -> tuple[str]:
 class UIUpdates:
 	def __init__(self, app) -> None:
 		self.app = app
+		self.generating_data = False
 
 		#<__ end of the method __>
 
@@ -127,6 +128,53 @@ class UIUpdates:
 
 		except Exception:
 			pass
+
+		#<_end of the method_>
+
+	def draw_wave_for_track(self, path, center: int = 30) -> None:
+		''' Draw wave for song given the norm '''
+		# --
+		base = os.path.basename(path).replace('.mp3', '')
+
+		# -- Get waveform data
+		try:
+			# --
+			waveform_data = self.app.pda.player_data['tracks_data'][base]['waveform_data']
+		except KeyError:
+			# -- If generation in progress, skip
+			if self.generating_data:
+				return
+				
+			self.generating_data = True
+			# -- Generate waveform data (Don't draw)
+			from alma_music_player import thread_worker as t_w
+
+			t_w(
+				target=self.app.pyr.generate_waveform_data,
+				arguments=(path,),
+				daemon=False
+			)
+
+			return
+
+		else:
+			# -- Draw wave
+
+			def _draw(x_pos, norm) -> None:
+				# --
+				self.app.pub.waveform_canvas.create_line(
+					x_pos, center - norm,
+					x_pos, center + norm,
+					fill='#FFFFFF'
+				)
+
+				#<_end of inner function_>
+
+			for x, norm in enumerate(waveform_data):
+				# --
+				_draw(x, norm)
+
+		# --
 
 		#<_end of the method_>
 
