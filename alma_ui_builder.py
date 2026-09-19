@@ -2636,16 +2636,28 @@ class MainUI:
         
         #<_end of the method_>
 
-    def canvas_for_waveform(self) -> tk.Canvas:
+    def canvas_for_waveform(self) -> None:
         '''
         Return the canvas where waveform for current playing song
         will be drawn.
         '''
+        # -- Destroy previous canvas if any
+        try:
+            # --
+            self.waveform_canvas.destroy()
+        except AttributeError:
+            # -- First time creation
+            pass
+
         self.waveform_canvas: tk.Canvas =  build_canvas(
             parent=self.audio_info,
-            bg='green', highlightthickness=0,
+            bg='#0F111D', highlightthickness=0,
             bd=0
-        ).place(x=230, y=140, width=620, height=60)
+        )
+        self.waveform_canvas.place(
+            x=230, y=140,
+            width=620, height=60
+        )
 
         #<_end of the method_>
 
