@@ -1,5 +1,5 @@
 # <============ IMPORTS ===============>
-import threading, random, os
+import threading, random, os, time
 from new_ui_updater import UIUpdates
 from alma_ui_builder import ProgramUI
 from new_player_engine import PlayerEngine
@@ -58,7 +58,7 @@ class ProgramPlaylists:
 
 		#<_end of the method_>
 
-	def select_tracks_to_add(self, paths: dict) -> None:
+	def select_tracks_to_add(self, paths: dict, initiate_build: bool = True) -> None:
 		''' Avoid adding Duplicates to UI '''
 		# --
 		added = []   # -- used to display added tracks
@@ -90,7 +90,7 @@ class ProgramPlaylists:
 					track_path
 				)
 
-		if added:
+		if (added and initiate_build):
 			# -- Display added songs
 			self.root.after(
 				0,
@@ -277,6 +277,33 @@ class MusicApp(ProgramPlaylists):
 
 	def on_app_close(self) -> None:
 		''' Save Player Data '''
+		# -- Get song that is currently playing
+		try:
+			# -- user may close application without playing a track
+			song = self.main_playlist[self.pyr.track_index]
+		except IndexError:
+			pass
+		else:
+			# -- progress ratio
+			if self.pyr.track_paused:
+				# -- update start time
+				self.pyr.start_time = (time.time() - self.pyr.pause_time) + self.pyr.start_time
+
+			try:
+				# -- track duration could be zero
+				progress_ratio = (time.time() - self.pyr.start_time) / self.pyr.track_duration
+			except ZeroDivisionError:
+				pass
+			else:
+				# -- Save
+
+				# --
+				self.pda.player_data['last_played_data'] = {
+					'song': song,
+					'progress_ratio': progress_ratio,
+					'track_duration': self.pyr.track_duration
+				}
+
 		# --
 		self.pda.save_player_data()
 
