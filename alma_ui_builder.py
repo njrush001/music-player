@@ -1,6 +1,7 @@
 # <============ IMPORTS ===============>
 import os
 import tkinter as tk
+from datetime import datetime
 from PIL import Image, ImageTk
 from config import AlmaDataPaths
 from new_ui_updater import set_image
@@ -1282,6 +1283,10 @@ class AudioDownloaderUI:
 class MainUI:
     ''' Build Main UI (The interface user will interact with most) '''
 
+    # --
+    greeting_1 = ''
+    greeting_2 = ''
+
     def build_main_ui(self) -> None:
         ''' Build Main UI On Startup '''
         # -- Main UI: Holds all the elements
@@ -1452,27 +1457,23 @@ class MainUI:
             relief='raised'
         )
 
-        song_name: str = 'Wake Me Up'
-        artist_name: str = 'Alan Walker'
-        file_type: str = 'MP3'
-
         self.song_title = build_label(
             parent=self.audio_info,
-            text=song_name, highlightthickness=0,
+            text=MainUI.greeting_1, highlightthickness=0,
             bd=0, bg='#0F111D', fg='#FFFFFF',
             font=('Tahoma', 18, 'bold')
         )
 
         self.artist = build_label(
             parent=self.audio_info,
-            text=artist_name, highlightthickness=0,
+            text=MainUI.greeting_2, highlightthickness=0,
             bd=0, bg='#0F111D', fg='#4DD4AC',
             font=('Tahoma', 12)
         )
 
         self.file_label = build_label(
             parent=self.audio_info,
-            text=file_type, highlightthickness=0,
+            text='MP3', highlightthickness=0,
             bd=0, bg='#0F111D', fg='#AFABAB',
             font=('Tahoma', 10, 'bold')
         )
@@ -2676,3 +2677,34 @@ class ProgramUI(PlaylistManagerUI, LastPlayedUI, SettingsUI, AudioDownloaderUI, 
         self.build_main_ui()
 
         #<_end of the method_>
+
+# --
+current_hour = datetime.now().hour
+
+if (current_hour > 16):
+    # -- evening time
+    MainUI.greeting_1 = 'Good Evening Lurk!'
+    MainUI.greeting_2 = 'What Are You Up To?'
+
+    #<_>
+
+elif (current_hour > 11):
+    # -- afternoon time
+    MainUI.greeting_1 = 'Good Afternoon Lurk!'
+    MainUI.greeting_2 = 'What Are We Listening To?'
+
+    #<_>
+
+elif (current_hour > 5):
+    # -- morning time
+    MainUI.greeting_1 = 'Good Morning Lurk!'
+    MainUI.greeting_2 = 'Ready For Some Music?'
+
+    #<_>
+
+else:
+    # -- late night
+    MainUI.greeting_1 = 'Late Night, Huh?'
+    MainUI.greeting_2 = 'Still Looking For Something To Listen To?'
+
+    #<_>
