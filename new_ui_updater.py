@@ -165,7 +165,7 @@ class UIUpdates:
 				self.app.pub.waveform_canvas.create_line(
 					x_pos, center - norm,
 					x_pos, center + norm,
-					fill='#FFFFFF'
+					fill='#4DD4AC'
 				)
 
 				#<_end of inner function_>
