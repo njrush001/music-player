@@ -110,7 +110,7 @@ class ProgramPlaylists:
 		prev_index: int = self.pyr.track_index
 		self.pyr.track_index = (self.pyr.track_index + hint) % len(m_p)
 
-		if ((self.pyr.track_index % 5) == 0) and (hint == 1):
+		if ((self.pyr.track_index % 5) == 0) and (hint == 1) and (len(m_p) != 1):
 			# -- Build Mini queue
 
 			tracks: list[str] = m_b[self.pyr.track_index:]
