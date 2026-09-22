@@ -133,7 +133,7 @@ class PlayerEngine:
 	# -------------------------------------------------------------------------------------
 	# ------------------------------- PLAYBACK CONTROLS -----------------------------------
 
-	def initialise(self, build_mini_queue: bool, track_index: Optional[int], build_data=None) -> None:
+	def initialise(self, build_mini_queue: bool, track_index: int, delta=None, build_data=None, start: float = 0.0) -> None:
 		''' Load and play track. And initiate UI updates '''
 		if build_mini_queue:
 
@@ -151,10 +151,10 @@ class PlayerEngine:
 
 		# -- Load and play
 		load_song(path)
-		play_song()
+		play_song(start=start)
 
 		# -- Set time
-		self.start_time = time.time()
+		self.start_time = time.time() if delta is None else (time.time() - delta)
 		self.app.uiu.update_text_on(
 			object=self.app.pub.remaining_time,
 			text=self.app.pda.player_data['tracks_data'][base]['duration']
@@ -367,7 +367,59 @@ class PlayerEngine:
 	# ---------------------------------- LAST PLAYED --------------------------------------
 
 	def play_last_played_track(self) -> None:
-		pass
+		'''
+		Initiates playback of the last played song
+		before the program was closed.
+		'''
+		# -- Get last played data
+		try:
+			# --
+			track_path, progress_ratio, track_duration = self.app.pda.get_last_played_data()
+		except ValueError:
+			# -- No song available for playback
+			return
+
+		# -- guard
+		if track_path:
+			# --
+			m_b = self.app.main_basenames
+
+			# -- Collect song data to be added to internal playlists
+			base = os.path.basename(track_path)
+			song_data = {
+				base.replace('.mp3', ''): track_path
+			}
+
+			# -- Add song to playlists (for now, all playlists should be empty)
+			if (len(m_b) == 0):
+				# --
+				self.app.select_tracks_to_add(
+					paths=song_data,
+					initiate_build=False
+				)
+
+				# -- consider track_duration
+				if (track_duration == 0):
+					# -- try extracting
+					track_duration = get_track_duration(path=track_path)
+
+					#<_>
+
+				# --
+				start = progress_ratio * track_duration
+
+				# -- Initialise playback
+				self.initialise(
+					build_mini_queue=True,
+					track_index=0,
+					build_data=[m_b[0:], 0],
+					delta=start,
+					start=start
+				)
+
+				#<_>
+
+			#<_>
 
 		#<_end of the method_>
 
