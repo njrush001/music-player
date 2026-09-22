@@ -2602,7 +2602,7 @@ class MainUI:
         # -- Create new bar
         self.volume_canvas.create_rectangle(
             x_0, y_0, x_1, y_1,
-            fill='green', outline='',
+            fill='#4DD4AC', outline='',
             tags='volume_bar'
         )
 
@@ -2630,7 +2630,7 @@ class MainUI:
         # -- Create new bar
         self.progress_canvas.create_rectangle(
             x_0, y_0, x_1, y_1,
-            fill='green', outline='',
+            fill='#4DD4AC', outline='',
             tags='progress_bar'
         )
         
