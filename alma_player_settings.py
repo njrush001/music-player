@@ -2,6 +2,7 @@
 import os
 from typing import Optional
 from config import AlmaDataPaths
+from new_ui_updater import clean_title
 # <====================================>
 
 class PlayerData:
@@ -56,6 +57,25 @@ class PlayerData:
 		''' Allow Users to select their Music Folders '''
 		# -- Return
 		return self.app.lib.select_folder()
+
+		#<_end of the method_>
+
+	def get_last_played_data(self) -> str:
+		''' Get the last played song from loaded data '''
+		last_played_data = self.player_data['last_played_data']
+		track_path = last_played_data.get('song', None)
+
+		# --
+		if track_path is not None:
+			# -- Get progress ratio
+			progress_ratio = last_played_data.get('progress_ratio', 0)
+			track_duration = last_played_data.get('track_duration', 0)
+
+			return track_path, progress_ratio, track_duration
+
+			#<_>
+
+		return ''
 
 		#<_end of the method_>
 	
