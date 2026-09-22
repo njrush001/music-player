@@ -733,26 +733,6 @@ class PlaylistManagerUI:
 class LastPlayedUI:
     ''' Create UI showing the last played song '''
 
-    def get_last_played(self) -> str:
-        ''' Get the last played song from loaded data '''
-        last_played_data = self.app.pda.player_data['last_played_data']
-        track_path = last_played_data.get('song', None)
-
-        # --
-        if track_path is not None:
-            # -- clean title
-            return clean_title(
-                path=track_path,
-                max_lmt=35,
-                max_show=33
-            )
-
-            #<_>
-
-        return 'No Last Played'
-
-        #<_end of the method_>
-
     def build_last_played_ui(self, win: tk.Frame) -> None:
         '''Build the ui when needed '''
         # --
@@ -776,11 +756,24 @@ class LastPlayedUI:
             fg='#FFFFFF', bg='#0F111D'
         )
 
-        s_n: str = self.get_last_played()
+        try:
+            # --
+            s_n, p_r, t_d = self.app.pda.get_last_played_data()
+
+        except ValueError:
+            # -- no data available
+            cleaned = 'Data Unavailable ...'
+
+        else:
+            cleaned = clean_title(
+                path=s_n,
+                max_lmt=35,
+                max_show=33
+            )
 
         song_name: tk.Label = build_label(
             parent=self.lastp_frame,
-            text=s_n, font=('Tahoma', 9),
+            text=cleaned, font=('Tahoma', 9),
             highlightthickness=0, bd=0,
             fg='#4DD4AC', bg='#0F111D'
         )
@@ -789,7 +782,8 @@ class LastPlayedUI:
             parent=self.lastp_frame,
             text='▶', bg='#0F111D', bd=0,
             fg='#FFFFFF', highlightthickness=0,
-            font=('Franklin Gothic Heavy', 27)
+            font=('Franklin Gothic Heavy', 27),
+            cursor='hand2'
         )
 
         # -------------------------------------------------------------------------------------
