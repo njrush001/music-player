@@ -100,6 +100,53 @@ class ProgramPlaylists:
 
 		#<_end of the method_>
 
+	def track_playing(self, track) -> None:
+		'''
+		Track the position of the currently playing song
+		after loading a playlist or loading a folder.
+		'''
+		m_b = self.main_basenames
+		base = os.path.basename(track).replace('.mp3', '')
+		# -- Set track idx
+		try:
+			# --
+			idx = m_b.index(base)
+		except ValueError:
+			# --
+			self.pub.mini_queue(
+				tracks=self.main_basenames,
+				start_point=0
+			)
+			
+			return
+
+		# -- track position found
+		self.pyr.track_index = idx
+
+		# -- Get mini queue data
+		if ((idx % 5) == 0):
+			# -- in a group of 5
+			tracks = m_b[idx:]
+			start_point = m_b.index(tracks[0])
+		else:
+			# -- get start point
+			while ((idx % 5) != 0):
+				idx -= 1
+				
+			tracks = m_b[idx:]
+			start_point = m_b.index(tracks[0])
+
+		# -- Call the builder
+		self.pub.mini_queue(
+			tracks=tracks,
+			start_point=start_point
+		)
+
+		# -- Highlight playing
+		self.uiu.highlight_playing()
+
+		#<_end of the method_>
+
 	def repeat_all_mode_idx(self, hint: int) -> None:
 		''' Sets the next track index. Also runs few algorithms to ensure UI updates '''
 		# --
