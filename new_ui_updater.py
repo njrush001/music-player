@@ -131,6 +131,65 @@ class UIUpdates:
 
 		#<_end of the method_>
 
+	def remove_highlight(self, frame, fg: str, bg: str) -> None:
+		''' Remove highlight from a frame which is not representing the actively playing song '''
+		try:
+			# -- Unhighlight
+			frame.config(bg=bg)
+
+			# -- Consider its children too
+			for obj in frame.winfo_children():
+				# --
+				obj.config(bg=bg)
+				obj.config(fg=fg)
+
+		except AttributeError:
+			# -- Application may have just started (Nothing to remove highlight from)
+			pass
+
+		#<_end of the method_>
+
+	def highlight_playing(self) -> None:
+		''' Highlights the currently playing track on mini queue '''
+		# -- Get frames
+		frames = list(self.app.puc.track_frames_data.keys())
+		frames.remove('active_frame')
+
+		# -- Consider index range
+		try:
+			# -- Get frame ID
+			idx = self.app.pyr.track_index
+			frame_id = frames[idx]
+		except IndexError:
+			# -- idx not in [0, 1, 2, 3, 4]. TRANSLATE track_index to one of 'em
+			if (self.app.pyr.track_index % 5) == 0:
+				# -- We are at the starting point of a group of 5
+				idx = 0
+				frame_id = frames[idx]
+			else:
+				# idx in a group of 5
+				idx = 0
+				check_pos = self.app.pyr.track_index
+
+				while ((check_pos % 5) != 0):
+					check_pos -=  1
+					idx += 1
+
+				frame_id  = frames[idx]
+
+		frame_to_highlight = self.app.puc.track_frames_data[frame_id]
+
+		# -- Highlight
+		self.app.puc.on_click(
+			event=None, object=frame_to_highlight,
+			fg='#0F111D', bg='#4DD4AC', item_type='frame'
+		)
+
+		# -- mark as active
+		self.app.puc.track_frames_data['active_frame'] = frame_id
+
+		#<_end of the method_>
+
 	def draw_wave_for_track(self, path, center: int = 30) -> None:
 		''' Draw wave for song given the norm '''
 		# --
