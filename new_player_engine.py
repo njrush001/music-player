@@ -12,6 +12,13 @@ pygame.mixer.init()
 # ========================================================================================================================
 # ============================================ ALL DEPENDENCIES
 
+def music_playing() -> bool:
+	''' Returns a bool communicating whether the program is playing a song '''
+	# --
+	return pygame.mixer.music.get_busy()
+
+	#<_end of the function_>
+
 def fade_out_song(fade_out_time: int) -> None:
 	''' Fade out the currently playing track '''
 	# -- Fade out currently playing song
@@ -91,7 +98,7 @@ class PlayerEngine:
 		Displays progress ratio, time elapsed and remaining time.
 		'''
 		# --
-		if not pygame.mixer.music.get_busy() and not self.track_paused:
+		if not music_playing() and not self.track_paused:
 			# -- Song ended naturally
 			self.app.pub.root.after_cancel(self.progress_update)
 			self.next_playable(hint=1)
@@ -192,53 +199,20 @@ class PlayerEngine:
 			size=(55, 55)
 		)
 
-		# -- Highlight
+		# -- Highlight playing
+		f_d = self.app.puc.track_frames_data
+
 		try:
 			# --
-			self.app.puc.unhighlight_inactive_frame(
-				frame=self.app.puc.track_frames_data[self.app.puc.track_frames_data['active_frame']]
+			self.app.uiu.remove_highlight(
+				frame=f_d[f_d['active_frame']],
+				fg='#FFFFFF', bg='#0F111D'
 			)
 		except KeyError:
 			# --
 			pass
 
-		# -- Get frames
-		frames = list(self.app.puc.track_frames_data.keys())
-		frames.remove('active_frame')
-
-		# -- Consider index range
-		try:
-			# -- Get object id
-			idx: int = self.track_index
-			obj_id: str = frames[idx]
-		except IndexError:
-			# curr idx not in [0,1,2,3,4]. Translate self.track_index to one of them
-			if (self.track_index % 5) == 0:
-				# -- Implies we are at the starting point
-				idx: int = 0
-				obj_id: str = frames[idx]
-			else:
-				# -- Determine idx in a while loop
-				idx: int = 0
-				check_pos: int = self.track_index
-
-				while ((check_pos % 5) != 0):
-					# --
-					check_pos -= 1
-					idx += 1        # -- Gets near target
-
-				obj_id: str = frames[idx]
-
-		frame_to_highlight = self.app.puc.track_frames_data[obj_id]
-
-		# -- Highlight
-		self.app.puc.on_click(
-			event=None, object=frame_to_highlight,
-			fg='#0F111D', bg='#4DD4AC', item_type='frame'
-		)
-
-		# --
-		self.app.puc.track_frames_data['active_frame'] = obj_id
+		self.app.uiu.highlight_playing() # Highlights frame representing the playing song
 
 		# -- Wave
 		self.app.pub.canvas_for_waveform()
