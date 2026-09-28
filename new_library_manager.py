@@ -1,7 +1,8 @@
 # <============ IMPORTS ===============>
 import os
-from tkinter import filedialog
 from typing import Optional
+from tkinter import filedialog
+from new_player_engine import music_playing
 # <====================================>
 
 class LibraryManager:
@@ -37,10 +38,33 @@ class LibraryManager:
 						paths[f.replace('.mp3', '')] = os.path.join(r, f)
 
 			if paths:
+				# --
+				track = None
+				if music_playing():
+					# --
+					track = self.app.main_playlist[self.app.pyr.track_index]
+
+					#<_>
+
 				# -- Clear Playlist bags
 				self.app.clear_playlist_bags()
 				
-				# -- Show these paths in UI
+				# -- Show these paths in UI(if applicable)
+				if track is not None:
+					# -- Don't build mini queue
+					self.app.select_tracks_to_add(
+						paths=paths,
+						initiate_build=False
+					)
+
+					# -- Track playing(will trigger build of mini queue once it gets the right idx)
+					self.app.track_playing(track=track)
+
+					return
+
+					#<_>
+
+				# -- track is unavailable (build mini queue - probably the program has just started)
 				self.app.select_tracks_to_add(paths)
 
 		#<_end of the method_>
