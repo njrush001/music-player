@@ -107,12 +107,15 @@ def extract_metadata_for_track(path) -> tuple[str]:
 
 	return c_t, artist
 
+	#<_end of function_>
+
 # ========================================================================================================================
 # ========================================================================================================================
 
 class UIUpdates:
 	def __init__(self, app) -> None:
 		self.app = app
+		self.root = None
 		self.generating_data = False
 
 		#<__ end of the method __>
@@ -121,7 +124,7 @@ class UIUpdates:
 		''' Update text on the passed object '''
 		try:
 			# --
-			self.app.pub.root.after(
+			self.root.after(
 				0,
 				lambda: object.config(text=text)
 			)
@@ -130,6 +133,36 @@ class UIUpdates:
 			pass
 
 		#<_end of the method_>
+
+	def place_object(self, object, delta: int, **kwargs) -> None:
+		'''
+		Place an object after some time delta using the properties
+		specified under kwargs
+		'''
+		# --
+		self.root.after(
+			delta,
+			lambda: object.place(
+				**kwargs
+			)
+		)
+
+		#<_end of the function_>
+
+	def pack_object(self, object, delta: int, **kwargs) -> None:
+		'''
+		Pack an object after some time delta using the properties
+		specified under kwargs
+		'''
+		# --
+		self.root.after(
+			delta,
+			lambda: object.pack(
+				**kwargs
+			)
+		)
+
+		#<_end of the function_>
 
 	def remove_highlight(self, frame, fg: str, bg: str) -> None:
 		''' Remove highlight from a frame which is not representing the actively playing song '''
@@ -272,7 +305,7 @@ class UIUpdates:
 			)
 
 			# -- Repeat till crossfade is complete
-			self.app.pub.root.after(
+			self.root.after(
 				delay,
 				lambda: _step(i + 1)
 			)
