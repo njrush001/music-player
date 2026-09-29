@@ -70,13 +70,13 @@ class PlaylistManagerUI:
         )
         prompt.pack(padx=50, pady=200)
 
-        self.root.after(
-            600,
-            lambda: self.playlist_ui.place(
-                x=0, y=0,
-                width=1020,
-                height=540
-            )
+        self.app.uiu.place_object(
+            object=self.playlist_ui,
+            delta=600,
+            x=0,
+            y=0,
+            width=1020,
+            height=540,
         )
 
         # -- Create elements (1 sec delay)
@@ -207,13 +207,13 @@ class PlaylistManagerUI:
         # -- placements
 
         # -- playlist canvas (where all playlist manager elements live)
-        self.root.after(
-            0,
-            lambda: self.playlist_canvas.place(
-                x=0, y=0,
-                width=1020,
-                height=540
-            )
+        self.app.uiu.place_object(
+            object=self.playlist_canvas,
+            delta=0,
+            x=0,
+            y=0,
+            width=1020,
+            height=540,
         )
 
         # -------------------------------------------------------------------------------------
@@ -271,11 +271,11 @@ class PlaylistManagerUI:
 
         # -------------------------------------------------------------------------------------
         # --
-        self.root.after(
-            350,
-            lambda: quit_label.place(
-                x=960, y=6
-            )
+        self.app.uiu.place_object(
+            object=quit_label,
+            delta=350,
+            x=960,
+            y=6,
         )
 
         self.root.after(
@@ -287,35 +287,35 @@ class PlaylistManagerUI:
             )
         )
 
-        self.root.after(
-            450,
-            lambda: ui_icon.place(
-                x=8,  y=6
-            )
+        self.app.uiu.place_object(
+            object=ui_icon,
+            delta=450,
+            x=8,
+            y=6,
         )
 
         # -------------------------------------------------------------------------------------
         # --
-        self.root.after(
-            500,
-            lambda: ui_title.place(
-                x=39, y=7
-            )
+        self.app.uiu.place_object(
+            object=ui_title,
+            delta=500,
+            x=39,
+            y=7,
         )
 
-        self.root.after(
-            550,
-            lambda: section_title.place(
-                x=8,  y=40
-            )
+        self.app.uiu.place_object(
+            object=section_title,
+            delta=550,
+            x=8,
+            y=40,
         )
         # -------------------------------------------------------------------------------------
         # --
-        self.root.after(
-            600,
-            lambda: self.pst_search.place(
-                x=20,  y=76
-            )
+        self.app.uiu.place_object(
+            object=self.pst_search,
+            delta=600,
+            x=20,
+            y=76,
         )
         self.root.after(
             650,
@@ -326,60 +326,59 @@ class PlaylistManagerUI:
 
         # -------------------------------------------------------------------------------------
         # -- essentials
-        self.root.after(
-            750,
-            lambda: base_frame.place(
-                x=12, y=490,
-                width=245, height=40
-            )
+        self.app.uiu.place_object(
+            object=base_frame,
+            delta=750,
+            x=12,
+            y=490,
+            width=245,
+            height=40,
         )
 
-        self.root.after(
-            760,
-            lambda: self.new_pst.pack(
-                side='left',
-                padx=(15, 0)
-            )
+        self.app.uiu.pack_object(
+            object=self.new_pst,
+            delta=760,
+            side='left',
+            padx=(15, 0),
         )
 
-        self.root.after(
-            770,
-            lambda: self.refresh.pack(
-                side='left',
-                padx=(7, 0)
-            )
+        self.app.uiu.pack_object(
+            object=self.refresh,
+            delta=770,
+            side='left',
+            padx=(7, 0),
         )
 
-        self.root.after(
-            780,
-            lambda: self.delete.pack(
-                side='left',
-                padx=(7, 0)
-            )
+        self.app.uiu.pack_object(
+            object=self.delete,
+            delta=780,
+            side='left',
+            padx=(7, 0),
         )
 
-        self.root.after(
-            790,
-            lambda: self.edit.pack(
-                side='left',
-                padx=(7, 0)
-            )
+        self.app.uiu.pack_object(
+            object=self.edit,
+            delta=790,
+            side='left',
+            padx=(7, 0),
         )
 
         # -------------------------------------------------------------------------------------
         # -- default view
-        self.root.after(
-            850,
-            lambda: default_view_frame.place(
-                x=480, y=178, width=340, height=182
-            )
+        self.app.uiu.place_object(
+            object=default_view_frame,
+            delta=850,
+            x=480,
+            y=178,
+            width=340,
+            height=182,
         )
 
-        self.root.after(
-            900,
-            lambda: empty_icon.place(
-                x=110, y=2
-            )
+        self.app.uiu.place_object(
+            object=empty_icon,
+            delta=900,
+            x=110,
+            y=2,
         )
 
         self.root.after(
@@ -391,20 +390,20 @@ class PlaylistManagerUI:
             )
         )
 
-        self.root.after(
-            1050,
-            lambda: prompt_1.place(
-                x=117, y=115
-            )
+        self.app.uiu.place_object(
+            object=prompt_1,
+            delta=1050,
+            x=117,
+            y=115,
         )
 
-        self.root.after(
-            1100,
-            lambda: prompt_2.place(
-                x=45, y=140,
-                width=250,
-                height=40
-            )
+        self.app.uiu.place_object(
+            object=prompt_2,
+            delta=1100,
+            x=45,
+            y=140,
+            width=250,
+            height=40,
         )
         # -------------------------------------------------------------------------------------
         # -------------------------------------------------------------------------------------
@@ -800,43 +799,41 @@ class LastPlayedUI:
             )
         )
 
-        self.root.after(
-            20,
-            lambda: last_played_thumbnail.pack(
-                pady=(5, 0),
-                side='top'
-            )
+        self.app.uiu.pack_object(
+            object=last_played_thumbnail,
+            delta=20,
+            pady=(5, 0),
+            side='top',
         )
 
-        self.root.after(
-            30,
-            lambda: prompt.pack(
-                pady=(5, 0),
-                side='top'
-            )
+        self.app.uiu.pack_object(
+            object=prompt,
+            delta=30,
+            pady=(5, 0),
+            side='top',
         )
 
-        self.root.after(
-            40,
-            lambda: song_name.place(
-                x=2, y=135
-            )
+        self.app.uiu.place_object(
+            object=song_name,
+            delta=40,
+            x=2,
+            y=135,
         )
 
-        self.root.after(
-            50,
-            lambda: confirmation.place(
-                x=90, y=155
-            )
+        self.app.uiu.place_object(
+            object=confirmation,
+            delta=50,
+            x=90,
+            y=155,
         )
 
-        self.root.after(
-            0,
-            lambda: self.lastp_frame.place(
-                x=2, y=200,
-                width=211,
-                height=214
-            )
+        self.app.uiu.place_object(
+            object=self.lastp_frame,
+            delta=0,
+            x=2,
+            y=200,
+            width=211,
+            height=214,
         )
         # -------------------------------------------------------------------------------------
         # -------------------------------------------------------------------------------------
@@ -940,11 +937,11 @@ class AudioDownloaderUI:
         # -------------------------------------------------------------------------------------
         # -------------------------------------------------------------------------------------
         # --- placements
-        self.root.after(
-            50,
-            lambda: downloader_title.place(
-                x=5, y=2
-            )
+        self.app.uiu.place_object(
+            object=downloader_title,
+            delta=50,
+            x=5,
+            y=2,
         )
 
         self.root.after(
@@ -974,39 +971,41 @@ class AudioDownloaderUI:
             )
         )
 
-        self.root.after(
-            105,
-            lambda: url_tab.place(
-                x=17, y=34,
-                width=336, height=17
-            )
+        self.app.uiu.place_object(
+            object=url_tab,
+            delta=105,
+            x=17,
+            y=34,
+            width=336,
+            height=17,
         )
 
-        self.root.after(
-            105,
-            lambda: search_tab.place(
-                x=363, y=34,
-                width=413, height=17
-            )
+        self.app.uiu.place_object(
+            object=search_tab,
+            delta=105,
+            x=363,
+            y=34,
+            width=413,
+            height=17,
         )
 
-        self.root.after(
-            110,
-            lambda: url_label.pack()
+        self.app.uiu.pack_object(
+            object=url_label,
+            delta=110,
         )
 
-        self.root.after(
-            110,
-            lambda: search_label.pack()
+        self.app.uiu.pack_object(
+            object=search_label,
+            delta=110,
         )
 
-        self.root.after(
-            0,
-            lambda: self.yt_canvas.place(
-                x=0, y=0,
-                width=793,
-                height=223
-            )
+        self.app.uiu.place_object(
+            object=self.yt_canvas,
+            delta=0,
+            x=0,
+            y=0,
+            width=793,
+            height=223,
         )
 
         self.root.after(
@@ -1153,18 +1152,18 @@ class AudioDownloaderUI:
         # -------------------------------------------------------------------------------------
         # --- placements
 
-        self.root.after(
-            0,
-            lambda: self.hint_a.place(
-                x=5, y=62
-            )
+        self.app.uiu.place_object(
+            object=self.hint_a,
+            delta=0,
+            x=5,
+            y=62,
         )
 
-        self.root.after(
-            10,
-            lambda: self.hint_b.place(
-                x=5, y=83
-            )
+        self.app.uiu.place_object(
+            object=self.hint_b,
+            delta=10,
+            x=5,
+            y=83,
         )
 
         self.root.after(
@@ -1176,18 +1175,20 @@ class AudioDownloaderUI:
             )
         )
 
-        self.root.after(
-            30,
-            lambda: self.query_input.place(
-                x=7, y=109, width=666
-            )
+        self.app.uiu.place_object(
+            object=self.query_input,
+            delta=30,
+            x=7,
+            y=109,
+            width=666,
         )
 
-        self.root.after(
-            40,
-            lambda: self.execute_query.place(
-                x=682, y=105, height=29
-            )
+        self.app.uiu.place_object(
+            object=self.execute_query,
+            delta=40,
+            x=682,
+            y=105,
+            height=29,
         )
 
         self.root.after(
@@ -1198,11 +1199,11 @@ class AudioDownloaderUI:
             )
         )
 
-        self.root.after(
-            40,
-            lambda: recent.place(
-                x=5, y=200
-            )
+        self.app.uiu.place_object(
+            object=recent,
+            delta=40,
+            x=5,
+            y=200,
         )
 
         # -------------------------------------------------------------------------------------
@@ -1304,13 +1305,13 @@ class MainUI:
 
         prompt.pack(padx=50, pady=230)
 
-        self.root.after(
-            0,
-            lambda: main_ui.place(
-                x=0, y=0,
-                width=1020,
-                height=540
-            )
+        self.app.uiu.place_object(
+            object=main_ui,
+            delta=0,
+            x=0,
+            y=0,
+            width=1020,
+            height=540,
         )
 
         # -- Create elements (1 sec delay for welcome message)
@@ -1642,13 +1643,13 @@ class MainUI:
 
         # -------------------------------------------------------------------------------------
         # -- Main canvas (all ui elements live on this parent)
-        self.root.after(
-            0,
-            lambda: self.main_canvas.place(
-                x=0, y=0,
-                width=1020,
-                height=540
-            )
+        self.app.uiu.place_object(
+            object=self.main_canvas,
+            delta=0,
+            x=0,
+            y=0,
+            width=1020,
+            height=540,
         )
         # -------------------------------------------------------------------------------------
 
@@ -1698,23 +1699,25 @@ class MainUI:
 
         # -------------------------------------------------------------------------------------
         # -- live feedback (where feedbaack to user will be displayed)
-        self.root.after(
-            1500,
-            lambda: live_feedback.place(
-                x=224, y=2,
-                width=793, height=16
-            )
+        self.app.uiu.place_object(
+            object=live_feedback,
+            delta=1500,
+            x=224,
+            y=2,
+            width=793,
+            height=16,
         )
         # -------------------------------------------------------------------------------------
 
         # -------------------------------------------------------------------------------------
         # -- shows the app name + icon
-        self.root.after(
-            2000,
-            lambda: app_info.place(
-                x=2, y=3, width=215,
-                height=45
-            )
+        self.app.uiu.place_object(
+            object=app_info,
+            delta=2000,
+            x=2,
+            y=3,
+            width=215,
+            height=45,
         )
 
         self.root.after(
@@ -1726,126 +1729,145 @@ class MainUI:
             )
         )
 
-        self.root.after(
-            3000,
-            lambda: ui_icon.place(
-                x=8, y=6
-            )
+        self.app.uiu.place_object(
+            object=ui_icon,
+            delta=3000,
+            x=8,
+            y=6,
         )
 
-        self.root.after(
-            3000,
-            lambda: ui_title.place(
-                x=50, y=6
-            )
+        self.app.uiu.place_object(
+            object=ui_title,
+            delta=3000,
+            x=50,
+            y=6,
         )
 
-        self.root.after(
-            3000,
-            lambda: ui_title_b.place(
-                x=50, y=25
-            )
+        self.app.uiu.place_object(
+            object=ui_title_b,
+            delta=3000,
+            x=50,
+            y=25,
         )
         # -------------------------------------------------------------------------------------
 
         # -------------------------------------------------------------------------------------
         # -- navigation (where controls helping wiith navigation are shown)
-        self.root.after(
-            3250,
-            lambda: navigation.place(
-                x=2, y=53, width=215,
-                height=416
-            )
+        self.app.uiu.place_object(
+            object=navigation,
+            delta=3250,
+            x=2,
+            y=53,
+            width=215,
+            height=416,
         )
 
-        self.root.after(
-            3300,
-            lambda: home_label.pack(
-                side='left', anchor='w',
-                padx=5, pady=0)
+        self.app.uiu.pack_object(
+            object=home_label,
+            delta=3300,
+            side='left',
+            anchor='w',
+            padx=5,
+            pady=0,
         )
 
-        self.root.after(
-            3300,
-            lambda: playlist_label.pack(
-                side='left', anchor='w',
-                padx=5, pady=0)
+        self.app.uiu.pack_object(
+            object=playlist_label,
+            delta=3300,
+            side='left',
+            anchor='w',
+            padx=5,
+            pady=0,
         )
 
-        self.root.after(
-            3300,
-            lambda: settings_label.pack(
-                side='left', anchor='w',
-                padx=5, pady=0)
+        self.app.uiu.pack_object(
+            object=settings_label,
+            delta=3300,
+            side='left',
+            anchor='w',
+            padx=5,
+            pady=0,
         )
 
-        self.root.after(
-            3300,
-            lambda: load_folder_label.pack(
-                side='left', anchor='w',
-                padx=5, pady=0)
+        self.app.uiu.pack_object(
+            object=load_folder_label,
+            delta=3300,
+            side='left',
+            anchor='w',
+            padx=5,
+            pady=0,
         )
 
-        self.root.after(
-            3300,
-            lambda: yt_music_label.pack(
-                side='left', anchor='w',
-                padx=5, pady=0)
+        self.app.uiu.pack_object(
+            object=yt_music_label,
+            delta=3300,
+            side='left',
+            anchor='w',
+            padx=5,
+            pady=0,
         )
 
-        self.root.after(
-            3300,
-            lambda: recommendations_label.pack(
-                side='left', anchor='w',
-                padx=5, pady=0)
+        self.app.uiu.pack_object(
+            object=recommendations_label,
+            delta=3300,
+            side='left',
+            anchor='w',
+            padx=5,
+            pady=0,
         )
 
-        self.root.after(
-            3500,
-            lambda: home.place(
-                x=5, y=60,
-                width=210, height=25
-            )
+        self.app.uiu.place_object(
+            object=home,
+            delta=3500,
+            x=5,
+            y=60,
+            width=210,
+            height=25,
         )
 
-        self.root.after(
-            3500,
-            lambda: playlist.place(
-                x=5, y=90,
-                width=210, height=25
-            )
+        self.app.uiu.place_object(
+            object=playlist,
+            delta=3500,
+            x=5,
+            y=90,
+            width=210,
+            height=25,
         )
 
-        self.root.after(
-            3500,
-            lambda: settings.place(
-                x=5, y=120,
-                width=210, height=25
-            )
+        self.app.uiu.place_object(
+            object=settings,
+            delta=3500,
+            x=5,
+            y=120,
+            width=210,
+            height=25,
         )
 
-        self.root.after(
-            3500,
-            lambda: load_folder.place(
-                x=5, y=150,
-                width=210, height=25
-            )
+        self.app.uiu.place_object(
+            object=load_folder,
+            delta=3500,
+            x=5,
+            y=150,
+            width=210,
+            height=25,
         )
 
-        self.root.after(
-            3500,
-            lambda: yt_music.place(
-                x=5, y=180,
-                width=210, height=25
-            )
+        self.app.uiu.place_object(
+            object=yt_music,
+            delta=3500,
+            x=5,
+            y=180,
+            width=210,
+            height=25,
         )
 
-        self.root.after(
-            3500,
-            lambda: recommendations.place(
-                x=5, y=210,
-                width=210, height=25
-            )
+        self.app.uiu.place_object(
+            object=recommendations,
+            delta=3500,
+            x=5,
+            y=210,
+            width=210,
+            height=25,
         )
         # -------------------------------------------------------------------------------------
 
@@ -1860,51 +1882,53 @@ class MainUI:
             )
         )
 
-        self.root.after(
-            3750,
-            lambda: self.audio_thumbnail.place(
-                x=10, y=5
-            )
+        self.app.uiu.place_object(
+            object=self.audio_thumbnail,
+            delta=3750,
+            x=10,
+            y=5,
         )
 
-        self.root.after(
-            3750,
-            lambda: self.song_title.place(
-                x=230, y=40
-            )
+        self.app.uiu.place_object(
+            object=self.song_title,
+            delta=3750,
+            x=230,
+            y=40,
         )
 
-        self.root.after(
-            3750,
-            lambda: self.artist.place(
-                x=230, y=75
-            )
+        self.app.uiu.place_object(
+            object=self.artist,
+            delta=3750,
+            x=230,
+            y=75,
         )
 
-        self.root.after(
-            3750,
-            lambda: self.file_label.place(
-                x=230, y=100
-            )
+        self.app.uiu.place_object(
+            object=self.file_label,
+            delta=3750,
+            x=230,
+            y=100,
         )
 
-        self.root.after(
-            4000,
-            lambda: self.audio_info.place(
-                x=224, y=24,
-                width=793, height=223
-            )
+        self.app.uiu.place_object(
+            object=self.audio_info,
+            delta=4000,
+            x=224,
+            y=24,
+            width=793,
+            height=223,
         )
         # -------------------------------------------------------------------------------------
 
         # -------------------------------------------------------------------------------------
         # -- queue (where queue of songs will be shown)
-        self.root.after(
-            4500,
-            lambda: self.queue_canvas.place(
-                x=224, y=254,
-                width=793, height=216
-            )
+        self.app.uiu.place_object(
+            object=self.queue_canvas,
+            delta=4500,
+            x=224,
+            y=254,
+            width=793,
+            height=216,
         )
 
         self.root.after(
@@ -1915,39 +1939,35 @@ class MainUI:
             )
         )
 
-        self.root.after(
-            5150,
-            lambda: num_tab.place(
-                x=30, y=3
-            )
+        self.app.uiu.place_object(
+            object=num_tab,
+            delta=5150,
+            x=30,
+            y=3,
         )
 
-        self.root.after(
-            5200,
-            lambda: title_tab.place(
-                x=90, y=3
-            )
+        self.app.uiu.place_object(
+            object=title_tab,
+            delta=5200,
+            x=90,
+            y=3,
         )
 
-        self.root.after(
-            5250,
-            lambda: artist_tab.place(
-                x=470, y=3
-            )
+        self.app.uiu.place_object(
+            object=artist_tab,
+            delta=5250,
+            x=470,
+            y=3,
         )
 
-        self.root.after(
-            5350,
-            lambda: duration_tab.place(
-                x=650, y=3
-            )
+        self.app.uiu.place_object(
+            object=duration_tab,
+            delta=5350,x=650, y=3
         )
 
-        self.root.after(
-            5500,
-            lambda: no_fd.place(
-                x=300, y=90
-            )
+        self.app.uiu.place_object(
+            object=no_fd, delta=5500,
+            x=300, y=90
         )
         # -------------------------------------------------------------------------------------
 
@@ -1962,82 +1982,60 @@ class MainUI:
             )
         )
 
-        self.root.after(
-            5700,
-            lambda: self.sub_audio_thumbnail.place(
-                x=3, y=2
-            )
+        self.app.uiu.place_object(
+            object=self.sub_audio_thumbnail,
+            delta=5700, x=3, y=2
         )
 
-        self.root.after(
-            5710,
-            lambda: self.progress_canvas.place(
-                x=170, y=15, width=700, height=5
-            )
+        self.app.uiu.place_object(
+            object=self.progress_canvas,
+            delta=5710, x=170, y=15,
+            width=700, height=5
         )
 
-        self.root.after(
-            5750,
-            lambda: prev_btn.place(
-                x=445, y=27
-            )
+        self.app.uiu.place_object(
+            object=prev_btn, delta=5750,
+            x=445, y=27
         )
 
-        self.root.after(
-            5800,
-            lambda: pause_btn.place(
-                x=495, y=27
-            )
+        self.app.uiu.place_object(
+            object=pause_btn, delta=5800,
+            x=495, y=27
         )
 
-        self.root.after(
-            5830,
-            lambda: next_btn.place(
-                x=545, y=27
-            )
+        self.app.uiu.place_object(
+            object=next_btn, delta=5830,
+            x=545, y=27
         )
 
-        self.root.after(
-            5860,
-            lambda: shuffle_btn.place(
-                x=410, y=33
-            )
+        self.app.uiu.place_object(
+            object=shuffle_btn, delta=5860,
+            x=410, y=33
         )
 
-        self.root.after(
-            5900,
-            lambda: loop_btn.place(
-                x=595, y=33
-            )
+        self.app.uiu.place_object(
+            object=loop_btn, delta=5900,
+            x=595, y=33
         )
 
-        self.root.after(
-            5930,
-            lambda: self.time_elapsed.place(
-                x=195, y=33
-            )
+        self.app.uiu.place_object(
+            object=self.time_elapsed, delta=5930,
+            x=195, y=33
         )
 
-        self.root.after(
-            5960,
-            lambda: self.remaining_time.place(
-                x=780, y=33
-            )
+        self.app.uiu.place_object(
+            object=self.remaining_time,
+            delta=5960, x=780, y=33
         )
 
-        self.root.after(
-            5990,
-            lambda: full_view_btn.place(
-                x=850, y=33
-            )
+        self.app.uiu.place_object(
+            object=full_view_btn,
+            delta=5990, x=850, y=33
         )
 
-        self.root.after(
-            6120,
-            lambda: self.volume_canvas.place(
-                x=885, y=23,
-                width=120, height=5
-            )
+        self.app.uiu.place_object(
+            object=self.volume_canvas, delta=6120,
+            x=885, y=23, width=120, height=5
         )
 
         self.root.after(
@@ -2048,19 +2046,14 @@ class MainUI:
             )
         )
 
-        self.root.after(
-            6150,
-            lambda: self.volume_level.place(
-                x=895, y=35
-            )
+        self.app.uiu.place_object(
+            object=self.volume_level, delta=6150,
+            x=895, y=35
         )
 
-        self.root.after(
-            6500,
-            lambda: progress_frame.place(
-                x=3, y=475,
-                width=1015, height=60
-            )
+        self.app.uiu.place_object(
+            object=progress_frame, delta=6500,
+            x=3, y=475, width=1015, height=60
         )
 
         # -------------------------------------------------------------------------------------
@@ -2342,97 +2335,6 @@ class MainUI:
 
         #<_end of the method_>
 
-    def current_playing_display(self, song_artist: tuple[str, str], artwork) -> None:
-        '''
-        Shows the currently playing artwork,
-        song name, artist and file type.
-        '''
-
-        # -- Destroy items in self.audio info
-        for obj in self.audio_info.winfo_children():
-            # --
-            obj.destroy()
-
-        # -- The artwork
-        audio_thumbnail = build_label(
-            parent=self.audio_info,
-            highlightthickness=0,
-            bd=0,
-            relief='raised'
-        )
-
-        # -- file type (currently only mp3 files are allowed)
-        file_type: str = 'MP3'
-
-        # -- Song title
-        song_title = build_label(
-            parent=self.audio_info,
-            text=song_artist[0], highlightthickness=0,
-            bd=0, bg='#0F111D', fg='#FFFFFF',
-            font=('Tahoma', 18, 'bold')
-        )
-
-        # -- artist name
-        artist = build_label(
-            parent=self.audio_info,
-            text=song_artist[1], highlightthickness=0,
-            bd=0, bg='#0F111D', fg='#4DD4AC',
-            font=('Tahoma', 12)
-        )
-
-        # -- file type
-        file_label = build_label(
-            parent=self.audio_info,
-            text=file_type, highlightthickness=0,
-            bd=0, bg='#0F111D', fg='#AFABAB',
-            font=('Tahoma', 10, 'bold')
-        )
-
-        # -------------------------------------------------------------------------------------
-        # -------------------------------------------------------------------------------------
-
-        # -- Placements
-
-        # -- current playing display (song name + artist + file type)
-        self.root.after(
-            100,
-            lambda: set_image(
-                label=audio_thumbnail,
-                img=artwork,
-                size=(210, 210)
-            )
-        )
-
-        self.root.after(
-            150,
-            lambda: audio_thumbnail.place(
-                x=10, y=5
-            )
-        )
-
-        self.root.after(
-            200,
-            lambda: song_title.place(
-                x=230, y=40
-            )
-        )
-
-        self.root.after(
-            250,
-            lambda: artist.place(
-                x=230, y=75
-            )
-        )
-
-        self.root.after(
-            300,
-            lambda: file_label.place(
-                x=230, y=100
-            )
-        )
-
-        #<_end of the method_>
-
     def mini_queue(self, tracks: list, start_point: int = 0, max_show=72, max_lmt=72) -> None:
         '''
         Build the ui where tracks are displayed.
@@ -2450,19 +2352,14 @@ class MainUI:
             bg='#0F111D'
         )
 
-        # ------------------------------------------------------------
-        # ------------------------------------------------------------
-        self.root.after(
-            0,
-            lambda: self.song_frame.place(
-                x=10, y=30,
-                width=770, height=179
-            )
+        # -- place
+        self.app.uiu.place_object(
+            object=self.song_frame,
+            delta=0, width=770,
+            height=179, x=10, y=30
         )
-        # ------------------------------------------------------------
-        # ------------------------------------------------------------
 
-
+        # --
         tracks = tracks[:5]
         m_p = self.app.main_playlist
         m_b = self.app.main_basenames
@@ -2529,30 +2426,65 @@ class MainUI:
                 text=i, cursor='hand2',
                 font=('Franklin Gothic Heavy', 6),
                 fg='#FFFFFF', bg='#0F111D'
-            ).place(x=28, y=8)
+            )
 
             song_name_label = build_label(
                 parent=frame,
                 text=track[:72], cursor='hand2',
                 font=('Franklin Gothic Heavy', 6),
                 fg='#FFFFFF', bg='#0F111D'
-            ).place(x=85, y=8)
+            )
 
             artist_name_label = build_label(
                 parent=frame,
                 text=artist, cursor='hand2',
                 font=('Franklin Gothic Heavy', 6),
                 fg='#FFFFFF', bg='#0F111D'
-            ).place(x=465, y=8)
+            )
 
             time_label = build_label(
                 parent=frame,
                 text=duration, cursor='hand2',
                 font=('Franklin Gothic Heavy', 6),
                 fg='#FFFFFF', bg='#0F111D'
-            ).place(x=645, y=8)
+            )
 
-            frame.pack(padx=0, pady=(3, 0))
+            # -------------------------------------------------------------------------------------
+            # -------------------------------------------------------------------------------------
+            # -- placements
+
+            # -- shows the track number
+            self.app.uiu.place_object(
+                object=num_of_song, delta=0,
+                x=28, y=8
+            )
+
+            # -- shows the song name
+            self.app.uiu.place_object(
+                object=song_name_label, delta=0,
+                x=85, y=8
+            )
+
+            # -- Shows the artist name
+            self.app.uiu.place_object(
+                object=artist_name_label, delta=0,
+                x=465, y=8
+            )
+
+            # -- shows the amount of time the song lasts
+            self.app.uiu.place_object(
+                object=time_label, delta=0,
+                x=645, y=8
+            )
+
+            # -- Frame containing track info
+            self.app.uiu.pack_object(
+                object=frame, delta=0,
+                padx=0, pady=(3, 0)
+            )
+
+            # -------------------------------------------------------------------------------------
+            # -------------------------------------------------------------------------------------
 
             # -- Collect This Frame Data
             obj_id: str = str(id(frame))
@@ -2603,7 +2535,12 @@ class MainUI:
 
         vol: float = x_1 / self.volume_canvas.winfo_width()
         vol_percent = str(round((vol * 100), 0)).split('.')[0]
-        self.volume_level.config(text=f'Volume: {vol_percent}%')
+
+        # -- Display volume level
+        self.app.uiu.update_text_on(
+            object=self.volume_level,
+            text=f'Volume: {vol_percent}%'
+        )
 
         return vol
 
@@ -2649,8 +2586,11 @@ class MainUI:
             bg='#0F111D', highlightthickness=0,
             bd=0
         )
-        self.waveform_canvas.place(
-            x=230, y=140,
+
+        # -- place
+        self.app.uiu.place_object(
+            object=self.waveform_canvas,
+            delta=0, x=230, y=140,
             width=620, height=60
         )
 
@@ -2674,6 +2614,8 @@ class ProgramUI(PlaylistManagerUI, LastPlayedUI, SettingsUI, AudioDownloaderUI, 
         #print(self.__dict__)
         #return
 
+        # --
+        self.app.uiu.root = self.root
         self.build_main_ui()
 
         #<_end of the method_>
