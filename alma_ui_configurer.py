@@ -293,25 +293,6 @@ class ProgramUIConfigurer():
 
         #<_end of the function_>
 
-    def unhighlight_inactive_frame(self, frame) -> None:
-        ''' Unhighlight '''
-        # -- Unhighlight the previous active frame
-        try:
-            # -- Unhighlight
-            frame.config(bg='#0F111D')
-
-            # -- Unhighlight its object too
-            for obj in frame.winfo_children():
-                # --
-                obj.config(bg='#0F111D')
-                obj.config(fg='#FFFFFF')
-
-        except AttributeError:
-            # -- Application just started
-            pass
-
-        #<_end of the method_>
-
     def on_home_press(self) -> None:
         print('I will show you home UI')
 
@@ -360,7 +341,7 @@ class ProgramUIConfigurer():
         # -- Unhighlight
         try:
             # --
-            self.unhighlight_inactive_frame(
+            self.app.uiu.remove_highlight(
                 frame=self.track_frames_data[self.track_frames_data['active_frame']]
             )
         except KeyError:
