@@ -36,7 +36,7 @@ class PlayerData:
 			'loop_on', 'shuffle_on', 'volume_level',
 			'music_folders', 'last_played_data',
 			'downloads', 'search_hints', 'live_messages',
-			'tracks_data'
+			'tracks_data', 'active_theme'
 		]
 
 		if not self.player_data or any(item not in self.player_data for item in _required):
