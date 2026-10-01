@@ -164,17 +164,20 @@ class UIUpdates:
 
 		#<_end of the function_>
 
-	def remove_highlight(self, frame, fg: str, bg: str) -> None:
+	def remove_highlight(self, frame) -> None:
 		''' Remove highlight from a frame which is not representing the actively playing song '''
+		# --
+		a_p = self.app.pub.app_theme
+
 		try:
 			# -- Unhighlight
-			frame.config(bg=bg)
+			frame.config(bg=a_p['secondary_bg'])
 
 			# -- Consider its children too
 			for obj in frame.winfo_children():
 				# --
-				obj.config(bg=bg)
-				obj.config(fg=fg)
+				obj.config(bg=a_p['secondary_bg'])
+				obj.config(fg=a_p['primary_text_colour'])
 
 		except AttributeError:
 			# -- Application may have just started (Nothing to remove highlight from)
@@ -187,6 +190,7 @@ class UIUpdates:
 		# -- Get frames
 		frames = list(self.app.puc.track_frames_data.keys())
 		frames.remove('active_frame')
+		a_p = self.app.pub.app_theme
 
 		# -- Consider index range
 		try:
@@ -215,7 +219,8 @@ class UIUpdates:
 		# -- Highlight
 		self.app.puc.on_click(
 			event=None, object=frame_to_highlight,
-			fg='#0F111D', bg='#4DD4AC', item_type='frame'
+			fg=a_p['frame_highlight_fg'], bg=a_p['frame_highlight_bg'],
+			item_type='frame'
 		)
 
 		# -- mark as active
@@ -251,13 +256,14 @@ class UIUpdates:
 
 		else:
 			# -- Draw wave
+			a_p = self.app.pub.app_theme
 
 			def _draw(x_pos, norm) -> None:
 				# --
 				self.app.pub.waveform_canvas.create_line(
 					x_pos, center - norm,
 					x_pos, center + norm,
-					fill='#4DD4AC'
+					fill=a_p['waveform_colour']
 				)
 
 				#<_end of inner function_>
