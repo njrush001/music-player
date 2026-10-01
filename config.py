@@ -20,7 +20,97 @@ class AlmaDataPaths:
 	# -- Player Settings File Stays Here
 	SETTINGS_DIR = BASE_DIR / 'settings_data'
 
+	APP_THEMES = {
+		'alma_default': {
+			'primary_bg': '#1B1E33',                        # -- Canvas where body lines are drawn
+			'secondary_bg': '#0F111D',                      # -- Background colour of items built on the main canvas
+			'border': '#353A4F',                            # -- Colour of the dividers
+
+			'primary_text_colour': '#FFFFFF',               # --
+			'secondary_text_colour': '#4DD4AC',
+			'third_text_colour': '#AFABAB',
+
+			'navigator_default_bg': '#1B1E33',
+			'navigator_default_fg': '#FFFFFF',
+
+			'navigator_hover_bg': '#3E3F5E',
+			'navigator_hover_fg': '#FFFFFF',
+
+			'frame_highlight_bg': '#4DD4AC',
+			'frame_highlight_fg': '#0F111D',
+
+			'controls_fg': '#FFFFFF',
+			
+			'progress_canvas_default': '#2E2E2E',
+			'progress_canvas_highlight': '#4DD4AC',
+
+			'volume_canvas_default': '#2E2E2E',
+			'volume_canvas_highlight': '#4DD4AC',
+			'waveform_colour': '#4DD4AC',
+		},
+
+		'theme_1': {
+			'primary_bg': '#032a1f',                        # -- Canvas where body lines are drawn
+			'secondary_bg': '#021712',                      # -- Background colour of items built on the main canvas
+			'border': '#0a7d5f',                            # -- Colour of the dividers
+
+			'primary_text_colour': '#F8E7C9',               # --
+			'secondary_text_colour': '#4e3b06',
+			'third_text_colour': '#010705',
+
+			'navigator_default_bg': '#032a1f',
+			'navigator_default_fg': '#F8E7C9',
+
+			'navigator_hover_bg': '#0b9571',
+			'navigator_hover_fg': '#23312d',
+
+			'frame_highlight_bg': '#F8E7C9',
+			'frame_highlight_fg': '#2a2a2a',
+
+			'controls_fg': '#F8E7C9',
+
+			'progress_canvas_default': '#564b49',
+			'progress_canvas_highlight': '#F8E7C9',
+
+			'volume_canvas_default': '#564b49',
+			'volume_canvas_highlight': '#F8E7C9',
+			'waveform_colour': '#F8E7C9',
+		},
+
+		'theme_2': {
+			'primary_bg': '#181a20',                        # -- Canvas where body lines are drawn
+			'secondary_bg': '#0d0e12',                      # -- Background colour of items built on the main canvas
+			'border': '#9ca2b5',                            # -- Colour of the dividers
+
+			'primary_text_colour': '#666f89',               # --
+			'secondary_text_colour': '#064e3b',
+			'third_text_colour': '#07184b',
+
+			'navigator_default_bg': '#181a20',
+			'navigator_default_fg': '#ebebeb',
+
+			'navigator_hover_bg': '#393e4c',
+			'navigator_hover_fg': '#ffd6a5',
+
+			'frame_highlight_bg': '#ffd6a5',
+			'frame_highlight_fg': '#020303',
+
+			'controls_fg': '#666f89',
+
+			'progress_canvas_default': '#343845',
+			'progress_canvas_highlight': '#ffd6a5',
+
+			'volume_canvas_default': '#343845',
+			'volume_canvas_highlight': '#ffd6a5',
+			'waveform_colour': '#666f89',
+		},
+
+	}
+
 	DEFAULT_PROGRAM_DATA = {
+		# -- theme
+		'active_theme': 'alma_default',
+
 		# -- repeat all is the default
 		'loop_on': True,
 
