@@ -55,10 +55,14 @@ class PlaylistManagerUI:
 
     def build_playlist_manager_ui(self) -> None:
         ''' Build the UI when needed '''
+        return
+        # --
+        a_p = self.app_theme
+
         # -- Manager UI: Holds all the elements
         self.playlist_ui = build_frame(
             parent=self.root,
-            bg='#1B1E33',
+            bg=a_p['primary_bg'],
             width=1020, height=540
         )
 
@@ -66,17 +70,14 @@ class PlaylistManagerUI:
             parent=self.playlist_ui,
             text='Loading ...',
             font=('Franklin Gothic Heavy', 20),
-            fg='#FFFFFF', bg='#1B1E33'
+            fg=a_p['primary_text_colour'], bg=a_p['primary_bg']
         )
         prompt.pack(padx=50, pady=200)
 
         self.app.uiu.place_object(
             object=self.playlist_ui,
-            delta=600,
-            x=0,
-            y=0,
-            width=1020,
-            height=540,
+            delta=600, x=0, y=0,
+            width=1020, height=540
         )
 
         # -- Create elements (1 sec delay)
@@ -91,9 +92,11 @@ class PlaylistManagerUI:
     def _playlist_manager_elements(self, win) -> None:
         ''' Build elements in the playlist manager ui '''
         # -- Canvas
+        a_p = self.app_theme
+
         # -- Create Canvas (All UI elements will be shown here)
         self.playlist_canvas = build_canvas(
-            parent=win, bg='#1B1E33',
+            parent=win, bg=a_p['primary_bg'],
             highlightthickness=0, bd=0
         )
 
@@ -108,7 +111,7 @@ class PlaylistManagerUI:
             parent=self.playlist_canvas,
             text='CLOSE',
             font=('Franklin Gothic Heavy', 11),
-            fg='#FFFFFF', bg='#1B1E33'
+            fg=a_p['primary_text_colour'], bg=a_p['primary_bg']
         )
 
         # -- UI_ICON (image)
@@ -736,9 +739,12 @@ class LastPlayedUI:
     def build_last_played_ui(self, win: tk.Frame) -> None:
         '''Build the ui when needed '''
         # --
+        a_p = self.app_theme
+
+        # --
         self.lastp_frame: tk.Frame = build_frame(
             parent=win,
-            bg='#0F111D',
+            bg=a_p['secondary_bg'],
             highlightthickness=0, bd=0
         )
 
@@ -753,7 +759,8 @@ class LastPlayedUI:
             highlightthickness=0,
             bd=0, text='Continue?',
             font=('Franklin Gothic Heavy', 13),
-            fg='#FFFFFF', bg='#0F111D'
+            fg=a_p['primary_text_colour'],
+            bg=a_p['secondary_bg']
         )
 
         try:
@@ -762,6 +769,7 @@ class LastPlayedUI:
 
         except ValueError:
             # -- no data available
+            s_n = None
             cleaned = 'Data Unavailable ...'
 
         else:
@@ -775,13 +783,15 @@ class LastPlayedUI:
             parent=self.lastp_frame,
             text=cleaned, font=('Tahoma', 9),
             highlightthickness=0, bd=0,
-            fg='#4DD4AC', bg='#0F111D'
+            fg=a_p['secondary_text_colour'],
+            bg=a_p['secondary_bg']
         )
 
         confirmation: tk.Label = build_label(
             parent=self.lastp_frame,
-            text='▶', bg='#0F111D', bd=0,
-            fg='#FFFFFF', highlightthickness=0,
+            text='▶', bg=a_p['secondary_bg'], bd=0,
+            fg=a_p['primary_text_colour'],
+            highlightthickness=0,
             font=('Franklin Gothic Heavy', 27),
             cursor='hand2'
         )
@@ -846,8 +856,8 @@ class LastPlayedUI:
                     'item_type': 'label',
 
                     'on_click': {
-                        'fg': '#FFFFFF',
-                        'bg': '#0F111D',
+                        'fg': a_p['primary_text_colour'],
+                        'bg': a_p['secondary_bg'],
                         'command': self.app.puc.on_last_play_press
                     }
                 }
@@ -1290,9 +1300,12 @@ class MainUI:
 
     def build_main_ui(self) -> None:
         ''' Build Main UI On Startup '''
+        # --
+        a_p = self.app_theme
+
         # -- Main UI: Holds all the elements
         main_ui = build_frame(
-            parent=self.root, bg='#1B1E33',
+            parent=self.root, bg=a_p['primary_bg'],
             width=1020, height=540
         )
 
@@ -1300,7 +1313,7 @@ class MainUI:
             parent=main_ui,
             text='Hello, Lurk! Welcome Back.',
             font=('Franklin Gothic Heavy', 20),
-            fg='#FFFFFF', bg='#1B1E33'
+            fg=a_p['primary_text_colour'], bg=a_p['primary_bg']
         )
 
         prompt.pack(padx=50, pady=230)
@@ -1326,21 +1339,23 @@ class MainUI:
     def _main_elements(self, win: tk.Frame) -> None:
         ''' Build elements in the main ui '''
         # -- Canvas
+        a_p = self.app_theme
+
         # -- Create Canvas (All UI elements will be shown here)
         self.main_canvas = build_canvas(
             parent=win,
-            bg='#1B1E33',
+            bg=a_p['primary_bg'],
             highlightthickness=0, bd=0
         )
 
         live_feedback = build_frame(
             parent=self.main_canvas,
-            bg='#0F111D'
+            bg=a_p['secondary_bg']
         )
 
         app_info = build_frame(
             parent=self.main_canvas,
-            bg='#0F111D'
+            bg=a_p['secondary_bg']
         )
 
         ui_icon = build_label(
@@ -1352,24 +1367,25 @@ class MainUI:
             parent=self.main_canvas,
             text='Lurk Alma',
             font=('Franklin Gothic Heavy', 9),
-            fg='#4DD4AC', bg='#0F111D'
+            fg=a_p['secondary_text_colour'],
+            bg=a_p['secondary_bg']
         )
 
         ui_title_b = build_label(
             parent=self.main_canvas,
             text='Music Player',
             font=('Bahnschrift SemiBold Condensed', 7),
-            fg='#FFFFFF', bg='#0F111D'
+            fg=a_p['primary_text_colour'], bg=a_p['secondary_bg']
         )
 
         navigation = build_frame(
             parent=self.main_canvas,
-            bg='#0F111D'
+            bg=a_p['secondary_bg']
         )
 
         home = build_frame(
             parent=self.main_canvas,
-            bg='#1B1E33',
+            bg=a_p['navigator_default_bg'],
             cursor='hand2'
         )
 
@@ -1377,12 +1393,13 @@ class MainUI:
             parent=home,
             text='🏠 Home', cursor='hand2',
             font=('Franklin Gothic Heavy', 8),
-            fg='#FFFFFF', bg='#1B1E33'
+            fg=a_p['navigator_default_fg'],
+            bg=a_p['navigator_default_bg']
         )
 
         playlist = build_frame(
             parent=self.main_canvas,
-            bg='#1B1E33',
+            bg=a_p['navigator_default_bg'],
             cursor='hand2'
         )
 
@@ -1390,98 +1407,105 @@ class MainUI:
             parent=playlist,
             text='📃 Playlist',
             font=('Franklin Gothic Heavy', 8),
-            fg='#FFFFFF', bg='#1B1E33',
+            fg=a_p['navigator_default_fg'],
+            bg=a_p['navigator_default_bg'],
             cursor='hand2'
         )
 
         settings = build_frame(
             parent=self.main_canvas,
-            bg='#1B1E33', cursor='hand2'
+            bg=a_p['primary_bg'], cursor='hand2'
         )
 
         settings_label = build_label(
             parent=settings,
             text='⚙ Settings', cursor='hand2',
             font=('Franklin Gothic Heavy', 8),
-            fg='#FFFFFF', bg='#1B1E33'
+            fg=a_p['navigator_default_fg'],
+            bg=a_p['navigator_default_bg']
         )
 
         load_folder = build_frame(
             parent=self.main_canvas,
-            bg='#1B1E33', cursor='hand2'
+            bg=a_p['navigator_default_bg'], cursor='hand2'
         )
 
         load_folder_label = build_label(
             parent=load_folder,
             text='📂 Load Music Folder',
             font=('Franklin Gothic Heavy', 8),
-            fg='#FFFFFF', bg='#1B1E33',
+            fg=a_p['navigator_default_fg'],
+            bg=a_p['navigator_default_bg'],
             cursor='hand2'
         )
 
         yt_music = build_frame(
             parent=self.main_canvas,
-            bg='#1B1E33', cursor='hand2'
+            bg=a_p['navigator_default_bg'], cursor='hand2'
         )
 
         yt_music_label = build_label(
             parent=yt_music,
             text='📥 Download Music',
             font=('Franklin Gothic Heavy', 8),
-            fg='#FFFFFF', bg='#1B1E33',
+            fg=a_p['navigator_default_fg'],
+            bg=a_p['navigator_default_bg'],
             cursor='hand2'
         )
 
         recommendations = build_frame(
             parent=self.main_canvas,
-            bg='#1B1E33', cursor='hand2'
+            bg=a_p['navigator_default_bg'], cursor='hand2'
         )
 
         recommendations_label = build_label(
             parent=recommendations,
             text='🗯 Suggested Music',
             font=('Franklin Gothic Heavy', 8),
-            fg='#FFFFFF', bg='#1B1E33',
+            fg=a_p['navigator_default_fg'],
+            bg=a_p['navigator_default_bg'],
             cursor='hand2'
         )
 
         # --
         self.audio_info = build_frame(
             parent=self.main_canvas,
-            bg='#0F111D'
+            bg=a_p['secondary_bg']
         )
 
         self.audio_thumbnail = build_label(
             parent=self.audio_info,
             highlightthickness=0,
-            bd=0,
-            relief='raised'
+            bd=0, relief='raised'
         )
 
         self.song_title = build_label(
             parent=self.audio_info,
             text=MainUI.greeting_1, highlightthickness=0,
-            bd=0, bg='#0F111D', fg='#FFFFFF',
+            bd=0, bg=a_p['secondary_bg'],
+            fg=a_p['primary_text_colour'],
             font=('Tahoma', 18, 'bold')
         )
 
         self.artist = build_label(
             parent=self.audio_info,
             text=MainUI.greeting_2, highlightthickness=0,
-            bd=0, bg='#0F111D', fg='#4DD4AC',
+            bd=0, bg=a_p['secondary_bg'],
+            fg=a_p['secondary_text_colour'],
             font=('Tahoma', 12)
         )
 
         self.file_label = build_label(
             parent=self.audio_info,
             text='MP3', highlightthickness=0,
-            bd=0, bg='#0F111D', fg='#AFABAB',
+            bd=0, bg=a_p['secondary_bg'],
+            fg=a_p['third_text_colour'],
             font=('Tahoma', 10, 'bold')
         )
 
         self.queue_canvas = build_canvas(
             parent=self.main_canvas,
-            bg='#0F111D', bd=0,
+            bg=a_p['secondary_bg'], bd=0,
             highlightthickness=0
         )
 
@@ -1490,35 +1514,40 @@ class MainUI:
             parent=self.queue_canvas,
             text='#',
             font=('Tahoma', 7, 'bold'),
-            bg='#0F111D', fg='#FFFFFF'
+            bg=a_p['secondary_bg'],
+            fg=a_p['primary_text_colour']
         )
 
         title_tab = build_label(
             parent=self.queue_canvas,
             text='TITLE',
             font=('Tahoma', 7, 'bold'),
-            bg='#0F111D', fg='#FFFFFF'
+            bg=a_p['secondary_bg'],
+            fg=a_p['primary_text_colour']
         )
 
         artist_tab = build_label(
             parent=self.queue_canvas,
             text='ARTIST',
             font=('Tahoma', 7, 'bold'),
-            bg='#0F111D', fg='#FFFFFF'
+            bg=a_p['secondary_bg'],
+            fg=a_p['primary_text_colour']
         )
 
         duration_tab = build_label(
             parent=self.queue_canvas,
             text='⌚',
             font=('Tahoma', 7, 'bold'),
-            bg='#0F111D', fg='#FFFFFF'
+            bg=a_p['secondary_bg'],
+            fg=a_p['primary_text_colour']
         )
 
         # -- No Songs Added
         no_fd = build_label(
             parent=self.queue_canvas,
             text='-- No Folder Selected --',
-            bg='#0F111D', fg='#FFFFFF',
+            bg=a_p['secondary_bg'],
+            fg=a_p['primary_text_colour'],
             font=('Tahoma', 14, 'bold'),
             highlightthickness=0, bd=0
         )
@@ -1526,8 +1555,8 @@ class MainUI:
         # -- Song Progress
         progress_frame = build_frame(
             parent=self.main_canvas,
-            bg='#0F111D', bd=0,
-            highlightthickness=0
+            bg=a_p['secondary_bg'],
+            bd=0, highlightthickness=0
         )
 
         self.sub_audio_thumbnail = build_label(
@@ -1539,31 +1568,35 @@ class MainUI:
         self.progress_canvas = build_canvas(
             parent=progress_frame,
             highlightthickness=0,
-            bd=0, bg='#2E2E2E',
-            cursor='hand2'
+            bd=0,
+            cursor='hand2',
+            bg=a_p['progress_canvas_default']
         )
 
         prev_btn = build_label(
             parent=progress_frame,
             font=('Franklin Gothic Heavy', 17),
-            text='⏮', bg='#0F111D',
-            fg='#FFFFFF', cursor='hand2',
+            text='⏮', bg=a_p['secondary_bg'],
+            fg=a_p['primary_text_colour'],
+            cursor='hand2',
             highlightthickness=0, bd=0
         )
 
         pause_btn = build_label(
             parent=progress_frame,
             font=('Franklin Gothic Heavy', 17),
-            text='⏸', bg='#0F111D',
-            fg='#FFFFFF', cursor='hand2',
+            text='⏸', bg=a_p['secondary_bg'],
+            fg=a_p['primary_text_colour'],
+            cursor='hand2',
             highlightthickness=0, bd=0
         )
 
         next_btn = build_label(
             parent=progress_frame,
             font=('Franklin Gothic Heavy', 17),
-            text='⏭', bg='#0F111D',
-            fg='#FFFFFF', cursor='hand2',
+            text='⏭', bg=a_p['secondary_bg'],
+            fg=a_p['primary_text_colour'],
+            cursor='hand2',
             highlightthickness=0, bd=0
         )
 
@@ -1576,8 +1609,8 @@ class MainUI:
         shuffle_btn = build_label(
             parent=progress_frame,
             font=('Franklin Gothic Heavy', 10),
-            text=shuffle_text, bg='#0F111D',
-            fg='#FFFFFF', cursor='hand2',
+            text=shuffle_text, bg=a_p['secondary_bg'],
+            fg=a_p['primary_text_colour'], cursor='hand2',
             highlightthickness=0, bd=0
         )
 
@@ -1590,40 +1623,40 @@ class MainUI:
         loop_btn = build_label(
             parent=progress_frame,
             font=('Franklin Gothic Heavy', 10),
-            text=loop_text, bg='#0F111D',
-            fg='#FFFFFF', cursor='hand2',
+            text=loop_text, bg=a_p['secondary_bg'],
+            fg=a_p['primary_text_colour'], cursor='hand2',
             highlightthickness=0, bd=0
         )
 
         self.time_elapsed = build_label(
             parent=progress_frame,
             font=('Franklin Gothic Heavy', 12),
-            text='00:00:00', bg='#0F111D',
-            fg='#FFFFFF',
+            text='00:00:00', bg=a_p['secondary_bg'],
+            fg=a_p['primary_text_colour'],
             highlightthickness=0, bd=0
         )
 
         self.remaining_time = build_label(
             parent=progress_frame,
             font=('Franklin Gothic Heavy', 12),
-            text='00:00:00', bg='#0F111D',
-            fg='#FFFFFF',
+            text='00:00:00', bg=a_p['secondary_bg'],
+            fg=a_p['primary_text_colour'],
             highlightthickness=0, bd=0
         )
 
         full_view_btn = build_label(
             parent=progress_frame,
             font=('Franklin Gothic Heavy', 11),
-            text='🔱', bg='#0F111D',
-            fg='#FFFFFF', cursor='hand2',
+            text='🔱', bg=a_p['secondary_bg'],
+            fg=a_p['primary_text_colour'], cursor='hand2',
             highlightthickness=0, bd=0
         )
 
         self.volume_canvas = build_canvas(
             parent=progress_frame,
             highlightthickness=0,
-            bd=0, bg='#2E2E2E',
-            cursor='hand2'
+            bd=0, cursor='hand2',
+            bg=a_p['volume_canvas_default'],
         )
 
         # -- Get saved volume level
@@ -1632,8 +1665,8 @@ class MainUI:
         self.volume_level = build_label(
             parent=progress_frame,
             font=('Franklin Gothic Heavy', 11),
-            text='Volume: ', bg='#0F111D',
-            fg='#FFFFFF',
+            text='Volume: ', bg=a_p['secondary_bg'],
+            fg=a_p['primary_text_colour'],
             highlightthickness=0, bd=0
         )
 
@@ -1659,7 +1692,7 @@ class MainUI:
             500,
             lambda: self.main_canvas.create_line(
                 220, 0, 220, 472,
-                fill='#353A4F'
+                fill=a_p['border']
             )
         )
 
@@ -1668,7 +1701,7 @@ class MainUI:
             700,
             lambda: self.main_canvas.create_line(
                 0, 472, 1020, 472,
-                fill='#353A4F'
+                fill=a_p['border']
             )
         )
 
@@ -1676,7 +1709,7 @@ class MainUI:
             900,
             lambda: self.main_canvas.create_line(
                 0, 50, 220, 50,
-                fill='#353A4F'
+                fill=a_p['border']
             )
         )
 
@@ -1684,7 +1717,7 @@ class MainUI:
             1100,
             lambda: self.main_canvas.create_line(
                 220, 20, 1020, 20,
-                fill='#353A4F'
+                fill=a_p['border']
             )
         )
 
@@ -1692,7 +1725,7 @@ class MainUI:
             1300,
             lambda: self.main_canvas.create_line(
                 220, 250, 1020, 250,
-                fill='#353A4F'
+                fill=a_p['border']
             )
         )
         # -------------------------------------------------------------------------------------
@@ -1701,10 +1734,8 @@ class MainUI:
         # -- live feedback (where feedbaack to user will be displayed)
         self.app.uiu.place_object(
             object=live_feedback,
-            delta=1500,
-            x=224,
-            y=2,
-            width=793,
+            delta=1500, x=224,
+            y=2, width=793,
             height=16,
         )
         # -------------------------------------------------------------------------------------
@@ -1935,7 +1966,7 @@ class MainUI:
             5000,
             lambda: self.queue_canvas.create_line(
                 0, 25, 790, 25,
-                fill='#353A4F'
+                fill=a_p['border']
             )
         )
 
@@ -2070,22 +2101,19 @@ class MainUI:
                     home, {
                         'args': None,
                         'item_type': 'frame',
-                        'item_active': False,
-                        'obj_id': str(id(home)),
-                        'has_children': True,
                         
                         'on_enter': {
-                            'fg': '#FFFFFF',
-                            'bg': '#3E3F5E'
+                            'fg': a_p['navigator_hover_fg'],
+                            'bg': a_p['navigator_hover_bg']
                         },
                         'on_leave': {
-                            'fg': '#FFFFFF',
-                            'bg': '#1B1E33'
+                            'fg': a_p['navigator_default_fg'],
+                            'bg': a_p['navigator_default_bg']
                         },
 
                         'on_click': {
-                            'fg': '#0F111D',
-                            'bg': '#4DD4AC',
+                            'fg': a_p['frame_highlight_fg'],
+                            'bg': a_p['frame_highlight_bg'],
                             'command': self.app.puc.on_home_press
                         }
                     }
@@ -2094,22 +2122,19 @@ class MainUI:
                     playlist, {
                         'args': None,
                         'item_type': 'frame',
-                        'item_active': False,
-                        'obj_id': str(id(playlist)),
-                        'has_children': True,
-                        
+
                         'on_enter': {
-                            'fg': '#FFFFFF',
-                            'bg': '#3E3F5E'
+                            'fg': a_p['navigator_hover_fg'],
+                            'bg': a_p['navigator_hover_bg']
                         },
                         'on_leave': {
-                            'fg': '#FFFFFF',
-                            'bg': '#1B1E33'
+                            'fg': a_p['navigator_default_fg'],
+                            'bg': a_p['navigator_default_bg']
                         },
 
                         'on_click': {
-                            'fg': '#0F111D',
-                            'bg': '#4DD4AC',
+                            'fg': a_p['frame_highlight_fg'],
+                            'bg': a_p['frame_highlight_bg'],
                             'command': self.app.puc.on_playlist_press
                         }
                     }
@@ -2118,22 +2143,19 @@ class MainUI:
                     settings, {
                         'args': None,
                         'item_type': 'frame',
-                        'item_active': False,
-                        'obj_id': str(id(settings)),
-                        'has_children': True,
-                        
+
                         'on_enter': {
-                            'fg': '#FFFFFF',
-                            'bg': '#3E3F5E'
+                            'fg': a_p['navigator_hover_fg'],
+                            'bg': a_p['navigator_hover_bg']
                         },
                         'on_leave': {
-                            'fg': '#FFFFFF',
-                            'bg': '#1B1E33'
+                            'fg': a_p['navigator_default_fg'],
+                            'bg': a_p['navigator_default_bg']
                         },
 
                         'on_click': {
-                            'fg': '#0F111D',
-                            'bg': '#4DD4AC',
+                            'fg': a_p['frame_highlight_fg'],
+                            'bg': a_p['frame_highlight_bg'],
                             'command': self.app.puc.on_settings_press
                         }
                     }
@@ -2142,22 +2164,19 @@ class MainUI:
                     load_folder, {
                         'args': None,
                         'item_type': 'frame',
-                        'item_active': False,
-                        'obj_id': str(id(load_folder)),
-                        'has_children': True,
-                        
+
                         'on_enter': {
-                            'fg': '#FFFFFF',
-                            'bg': '#3E3F5E'
+                            'fg': a_p['navigator_hover_fg'],
+                            'bg': a_p['navigator_hover_bg']
                         },
                         'on_leave': {
-                            'fg': '#FFFFFF',
-                            'bg': '#1B1E33'
+                            'fg': a_p['navigator_default_fg'],
+                            'bg': a_p['navigator_default_bg']
                         },
 
                         'on_click': {
-                            'fg': '#0F111D',
-                            'bg': '#4DD4AC',
+                            'fg': a_p['frame_highlight_fg'],
+                            'bg': a_p['frame_highlight_bg'],
                             'command': self.app.puc.on_load_folder_press
                         }
                     }
@@ -2166,22 +2185,19 @@ class MainUI:
                     yt_music, {
                         'args': self.audio_info,
                         'item_type': 'frame',
-                        'item_active': False,
-                        'obj_id': str(id(yt_music)),
-                        'has_children': True,
-                        
+
                         'on_enter': {
-                            'fg': '#FFFFFF',
-                            'bg': '#3E3F5E'
+                            'fg': a_p['navigator_hover_fg'],
+                            'bg': a_p['navigator_hover_bg']
                         },
                         'on_leave': {
-                            'fg': '#FFFFFF',
-                            'bg': '#1B1E33'
+                            'fg': a_p['navigator_default_fg'],
+                            'bg': a_p['navigator_default_bg']
                         },
 
                         'on_click': {
-                            'fg': '#0F111D',
-                            'bg': '#4DD4AC',
+                            'fg': a_p['frame_highlight_fg'],
+                            'bg': a_p['frame_highlight_bg'],
                             'command': self.app.puc.on_yt_music_press
                         }
                     }
@@ -2190,22 +2206,19 @@ class MainUI:
                     recommendations, {
                         'args': None,
                         'item_type': 'frame',
-                        'item_active': False,
-                        'obj_id': str(id(recommendations)),
-                        'has_children': True,
-                        
+
                         'on_enter': {
-                            'fg': '#FFFFFF',
-                            'bg': '#3E3F5E'
+                            'fg': a_p['navigator_hover_fg'],
+                            'bg': a_p['navigator_hover_bg']
                         },
                         'on_leave': {
-                            'fg': '#FFFFFF',
-                            'bg': '#1B1E33'
+                            'fg': a_p['navigator_default_fg'],
+                            'bg': a_p['navigator_default_bg']
                         },
 
                         'on_click': {
-                            'fg': '#0F111D',
-                            'bg': '#4DD4AC',
+                            'fg': a_p['frame_highlight_fg'],
+                            'bg': a_p['frame_highlight_bg'],
                             'command': self.app.puc.on_recommendations_press
                         }
                     }
@@ -2216,8 +2229,8 @@ class MainUI:
                         'item_type': 'label',
 
                         'on_click': {
-                            'fg': '#FFFFFF',
-                            'bg': '#0F111D',
+                            'fg': a_p['controls_fg'],
+                            'bg': a_p['secondary_bg'],
                             'command': self.app.puc.on_prev_btn_press
                         }
                     }
@@ -2228,8 +2241,8 @@ class MainUI:
                         'item_type': 'label',
 
                         'on_click': {
-                            'fg': '#FFFFFF',
-                            'bg': '#0F111D',
+                            'fg': a_p['controls_fg'],
+                            'bg': a_p['secondary_bg'],
                             'command': self.app.puc.on_pause_btn_press
                         }
                     }
@@ -2240,8 +2253,8 @@ class MainUI:
                         'item_type': 'label',
 
                         'on_click': {
-                            'fg': '#FFFFFF',
-                            'bg': '#0F111D',
+                            'fg': a_p['controls_fg'],
+                            'bg': a_p['secondary_bg'],
                             'command': self.app.puc.on_next_btn_press
                         }
                     }
@@ -2252,8 +2265,8 @@ class MainUI:
                         'item_type': 'label',
 
                         'on_click': {
-                            'fg': '#FFFFFF',
-                            'bg': '#0F111D',
+                            'fg': a_p['controls_fg'],
+                            'bg': a_p['secondary_bg'],
                             'command': self.app.puc.on_shuffle_btn_press
                         }
                     }
@@ -2264,8 +2277,8 @@ class MainUI:
                         'item_type': 'label',
 
                         'on_click': {
-                            'fg': '#FFFFFF',
-                            'bg': '#0F111D',
+                            'fg': a_p['controls_fg'],
+                            'bg': a_p['secondary_bg'],
                             'command': self.app.puc.on_loop_btn_press
                         }
                     }
@@ -2276,8 +2289,8 @@ class MainUI:
                         'item_type': 'label',
 
                         'on_click': {
-                            'fg': '#FFFFFF',
-                            'bg': '#0F111D',
+                            'fg': a_p['controls_fg'],
+                            'bg': a_p['secondary_bg'],
                             'command': lambda: print("I'll let you see full view!")
                         }
                     }
@@ -2339,6 +2352,9 @@ class MainUI:
         '''
         Build the ui where tracks are displayed.
         '''
+        # --
+        a_p = self.app_theme
+
         # -- Destroy previous frame iif available
         try:
             # -- Destroy
@@ -2349,7 +2365,7 @@ class MainUI:
 
         self.song_frame = build_frame(
             parent=self.queue_canvas,
-            bg='#0F111D'
+            bg=a_p['secondary_bg']
         )
 
         # -- place
@@ -2371,8 +2387,9 @@ class MainUI:
         for i, track in enumerate(tracks, start=start_point + 1):
             frame = build_frame(
                 parent=self.song_frame,
-                bg='#0F111D', width=765,
-                height=32, cursor='hand2'
+                bg=a_p['secondary_bg'],
+                width=765, height=32,
+                cursor='hand2'
             )
 
             # -------------------------------------------------------------------------------------
@@ -2425,28 +2442,32 @@ class MainUI:
                 parent=frame,
                 text=i, cursor='hand2',
                 font=('Franklin Gothic Heavy', 6),
-                fg='#FFFFFF', bg='#0F111D'
+                fg=a_p['primary_text_colour'],
+                bg=a_p['secondary_bg']
             )
 
             song_name_label = build_label(
                 parent=frame,
                 text=track[:72], cursor='hand2',
                 font=('Franklin Gothic Heavy', 6),
-                fg='#FFFFFF', bg='#0F111D'
+                fg=a_p['primary_text_colour'],
+                bg=a_p['secondary_bg']
             )
 
             artist_name_label = build_label(
                 parent=frame,
                 text=artist, cursor='hand2',
                 font=('Franklin Gothic Heavy', 6),
-                fg='#FFFFFF', bg='#0F111D'
+                fg=a_p['primary_text_colour'],
+                bg=a_p['secondary_bg']
             )
 
             time_label = build_label(
                 parent=frame,
                 text=duration, cursor='hand2',
                 font=('Franklin Gothic Heavy', 6),
-                fg='#FFFFFF', bg='#0F111D'
+                fg=a_p['primary_text_colour'],
+                bg=a_p['secondary_bg']
             )
 
             # -------------------------------------------------------------------------------------
@@ -2495,8 +2516,8 @@ class MainUI:
                     'item_type': 'frame',
 
                     'on_click': {
-                        'fg': '#0F111D',
-                        'bg': '#4DD4AC',
+                        'fg': a_p['frame_highlight_fg'],
+                        'bg': a_p['frame_highlight_bg'],
                         'command': self.app.puc.on_track_frame_click
                     }
                 }
@@ -2515,6 +2536,9 @@ class MainUI:
     def show_volume_progress(self, x_0: int, y_0: int, x_1: int, y_1: int) -> float:
         ''' Delete previous progress and create new one '''
         # --
+        a_p = self.app_theme
+
+        # --
         if x_1 < 0 or x_1 > self.volume_canvas.winfo_width():
             return
         
@@ -2529,8 +2553,8 @@ class MainUI:
         # -- Create new bar
         self.volume_canvas.create_rectangle(
             x_0, y_0, x_1, y_1,
-            fill='#4DD4AC', outline='',
-            tags='volume_bar'
+            fill=a_p['volume_canvas_highlight'],
+            outline='', tags='volume_bar'
         )
 
         vol: float = x_1 / self.volume_canvas.winfo_width()
@@ -2549,6 +2573,9 @@ class MainUI:
     def show_song_progress(self, x_0: int, y_0: int, x_1: int, y_1: int) -> None:
         ''' Delete previous progress and create new one '''
         # --
+        a_p = self.app_theme
+
+        # --
         if x_1 < 0 or x_1 > self.progress_canvas.winfo_width():
             return
         # -- Draw
@@ -2562,7 +2589,7 @@ class MainUI:
         # -- Create new bar
         self.progress_canvas.create_rectangle(
             x_0, y_0, x_1, y_1,
-            fill='#4DD4AC', outline='',
+            fill=a_p['progress_canvas_highlight'], outline='',
             tags='progress_bar'
         )
         
@@ -2573,6 +2600,9 @@ class MainUI:
         Return the canvas where waveform for current playing song
         will be drawn.
         '''
+        # --
+        a_p = self.app_theme
+        
         # -- Destroy previous canvas if any
         try:
             # --
@@ -2583,7 +2613,8 @@ class MainUI:
 
         self.waveform_canvas: tk.Canvas =  build_canvas(
             parent=self.audio_info,
-            bg='#0F111D', highlightthickness=0,
+            bg=a_p['secondary_bg'],
+            highlightthickness=0,
             bd=0
         )
 
@@ -2616,6 +2647,10 @@ class ProgramUI(PlaylistManagerUI, LastPlayedUI, SettingsUI, AudioDownloaderUI, 
 
         # --
         self.app.uiu.root = self.root
+
+        # -- Themes
+        self.app_theme = AlmaDataPaths.APP_THEMES[self.app.pda.player_data['active_theme']]
+
         self.build_main_ui()
 
         #<_end of the method_>
