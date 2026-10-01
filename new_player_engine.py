@@ -205,8 +205,7 @@ class PlayerEngine:
 		try:
 			# --
 			self.app.uiu.remove_highlight(
-				frame=f_d[f_d['active_frame']],
-				fg='#FFFFFF', bg='#0F111D'
+				frame=f_d[f_d['active_frame']]
 			)
 		except KeyError:
 			# --
