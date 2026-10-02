@@ -902,11 +902,13 @@ class AudioDownloaderUI:
         ''' Build the downloader UI when called '''
         print("SERVICE POSTPONED!!")
         return
+        # --
+        a_p = self.app_theme
         
         # --
         self.yt_canvas = build_canvas(
             parent=win,
-            bg='#0F111D',
+            bg=a_p['secondary_bg'],
             highlightthickness=0, bd=0
         )
 
@@ -915,32 +917,34 @@ class AudioDownloaderUI:
             parent=self.yt_canvas,
             text='Download Music',
             font=('Franklin Gothic Heavy', 10),
-            fg='#FFFFFF', bg='#0F111D'
+            fg=a_p['primary_text_colour'], bg=a_p['secondary_bg']
         )
 
         url_tab = build_frame(
             parent=self.yt_canvas,
-            bg='#4DD4AC', cursor='hand2'
+            bg=a_p['frame_highlight_bg'], cursor='hand2'
         )
 
         url_label = build_label(
             parent=url_tab,
             cursor='hand2',
             text='🔗 From URL',
-            fg='#0F111D', bg='#4DD4AC',
+            fg=a_p['frame_highlight_fg'],
+            bg=a_p['frame_highlight_bg'],
             font=('Tahoma', 8)
         )
 
         search_tab = build_frame(
             parent=self.yt_canvas,
-            bg='#0F111D', cursor='hand2'
+            bg=a_p['secondary_bg'], cursor='hand2'
         )
 
         search_label = build_label(
             parent=search_tab,
             text='🔍 Search',
             cursor='hand2',
-            fg='#FFFFFF', bg='#0F111D',
+            fg=a_p['primary_text_colour'],
+            bg=a_p['secondary_bg'],
             font=('Tahoma', 8)
         )
 
@@ -958,8 +962,8 @@ class AudioDownloaderUI:
             100,
             lambda: self.yt_canvas.create_rectangle(
                 5, 28, 788, 57,
-                fill='#0F111D',
-                outline='#353A4F'
+                fill=a_p['secondary_bg'],
+                outline=a_p['border']
             )
         )
 
@@ -967,7 +971,7 @@ class AudioDownloaderUI:
             100,
             lambda: self.yt_canvas.create_rectangle(
                 15, 32, 355, 52,
-                fill='#0F111D',
+                fill=a_p['secondary_bg'],
                 outline=''
             )
         )
@@ -976,7 +980,7 @@ class AudioDownloaderUI:
             100,
             lambda: self.yt_canvas.create_rectangle(
                 361, 32, 778, 52,
-                fill='#0F111D',
+                fill=a_p['secondary_bg'],
                 outline=''
             )
         )
@@ -1038,8 +1042,8 @@ class AudioDownloaderUI:
                         'item_type': 'frame',
 
                         'on_click': {
-                            'fg': '#0F111D',
-                            'bg': '#4DD4AC',
+                            'fg': a_p['frame_highlight_fg'],
+                            'bg': a_p['frame_highlight_bg'],
                             'command': self.app.puc.on_url_tab_press
                         }
                     }
@@ -1050,8 +1054,8 @@ class AudioDownloaderUI:
                         'item_type': 'frame',
 
                         'on_click': {
-                            'fg': '#0F111D',
-                            'bg': '#4DD4AC',
+                            'fg': a_p['frame_highlight_fg'],
+                            'bg': a_p['frame_highlight_bg'],
                             'command': self.app.puc.on_search_tab_press
                         }
                     }
@@ -1069,6 +1073,8 @@ class AudioDownloaderUI:
         Builds the contents that should appear under URL tab.
         It switches from search tab if startup is false.
         '''
+        # --
+        a_p = self.app_theme
 
         if self.url_tab_active:
             # -- user clicked url tab while it was active.
@@ -1081,10 +1087,10 @@ class AudioDownloaderUI:
             # -- Switch from search tab
 
             # -- Change search tab item colours
-            search_tab.config(bg='#0F111D')
+            search_tab.config(bg=a_p['secondary_bg'])
             for obj in search_tab.winfo_children():
-                obj.config(fg='#FFFFFF')
-                obj.config(bg='#0F111D')
+                obj.config(fg=a_p['primary_text_colour'])
+                obj.config(bg=a_p['secondary_bg'])
 
             self.search_tab_active = False
         # --
@@ -1098,7 +1104,8 @@ class AudioDownloaderUI:
                 parent=self.yt_canvas,
                 text='Download From URL',
                 font=('Franklin Gothic Heavy', 9),
-                fg='#FFFFFF', bg='#0F111D'
+                fg=a_p['primary_text_colour'],
+                bg=a_p['secondary_bg']
             )
 
         try:
@@ -1111,7 +1118,8 @@ class AudioDownloaderUI:
                 parent=self.yt_canvas,
                 text='Paste a Music URL from YouTube',
                 font=('Tahoma', 8),
-                fg='#FFFFFF', bg='#0F111D'
+                fg=a_p['primary_text_colour'],
+                bg=a_p['secondary_bg']
             )
         try:
             # --
@@ -1122,8 +1130,8 @@ class AudioDownloaderUI:
             # --
             self.query_input = build_entry(
                 parent=self.yt_canvas,
-                bg='#0F111D', fg='#FFFFFF',
-                insertbackground='#FFFFFF',
+                bg=a_p['secondary_bg'], fg=a_p['primary_text_colour'],
+                insertbackground=a_p['primary_text_colour'],
                 relief='flat', font=('Segoe UI', 11)
             )
             self.query_input.insert('end', 'Paste URL Here ...')
@@ -1139,7 +1147,8 @@ class AudioDownloaderUI:
                 text='📥 Download',
                 font=('Segoe UI', 10),
                 width=14, cursor='hand2',
-                fg='#0F111D', bg='#4DD4AC'
+                fg=a_p['frame_highlight_fg'],
+                bg=a_p['frame_highlight_bg']
             )
 
         else:
@@ -1152,7 +1161,8 @@ class AudioDownloaderUI:
             parent=self.yt_canvas,
             text='💱 Recent Downloads',
             font=('Franklin Gothic Heavy', 9),
-            fg='#FFFFFF', bg='#0F111D'
+            fg=a_p['primary_text_colour'],
+            bg=a_p['secondary_bg']
         )
 
         # -- url tab active
@@ -1180,8 +1190,8 @@ class AudioDownloaderUI:
             20,
             lambda: self.yt_canvas.create_rectangle(
                 5, 105, 675, 134,
-                fill='#0F111D',
-                outline='#353A4F'
+                fill=a_p['secondary_bg'],
+                outline=a_p['border']
             )
         )
 
@@ -1205,7 +1215,7 @@ class AudioDownloaderUI:
             50,
             lambda: self.yt_canvas.create_line(
                 268, 200, 524, 200,
-                fill='#353A4F'
+                fill=a_p['border']
             )
         )
 
@@ -1227,8 +1237,8 @@ class AudioDownloaderUI:
                     'item_type': 'label',
 
                     'on_click': {
-                        'fg': '#0F111D',
-                        'bg': '#4DD4AC',
+                        'fg': a_p['frame_highlight_fg'],
+                        'bg': a_p['frame_highlight_bg'],
                         'command': self.app.puc.on_execute_query_press
                     }
                 }
@@ -1245,6 +1255,9 @@ class AudioDownloaderUI:
         Builds the contents that should appear under search tab.
         It switches from URL tab.
         '''
+        # --
+        a_p = self.app_theme
+
         if self.search_tab_active:
             # -- user clicked url tab while it was active.
             return # --Nothing should happen
@@ -1253,10 +1266,10 @@ class AudioDownloaderUI:
             # -- Switch from URL tab
 
             # -- Change search tab item colours
-            url_tab.config(bg='#0F111D')
+            url_tab.config(bg=a_p['secondary_bg'])
             for obj in url_tab.winfo_children():
-                obj.config(fg='#FFFFFF')
-                obj.config(bg='#0F111D')
+                obj.config(fg=a_p['primary_text_colour'])
+                obj.config(bg=a_p['secondary_bg'])
 
             self.url_tab_active = False
 
@@ -1281,8 +1294,8 @@ class AudioDownloaderUI:
                     'item_type': 'label',
 
                     'on_click': {
-                        'fg': '#0F111D',
-                        'bg': '#4DD4AC',
+                        'fg': a_p['frame_highlight_fg'],
+                        'bg': a_p['frame_highlight_bg'],
                         'command': self.app.puc.on_execute_query_press
                     }
                 }
