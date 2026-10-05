@@ -312,7 +312,7 @@ class PlayerEngine:
 	def next_playable(self, hint: int) -> None:
 		''' Play the next or previous track in queue '''
 		# --
-		if not self.app.main_playlist and not pygame.mixer.music.get_busy():
+		if not self.app.main_playlist and music_playing():
 			# -- No music playing
 			return
 
