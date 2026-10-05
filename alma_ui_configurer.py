@@ -305,7 +305,9 @@ class ProgramUIConfigurer():
         #<_end of the method_>
 
     def on_settings_press(self) -> None:
-        print('I will show you settings ui')
+        ''' Build settings UI '''
+        # --
+        self.app.pub.build_settings_ui()
 
         #<_end of the method_>
 
