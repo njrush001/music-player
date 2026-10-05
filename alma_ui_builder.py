@@ -878,14 +878,359 @@ class SettingsUI:
 
     def build_settings_ui(self) -> None:
         ''' Build settings ui when needed '''
-        # -- Configure UI
-        pass
+        # --
+        a_p = self.app_theme
+
+        # -- Settings UI
+        self.settings_ui = build_frame(
+            parent=self.root,
+            bg=a_p['secondary_bg']
+        )
+
+        # -- loading state
+        prompt = build_label(
+            parent=self.settings_ui,
+            text='Loading Your Data ...',
+            font=('Franklin Gothic Heavy', 15),
+            fg=a_p['primary_text_colour'],
+            bg=a_p['secondary_bg']
+        )
+
+        # -- Placements
+        self.app.uiu.pack_object(
+            object=prompt,
+            delta=0, padx=50,
+            pady=200
+        )
+
+        self.app.uiu.place_object(
+            object=self.settings_ui,
+            delta=500, x=224, y=24,
+            width=793, height=445
+        )
+
+        # -- Other elements
+        self.root.after(
+            1500,
+            self.settings_ui_elements
+        )
+
+        #<_end of the method_>
+
+    def settings_ui_elements(self) -> None:
+        ''' Build settings elements in the settings UI '''
+        # --
+        a_p = self.app_theme
+
+        # -- canvas where all items will be shown
+        self.settings_navigation = build_canvas(
+            parent=self.main_canvas,
+            bg=a_p['secondary_bg'],
+            highlightthickness=0,
+            bd=0
+        )
+
+        user_fd = build_frame(
+            parent=self.settings_navigation,
+            bg=a_p['navigator_default_bg'],
+            cursor='hand2'
+        )
+
+        user_fd_lbl = build_label(
+            parent=user_fd,
+            text='📂   Music Folders', cursor='hand2',
+            font=('Franklin Gothic Heavy', 8),
+            fg=a_p['navigator_default_fg'],
+            bg=a_p['navigator_default_bg']
+        )
+
+        playback = build_frame(
+            parent=self.settings_navigation,
+            bg=a_p['navigator_default_bg'],
+            cursor='hand2'
+        )
+
+        playback_lbl = build_label(
+            parent=playback,
+            text='▶   Playback', cursor='hand2',
+            font=('Franklin Gothic Heavy', 8),
+            fg=a_p['navigator_default_fg'],
+            bg=a_p['navigator_default_bg']
+        )
+
+        theme = build_frame(
+            parent=self.settings_navigation,
+            bg=a_p['navigator_default_bg'],
+            cursor='hand2'
+        )
+
+        theme_lbl = build_label(
+            parent=theme,
+            text='🎨   Themes', cursor='hand2',
+            font=('Franklin Gothic Heavy', 8),
+            fg=a_p['navigator_default_fg'],
+            bg=a_p['navigator_default_bg']
+        )
+
+        about = build_frame(
+            parent=self.settings_navigation,
+            bg=a_p['navigator_default_bg'],
+            cursor='hand2'
+        )
+
+        about_lbl = build_label(
+            parent=about,
+            text='❕      About', cursor='hand2',
+            font=('Franklin Gothic Heavy', 8),
+            fg=a_p['navigator_default_fg'],
+            bg=a_p['navigator_default_bg']
+        )
+
+        quit_btn = build_frame(
+            parent=self.settings_navigation,
+            bg=a_p['navigator_default_bg'],
+            cursor='hand2'
+        )
+
+        quit_btn_lbl = build_label(
+            parent=quit_btn,
+            text='❕     Close Settings', cursor='hand2',
+            font=('Franklin Gothic Heavy', 8),
+            fg=a_p['navigator_default_fg'],
+            bg=a_p['navigator_default_bg']
+        )
+
+        # -------------------------------------------------------------------------------------
+        # -------------------------------------------------------------------------------------
+        # -- placements
+
+        # -- main canvas (wheree all settings ui elements live)
+        self.app.uiu.place_object(
+            object=self.settings_navigation,
+            delta=0, x=2, y=53, width=215,
+            height=195
+        )
+
+        self.app.uiu.pack_object(
+            object=user_fd_lbl,
+            delta=100,
+            side='left',
+            anchor='w',
+            padx=5,
+            pady=0,
+        )
+
+        self.app.uiu.pack_object(
+            object=playback_lbl,
+            delta=100,
+            side='left',
+            anchor='w',
+            padx=5,
+            pady=0,
+        )
+
+        self.app.uiu.pack_object(
+            object=theme_lbl,
+            delta=100,
+            side='left',
+            anchor='w',
+            padx=5,
+            pady=0,
+        )
+
+        self.app.uiu.pack_object(
+            object=about_lbl,
+            delta=100,
+            side='left',
+            anchor='w',
+            padx=5,
+            pady=0,
+        )
+
+        self.app.uiu.pack_object(
+            object=quit_btn_lbl,
+            delta=100,
+            side='left',
+            anchor='w',
+            padx=5,
+            pady=0,
+        )
+
+        self.app.uiu.place_object(
+            object=user_fd,
+            delta=120,
+            x=2,
+            y=5,
+            width=210,
+            height=25,
+        )
+
+        self.app.uiu.place_object(
+            object=playback,
+            delta=130,
+            x=2,
+            y=35,
+            width=210,
+            height=25,
+        )
+
+        self.app.uiu.place_object(
+            object=theme,
+            delta=140,
+            x=2,
+            y=65,
+            width=210,
+            height=25,
+        )
+
+        self.app.uiu.place_object(
+            object=about,
+            delta=150,
+            x=2,
+            y=95,
+            width=210,
+            height=25,
+        )
+
+        self.app.uiu.place_object(
+            object=quit_btn,
+            delta=160,
+            x=2,
+            y=125,
+            width=210,
+            height=25,
+        )
+
+        # -------------------------------------------------------------------------------------
+        # -------------------------------------------------------------------------------------
+
+        # Connfiguration data
+        data = {
+            str(id(user_fd)): [
+                user_fd, {
+                    'args': None,
+                    'item_type': 'frame',
+
+                    'on_enter': {
+                        'fg': a_p['navigator_hover_fg'],
+                        'bg': a_p['navigator_hover_bg']
+                    },
+                    'on_leave': {
+                        'fg': a_p['navigator_default_fg'],
+                        'bg': a_p['navigator_default_bg']
+                    },
+
+                    'on_click': {
+                        'fg': a_p['frame_highlight_fg'],
+                        'bg': a_p['frame_highlight_bg'],
+                        'command': lambda: print('You will see your folders')
+                    }
+                }
+            ],
+
+            str(id(playback)): [
+                playback, {
+                    'args': None,
+                    'item_type': 'frame',
+
+                    'on_enter': {
+                        'fg': a_p['navigator_hover_fg'],
+                        'bg': a_p['navigator_hover_bg']
+                    },
+                    'on_leave': {
+                        'fg': a_p['navigator_default_fg'],
+                        'bg': a_p['navigator_default_bg']
+                    },
+
+                    'on_click': {
+                        'fg': a_p['frame_highlight_fg'],
+                        'bg': a_p['frame_highlight_bg'],
+                        'command': lambda: print('You will see some playback controls')
+                    }
+                }
+            ],
+
+            str(id(theme)): [
+                theme, {
+                    'args': None,
+                    'item_type': 'frame',
+
+                    'on_enter': {
+                        'fg': a_p['navigator_hover_fg'],
+                        'bg': a_p['navigator_hover_bg']
+                    },
+                    'on_leave': {
+                        'fg': a_p['navigator_default_fg'],
+                        'bg': a_p['navigator_default_bg']
+                    },
+
+                    'on_click': {
+                        'fg': a_p['frame_highlight_fg'],
+                        'bg': a_p['frame_highlight_bg'],
+                        'command': lambda: print('You will see your themes')
+                    }
+                }
+            ],
+
+            str(id(about)): [
+                about, {
+                    'args': None,
+                    'item_type': 'frame',
+
+                    'on_enter': {
+                        'fg': a_p['navigator_hover_fg'],
+                        'bg': a_p['navigator_hover_bg']
+                    },
+                    'on_leave': {
+                        'fg': a_p['navigator_default_fg'],
+                        'bg': a_p['navigator_default_bg']
+                    },
+
+                    'on_click': {
+                        'fg': a_p['frame_highlight_fg'],
+                        'bg': a_p['frame_highlight_bg'],
+                        'command': lambda: print('You will see app info')
+                    }
+                }
+            ],
+
+            str(id(quit_btn)): [
+                quit_btn, {
+                    'args': None,
+                    'item_type': 'frame',
+
+                    'on_enter': {
+                        'fg': a_p['navigator_hover_fg'],
+                        'bg': a_p['navigator_hover_bg']
+                    },
+                    'on_leave': {
+                        'fg': a_p['navigator_default_fg'],
+                        'bg': a_p['navigator_default_bg']
+                    },
+
+                    'on_click': {
+                        'fg': a_p['frame_highlight_fg'],
+                        'bg': a_p['frame_highlight_bg'],
+                        'command': self.destroy_settings_ui
+                    }
+                }
+            ],
+        }
+
+        # -- Configure
+        self.root.after(
+            200,
+            self.app.puc.configure_frame_and_labels,
+            data
+        )
 
         #<_end of the method_>
 
     def destroy_settings_ui(self) -> None:
-        ''' Destroy playlist manager ui '''
-        pass
+        ''' Destroy settings ui '''
+        # --  Destroy settings navigation and the UI itself
+        self.root.after(1000, self.settings_ui.destroy)
+        self.root.after(1030, self.settings_navigation.destroy)
 
         #<_end of the method_>
 
