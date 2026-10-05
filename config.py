@@ -22,6 +22,7 @@ class AlmaDataPaths:
 
 	APP_THEMES = {
 		'alma_default': {
+			'display_name': 'Alma Classic',
 			'primary_bg': '#1B1E33',                        # -- Canvas where body lines are drawn
 			'secondary_bg': '#0F111D',                      # -- Background colour of items built on the main canvas
 			'border': '#353A4F',                            # -- Colour of the dividers
@@ -50,6 +51,7 @@ class AlmaDataPaths:
 		},
 
 		'theme_1': {
+			'display_name': 'Emerald Ivory',
 			'primary_bg': '#032a1f',                        # -- Canvas where body lines are drawn
 			'secondary_bg': '#021712',                      # -- Background colour of items built on the main canvas
 			'border': '#0a7d5f',                            # -- Colour of the dividers
@@ -78,6 +80,7 @@ class AlmaDataPaths:
 		},
 
 		'theme_2': {
+			'display_name': 'Slate & Peach',
 			'primary_bg': '#181a20',                        # -- Canvas where body lines are drawn
 			'secondary_bg': '#0d0e12',                      # -- Background colour of items built on the main canvas
 			'border': '#9ca2b5',                            # -- Colour of the dividers
@@ -106,6 +109,7 @@ class AlmaDataPaths:
 		},
 
 		'theme_3': {
+			'display_name': 'Violet Ember',
 		    'primary_bg': '#171522',
 		    'secondary_bg': '#0D0B12',
 		    'border': '#383247',
@@ -135,6 +139,7 @@ class AlmaDataPaths:
 		},
 
 		'midnight_forest': {
+			'display_name': 'Gilded Forest',
 		    'primary_bg': '#151A18',
 		    'secondary_bg': '#0A0F0D',
 		    'border': '#35403A',
@@ -164,6 +169,7 @@ class AlmaDataPaths:
 		},
 
 		'crimson_moon': {
+			'display_name': 'Crimson Moon',
 		    'primary_bg': '#181319',
 		    'secondary_bg': '#0C090D',
 		    'border': '#3A3039',
@@ -193,6 +199,7 @@ class AlmaDataPaths:
 		},
 
 		'deep_atlas': {
+			'display_name': 'Midnight Atlas',
 		    'primary_bg': '#111923',
 		    'secondary_bg': '#080E15',
 		    'border': '#303D4C',
