@@ -105,6 +105,122 @@ class AlmaDataPaths:
 			'waveform_colour': '#666f89',
 		},
 
+		'theme_3': {
+		    'primary_bg': '#171522',
+		    'secondary_bg': '#0D0B12',
+		    'border': '#383247',
+
+		    'primary_text_colour': '#F1EDF7',
+		    'secondary_text_colour': '#ff7f50',
+		    'third_text_colour': '#777181',
+
+		    'navigator_default_bg': '#171522',
+		    'navigator_default_fg': '#F1EDF7',
+
+		    'navigator_hover_bg': '#29223A',
+		    'navigator_hover_fg': '#D8B4FE',
+
+		    'frame_highlight_bg': '#B06CFF',
+		    'frame_highlight_fg': '#0D0B12',
+
+		    'controls_fg': '#D8D0E2',
+
+		    'progress_canvas_default': '#302A38',
+		    'progress_canvas_highlight': '#B06CFF',
+
+		    'volume_canvas_default': '#302A38',
+		    'volume_canvas_highlight': '#B06CFF',
+
+		    'waveform_colour': '#B06CFF',
+		},
+
+		'midnight_forest': {
+		    'primary_bg': '#151A18',
+		    'secondary_bg': '#0A0F0D',
+		    'border': '#35403A',
+
+		    'primary_text_colour': '#F1F0E8',
+		    'secondary_text_colour': '#C7A85A',
+		    'third_text_colour': '#718078',
+
+		    'navigator_default_bg': '#151A18',
+		    'navigator_default_fg': '#F1F0E8',
+
+		    'navigator_hover_bg': '#202B25',
+		    'navigator_hover_fg': '#E0C878',
+
+		    'frame_highlight_bg': '#C7A85A',
+		    'frame_highlight_fg': '#0A0F0D',
+
+		    'controls_fg': '#AEBBB4',
+
+		    'progress_canvas_default': '#303A34',
+		    'progress_canvas_highlight': '#C7A85A',
+
+		    'volume_canvas_default': '#303A34',
+		    'volume_canvas_highlight': '#C7A85A',
+
+		    'waveform_colour': '#8FAFA0',
+		},
+
+		'crimson_moon': {
+		    'primary_bg': '#181319',
+		    'secondary_bg': '#0C090D',
+		    'border': '#3A3039',
+
+		    'primary_text_colour': '#F2EDF0',
+		    'secondary_text_colour': '#C65F70',
+		    'third_text_colour': '#77808D',
+
+		    'navigator_default_bg': '#181319',
+		    'navigator_default_fg': '#F2EDF0',
+
+		    'navigator_hover_bg': '#2A1C24',
+		    'navigator_hover_fg': '#E38A98',
+
+		    'frame_highlight_bg': '#C65F70',
+		    'frame_highlight_fg': '#0C090D',
+
+		    'controls_fg': '#B9B4BB',
+
+		    'progress_canvas_default': '#33272E',
+		    'progress_canvas_highlight': '#C65F70',
+
+		    'volume_canvas_default': '#33272E',
+		    'volume_canvas_highlight': '#C65F70',
+
+		    'waveform_colour': '#8794A6',
+		},
+
+		'deep_atlas': {
+		    'primary_bg': '#111923',
+		    'secondary_bg': '#080E15',
+		    'border': '#303D4C',
+
+		    'primary_text_colour': '#F1EEE6',
+		    'secondary_text_colour': '#D27A68',
+		    'third_text_colour': '#718194',
+
+		    'navigator_default_bg': '#111923',
+		    'navigator_default_fg': '#F1EEE6',
+
+		    'navigator_hover_bg': '#1C2A38',
+		    'navigator_hover_fg': '#E59A89',
+
+		    'frame_highlight_bg': '#D27A68',
+		    'frame_highlight_fg': '#080E15',
+
+		    'controls_fg': '#B9C4CE',
+
+		    'progress_canvas_default': '#293542',
+		    'progress_canvas_highlight': '#D27A68',
+
+		    'volume_canvas_default': '#293542',
+		    'volume_canvas_highlight': '#D27A68',
+
+		    'waveform_colour': '#8DA5B8',
+		},
+
 	}
 
 	DEFAULT_PROGRAM_DATA = {
