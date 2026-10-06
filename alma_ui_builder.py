@@ -882,14 +882,16 @@ class SettingsUI:
         a_p = self.app_theme
 
         # -- Settings UI
-        self.settings_ui = build_frame(
+        self.settings_canvas = build_canvas(
             parent=self.root,
-            bg=a_p['secondary_bg']
+            bg=a_p['secondary_bg'],
+            highlightthickness=0,
+            bd=0
         )
 
         # -- loading state
         prompt = build_label(
-            parent=self.settings_ui,
+            parent=self.settings_canvas,
             text='Loading Your Data ...',
             font=('Franklin Gothic Heavy', 15),
             fg=a_p['primary_text_colour'],
@@ -904,7 +906,7 @@ class SettingsUI:
         )
 
         self.app.uiu.place_object(
-            object=self.settings_ui,
+            object=self.settings_canvas,
             delta=500, x=224, y=24,
             width=793, height=445
         )
@@ -912,12 +914,13 @@ class SettingsUI:
         # -- Other elements
         self.root.after(
             1500,
-            self.settings_ui_elements
+            self.settings_ui_elements,
+            prompt
         )
 
         #<_end of the method_>
 
-    def settings_ui_elements(self) -> None:
+    def settings_ui_elements(self, obj: tk.Label) -> None:
         ''' Build settings elements in the settings UI '''
         # --
         a_p = self.app_theme
@@ -1104,7 +1107,7 @@ class SettingsUI:
         # -------------------------------------------------------------------------------------
         # -------------------------------------------------------------------------------------
 
-        # Connfiguration data
+        # Configuration data
         data = {
             str(id(user_fd)): [
                 user_fd, {
@@ -1224,12 +1227,198 @@ class SettingsUI:
             data
         )
 
+        # -- Build First section
+        self.root.after(
+            300,
+            obj.destroy
+        )
+
+        self.settings_canvas.create_line(
+            0, 26, 793, 26,
+            fill=a_p['border']
+        )
+
+        self.root.after(
+            400,
+            self.music_folder_section
+        )
+
+        #<_end of the method_>
+    def show_folder(self, folders: list, win: tk.Frame) -> None:
+        ''' Show available folder '''
+        folders = folders[:14]
+        a_p = self.app_theme
+        # --
+        for f in folders:
+
+            fd = build_label(
+                parent=win,
+                text=f,
+                font=('Calibri', 9), bg=a_p['secondary_bg'], fg=a_p['secondary_text_colour'],
+                anchor='w', padx=5
+            )
+
+            self.app.uiu.pack_object(
+                object=fd, delta=0,
+                padx=5, pady=(4, 0),
+                fill='x'
+            )
+
+        #<_end of the method_>
+
+    def music_folder_section(self) -> None:
+        ''' Build the Music Folder section '''
+        # --
+        a_p = self.app_theme
+
+        # --
+        title = build_label(
+            parent=self.settings_canvas,
+            text='📂 MUSIC FOLDERS',
+            font=('Franklin Gothic Heavy', 9),
+            fg=a_p['secondary_text_colour'],
+            bg=a_p['secondary_bg']
+        )
+
+        idea = build_label(
+            parent=self.settings_canvas,
+            text='Add Folders Where Alma Will Search For Your Music (Max: 14 Directories):',
+            font=('Franklin Gothic Heavy', 10), fg=a_p['primary_text_colour'], bg=a_p['secondary_bg']
+        )
+
+        folder_frame = build_frame(
+            parent=self.settings_canvas,
+            bg=a_p['primary_bg']
+        )
+
+        # -- Get folders & Build
+        folders = self.app.pda.player_data['music_folders']
+        self.show_folder(folders=folders, win=folder_frame)
+
+        add_fd = build_label(
+            parent=self.settings_canvas,
+            text='Add Folder',
+            font=('Franklin Gothic Heavy', 12),
+            fg=a_p['frame_highlight_fg'],
+            bg=a_p['frame_highlight_bg'], padx=5
+        )
+
+        apply_btn = build_label(
+            parent=self.settings_canvas,
+            text='Apply Change',
+            font=('Franklin Gothic Heavy', 12),
+            fg=a_p['frame_highlight_fg'],
+            bg=a_p['frame_highlight_bg'], padx=5
+        )
+
+        # -------------------------------------------------------------------------------------
+        # -------------------------------------------------------------------------------------
+        # -- placements
+
+        # -- title & general idea
+        self.app.uiu.place_object(
+            object=title, delta=50,
+            x=2, y=1
+        )
+
+        self.app.uiu.place_object(
+            object=idea, delta=55,
+            x=2, y=32
+        )
+
+        # -- Folder_frame
+        self.app.uiu.place_object(
+            object=folder_frame,
+            delta=60, x=2, y=59,
+            width=789, height=340
+        )
+
+        self.app.uiu.place_object(
+            object=add_fd, delta=70,
+            x=550, y=408
+        )
+
+        self.app.uiu.place_object(
+            object=apply_btn, delta=75,
+            x=670, y=408
+        )
+
+        # -------------------------------------------------------------------------------------
+        # -------------------------------------------------------------------------------------
+
+        # Configuration data
+        data = {
+            str(id(add_fd)): [
+                add_fd, {
+                    'args': None,
+                    'item_type': 'label',
+
+                    'on_leave': {
+                        'fg': a_p['frame_highlight_fg'],
+                        'bg': a_p['frame_highlight_bg']
+                    },
+
+                    'on_click': {
+                        'fg': a_p['primary_text_colour'],
+                        'bg': a_p['primary_bg'],
+                        'command': lambda: print('You will add your folders')
+                    }
+                }
+            ],
+
+            str(id(apply_btn)): [
+                apply_btn, {
+                    'args': None,
+                    'item_type': 'label',
+
+                    'on_leave': {
+                        'fg': a_p['frame_highlight_fg'],
+                        'bg': a_p['frame_highlight_bg']
+                    },
+
+                    'on_click': {
+                        'fg': a_p['primary_text_colour'],
+                        'bg': a_p['primary_bg'],
+                        'command': lambda: print('You will apply your changes')
+                    }
+                }
+            ]
+        }
+
+        # -------------------------------------------------------------------------------------
+        # -------------------------------------------------------------------------------------
+
+        # -- Configure
+        self.root.after(
+            100,
+            self.app.puc.configure_frame_and_labels,
+            data
+        )
+
+        #<_end of the method_>
+
+    def playback_section(self) -> None:
+        ''' Build the playback section section '''
+        pass
+
+        #<_end of the method_>
+
+    def themes_section(self) -> None:
+        ''' Build the theme section '''
+        pass
+
+        #<_end of the method_>
+
+    def about_section(self) -> None:
+        ''' Build the about section '''
+        pass
+
         #<_end of the method_>
 
     def destroy_settings_ui(self) -> None:
         ''' Destroy settings ui '''
         # --  Destroy settings navigation and the UI itself
-        self.root.after(1000, self.settings_ui.destroy)
+        self.root.after(1000, self.settings_canvas.destroy)
         self.root.after(1030, self.settings_navigation.destroy)
 
         #<_end of the method_>
