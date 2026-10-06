@@ -227,6 +227,8 @@ class ProgramUIConfigurer():
             for obj in object.winfo_children():
                 obj.config(bg=bg)
                 obj.config(fg=fg)
+        else:
+            object.config(fg=fg)
 
         if parent is not None:
             for obj in parent.winfo_children():
@@ -252,6 +254,8 @@ class ProgramUIConfigurer():
             for obj in object.winfo_children():
                 obj.config(bg=bg)
                 obj.config(fg=fg)
+        else:
+            object.config(fg=fg)
 
         if parent is not None:
             for obj in parent.winfo_children():
@@ -278,6 +282,8 @@ class ProgramUIConfigurer():
             for obj in object.winfo_children():
                 obj.config(bg=bg)
                 obj.config(fg=fg)
+        else:
+            object.config(fg=fg)
 
         if parent is not None:
             for obj in parent.winfo_children():
