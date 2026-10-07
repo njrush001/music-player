@@ -255,6 +255,7 @@ class ProgramPlaylists:
 		# --
 		self.main_playlist.clear()
 		self.main_basenames.clear()
+		self.shuffled_playlist.clear()
 
 		#<_end of the method_>
 
