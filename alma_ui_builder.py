@@ -1240,10 +1240,11 @@ class SettingsUI:
 
         self.root.after(
             400,
-            self.music_folder_section
+            self.playback_section
         )
 
         #<_end of the method_>
+
     def show_folder(self, folders: list, win: tk.Frame) -> None:
         ''' Show available folder '''
         folders = folders[:14]
@@ -1286,14 +1287,14 @@ class SettingsUI:
             font=('Franklin Gothic Heavy', 10), fg=a_p['primary_text_colour'], bg=a_p['secondary_bg']
         )
 
-        folder_frame = build_frame(
+        content = build_frame(
             parent=self.settings_canvas,
             bg=a_p['primary_bg']
         )
 
         # -- Get folders & Build
         folders = self.app.pda.player_data['music_folders']
-        self.show_folder(folders=folders, win=folder_frame)
+        self.show_folder(folders=folders, win=content)
 
         add_fd = build_label(
             parent=self.settings_canvas,
@@ -1328,7 +1329,7 @@ class SettingsUI:
 
         # -- Folder_frame
         self.app.uiu.place_object(
-            object=folder_frame,
+            object=content,
             delta=60, x=2, y=59,
             width=789, height=340
         )
@@ -1399,7 +1400,179 @@ class SettingsUI:
 
     def playback_section(self) -> None:
         ''' Build the playback section section '''
-        pass
+        # --
+        a_p = self.app_theme
+
+        # --
+        title = build_label(
+            parent=self.settings_canvas,
+            text='▶ PLAYBACK SETTINGS',
+            font=('Franklin Gothic Heavy', 9),
+            fg=a_p['secondary_text_colour'],
+            bg=a_p['secondary_bg']
+        )
+
+        idea = build_label(
+            parent=self.settings_canvas,
+            text='Control How Your Music Plays:',
+            font=('Franklin Gothic Heavy', 10),
+            fg=a_p['primary_text_colour'], bg=a_p['secondary_bg']
+        )
+
+        content = build_frame(
+            parent=self.settings_canvas,
+            bg=a_p['primary_bg']
+        )
+
+        # -- Resume play option
+        # ----------------------
+        resume_play_frame = build_frame(
+            parent=content,
+            bg=a_p['secondary_bg'], height=30
+        )
+        resume_play_frame.pack_propagate(False)
+
+        resume_play_hint = build_label(
+            parent=resume_play_frame,
+            text='Resume Playback: Continue From Where You Left From.',
+            font=('Calibri', 9), fg=a_p['secondary_text_colour'],
+            bg=a_p['secondary_bg']
+        )
+        # ----------------------
+
+
+        # -- Crossfade Option
+        # ---------------------
+        crossfade_frame = build_frame(
+            parent=content,
+            bg=a_p['secondary_bg'], height=30
+        )
+        crossfade_frame.pack_propagate(False)
+        
+        crossfade_hint = build_label(
+            parent=crossfade_frame,
+            text='Crossfade: Smoothly Transition Between Tracks.',
+            font=('Calibri', 9), fg=a_p['secondary_text_colour'],
+            bg=a_p['secondary_bg']
+        )
+        # ----------------------
+
+        # -- Volume Option
+        # ---------------------
+        volume_opt_frame = build_frame(
+            parent=content,
+            bg=a_p['secondary_bg'], height=30
+        )
+        volume_opt_frame.pack_propagate(False)
+        
+        volume_opt_hint = build_label(
+            parent=volume_opt_frame,
+            text='Default Volume: Set The Starting Volume For New Sesssion.',
+            font=('Calibri', 9), fg=a_p['secondary_text_colour'],
+            bg=a_p['secondary_bg']
+        )
+
+        vol_cv = build_canvas(
+            parent=volume_opt_frame,
+            highlightthickness=0,bd=0,
+            bg=a_p['volume_canvas_default'],
+            width=130, height=5
+        )
+
+        vol_lvl = build_label(
+            parent=volume_opt_frame,
+            text='20%', bg=a_p['secondary_bg'],
+            fg=a_p['secondary_text_colour'],
+            font=('Calibri', 9)
+        )
+        # ----------------------
+
+        apply_btn = build_label(
+            parent=self.settings_canvas,
+            text='Apply Change',
+            font=('Franklin Gothic Heavy', 12),
+            fg=a_p['frame_highlight_fg'],
+            bg=a_p['frame_highlight_bg'], padx=5
+        )
+
+        # -------------------------------------------------------------------------------------
+        # -------------------------------------------------------------------------------------
+        # -- placements
+
+        # -- title & general idea
+        self.app.uiu.place_object(
+            object=title, delta=50,
+            x=2, y=1
+        )
+
+        self.app.uiu.place_object(
+            object=idea, delta=55,
+            x=2, y=32
+        )
+
+        # -- Content
+        self.app.uiu.place_object(
+            object=content,
+            delta=60, x=2, y=59,
+            width=789, height=340
+        )
+
+        # -- Resume Play Option
+        # ---------------------
+        self.app.uiu.pack_object(
+            object=resume_play_frame,
+            delta=70, padx=5,
+            pady=(4, 0), fill='x'
+        )
+
+        self.app.uiu.pack_object(
+            object=resume_play_hint,
+            delta=71, padx=5, side='left'
+        )
+        # ---------------------
+
+        # -- Crossfade Option
+        # ---------------------
+        self.app.uiu.pack_object(
+            object=crossfade_frame,
+            delta=70, padx=5,
+            pady=(4, 0), fill='x'
+        )
+
+        self.app.uiu.pack_object(
+            object=crossfade_hint,
+            delta=71, padx=5, side='left'
+        )
+        # ---------------------
+
+        # -- Volume Option
+        # ---------------------
+        self.app.uiu.pack_object(
+            object=volume_opt_frame,
+            delta=70, padx=5,
+            pady=(4, 0), fill='x'
+        )
+
+        self.app.uiu.pack_object(
+            object=volume_opt_hint,
+            delta=71, padx=5, side='left'
+        )
+
+        self.app.uiu.pack_object(
+            object=vol_cv, side='left',
+            delta=71, padx=(250, 0)
+        )
+
+        self.app.uiu.pack_object(
+            object=vol_lvl, side='left',
+            delta=71, padx=(15, 0)
+        )
+        # ----------------------
+
+        self.app.uiu.place_object(
+            object=apply_btn, delta=75,
+            x=670, y=408
+        )
 
         #<_end of the method_>
 
