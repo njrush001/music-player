@@ -5,6 +5,7 @@ from mutagen.id3 import ID3
 from PIL import Image, ImageTk
 from config import AlmaDataPaths
 from mutagen.easyid3 import EasyID3
+from tkinter import TclError
 # <====================================>
 
 # ========================================================================================================================
@@ -142,12 +143,18 @@ class UIUpdates:
 		specified under kwargs
 		'''
 		# --
-		self.root.after(
-			delta,
-			lambda: object.place(
-				**kwargs
-			)
-		)
+		def _place():
+			''' Paace the onbject using properties in kwargs '''
+			try:
+				# -- Incase object does exist
+				object.place(**kwargs)
+			except TclError:
+				pass
+
+			#<_end of inner function_>
+
+		# -- Operate
+		self.root.after(delta, _place)
 
 		#<_end of the function_>
 
@@ -157,12 +164,18 @@ class UIUpdates:
 		specified under kwargs
 		'''
 		# --
-		self.root.after(
-			delta,
-			lambda: object.pack(
-				**kwargs
-			)
-		)
+		def _pack():
+			''' Pack the onbject using properties in kwargs '''
+			try:
+				# -- Incase object does exist
+				object.pack(**kwargs)
+			except TclError:
+				pass
+
+			#<_end of inner function_>
+
+		# -- Operate
+		self.root.after(delta, _pack)
 
 		#<_end of the function_>
 
