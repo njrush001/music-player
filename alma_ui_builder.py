@@ -1254,8 +1254,8 @@ class SettingsUI:
 
             fd = build_label(
                 parent=win,
-                text=f,
-                font=('Calibri', 9), bg=a_p['secondary_bg'], fg=a_p['secondary_text_colour'],
+                text=f, bg=a_p['secondary_bg'],
+                font=('Calibri', 9), fg=a_p['secondary_text_colour'],
                 anchor='w', padx=5
             )
 
@@ -2223,6 +2223,14 @@ class MainUI:
             font=('Tahoma', 10, 'bold')
         )
 
+        self.waveform_canvas =  build_canvas(
+            parent=self.audio_info,
+            bg=a_p['secondary_bg'],
+            highlightthickness=0,
+            bd=0
+        )
+
+        # -- Holds Mini Queue
         self.queue_canvas = build_canvas(
             parent=self.main_canvas,
             bg=a_p['secondary_bg'], bd=0,
@@ -2659,6 +2667,12 @@ class MainUI:
             delta=3750,
             x=230,
             y=100,
+        )
+
+        self.app.uiu.place_object(
+            object=self.waveform_canvas,
+            delta=3750, x=230, y=140,
+            width=620, height=60
         )
 
         self.app.uiu.place_object(
@@ -3313,38 +3327,6 @@ class MainUI:
             tags='progress_bar'
         )
         
-        #<_end of the method_>
-
-    def canvas_for_waveform(self) -> None:
-        '''
-        Return the canvas where waveform for current playing song
-        will be drawn.
-        '''
-        # --
-        a_p = self.app_theme
-        
-        # -- Destroy previous canvas if any
-        try:
-            # --
-            self.waveform_canvas.destroy()
-        except AttributeError:
-            # -- First time creation
-            pass
-
-        self.waveform_canvas: tk.Canvas =  build_canvas(
-            parent=self.audio_info,
-            bg=a_p['secondary_bg'],
-            highlightthickness=0,
-            bd=0
-        )
-
-        # -- place
-        self.app.uiu.place_object(
-            object=self.waveform_canvas,
-            delta=0, x=230, y=140,
-            width=620, height=60
-        )
-
         #<_end of the method_>
 
 class ProgramUI(PlaylistManagerUI, LastPlayedUI, SettingsUI, AudioDownloaderUI, MainUI):
