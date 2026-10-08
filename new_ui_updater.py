@@ -117,6 +117,8 @@ class UIUpdates:
 		self.app = app
 		self.root = None
 		self.generating_data = False
+		self.waveform_lines = None   # Will hold waveform lines drawn on the canvas
+		self.anime_job = None
 
 		#<__ end of the method __>
 
@@ -260,17 +262,44 @@ class UIUpdates:
 
 			def _draw(x_pos, norm) -> None:
 				# --
-				self.app.pub.waveform_canvas.create_line(
+				line = self.app.pub.waveform_canvas.create_line(
 					x_pos, center - norm,
 					x_pos, center + norm,
 					fill=a_p['waveform_colour']
 				)
 
+				self.waveform_lines.insert(x_pos, line)
+
 				#<_end of inner function_>
 
-			for x, norm in enumerate(waveform_data):
+			if self.waveform_lines is None:
 				# --
-				_draw(x, norm)
+				self.waveform_lines = []
+
+				for x, norm in enumerate(waveform_data):
+					# --
+					_draw(x_pos=x, norm=norm)
+
+			elif (self.waveform_lines is not None) and (self.waveform_lines != []):
+				# -- animate
+				def _animate(i):
+					try:
+						line = self.waveform_lines.pop(i)
+					except IndexError:
+						# -- Animation end
+						return
+
+					# -- Delete and draw
+					self.app.pub.waveform_canvas.delete(line)
+					_draw(x_pos=i, norm=waveform_data[i])
+
+					self.anime_job = self.root.after(2, lambda: _animate(i + 1))
+
+				if self.anime_job is not None:
+					# -- Stop previous animation
+					self.root.after_cancel(self.anime_job)
+					
+				_animate(0)
 
 		# --
 
