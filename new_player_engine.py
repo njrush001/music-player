@@ -98,7 +98,7 @@ class PlayerEngine:
 		Displays progress ratio, time elapsed and remaining time.
 		'''
 		# --
-		if not music_playing() and not self.track_paused:
+		if not music_playing() and not self.track_paused and not self.app.uiu.generating_data:
 			# -- Song ended naturally
 			self.app.pub.root.after_cancel(self.progress_update)
 			self.next_playable(hint=1)
@@ -111,7 +111,7 @@ class PlayerEngine:
 
 		elif self.user_seeking:
 			# -- Do not update UI67
-			self.progress_update = self.app.pub.root.after(90, self.update_track_progress)
+			self.progress_update = self.app.pub.root.after(50, self.update_track_progress)
 		else:
 			# -- Update time
 			p_c = self.app.pub.progress_canvas
@@ -131,7 +131,7 @@ class PlayerEngine:
 			)
 
 			# --
-			self.progress_update = self.app.pub.root.after(90, self.update_track_progress)
+			self.progress_update = self.app.pub.root.after(50, self.update_track_progress)
 
 		#<_end of the method_>
 
@@ -213,8 +213,7 @@ class PlayerEngine:
 
 		self.app.uiu.highlight_playing() # Highlights frame representing the playing song
 
-		# -- Wave
-		self.app.pub.canvas_for_waveform()
+		# -- Waveform for song
 		self.app.pub.root.after(
 			100,
 			self.app.uiu.draw_wave_for_track,
@@ -228,6 +227,8 @@ class PlayerEngine:
 		''' Pause the currently playing song '''
 		# --
 		pygame.mixer.music.pause()
+		# -- Paused state
+		self.track_paused = True
 		self.pause_time = time.time()
 
 		# -- Configure button text
@@ -236,9 +237,6 @@ class PlayerEngine:
 			text='▶'
 		)
 
-		# -- Paused state
-		self.track_paused = True
-
 		#<_end of the method_>
 
 	def resume_track(self, unpause_btn, reset_start_time: bool = False) -> None:
@@ -246,14 +244,14 @@ class PlayerEngine:
 		# --
 		pygame.mixer.music.unpause()
 
+		# -- Unpaused state
+		self.track_paused = False
+
 		# -- Configure button text
 		self.app.uiu.update_text_on(
 			object=unpause_btn,
 			text='⏸'
 		)
-
-		# -- Unpaused state
-		self.track_paused = False
 
 		# -- continue with progress update
 		if reset_start_time:
