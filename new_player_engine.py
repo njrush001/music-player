@@ -398,7 +398,7 @@ class PlayerEngine:
 	# -------------------------------------------------------------------------------------
 	# -------------------------------------------------------------------------------------
 
-	def generate_waveform_data(self, path, width: int = 620, center: int = 30) -> None:
+	def generate_waveform_data(self, path, width: int = 400, center: int = 30) -> None:
 		''' Generate waveform data of the given path '''
 		# -- audio object (contains track info)
 		audio = AudioSegment.from_mp3(path)
