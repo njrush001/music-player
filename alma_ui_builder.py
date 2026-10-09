@@ -2672,7 +2672,7 @@ class MainUI:
         self.app.uiu.place_object(
             object=self.waveform_canvas,
             delta=3750, x=230, y=140,
-            width=620, height=60
+            width=400, height=60
         )
 
         self.app.uiu.place_object(
