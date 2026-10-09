@@ -294,7 +294,7 @@ class UIUpdates:
 					_draw(x_pos=x, norm=norm)
 
 			elif (self.waveform_lines is not None) and (self.waveform_lines != []):
-				# -- animate
+
 				def _animate(i):
 					try:
 						line = self.waveform_lines.pop(i)
@@ -307,6 +307,8 @@ class UIUpdates:
 					_draw(x_pos=i, norm=waveform_data[i])
 
 					self.anime_job = self.root.after(2, lambda: _animate(i + 1))
+
+					#<_end of inner function_>
 
 				if self.anime_job is not None:
 					# -- Stop previous animation
