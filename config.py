@@ -40,7 +40,7 @@ class AlmaDataPaths:
 			'frame_highlight_bg': '#4DD4AC',
 			'frame_highlight_fg': '#0F111D',
 
-			'controls_fg': '#FFFFFF',
+			'controls_fg': '#4DD4AC',
 			
 			'progress_canvas_default': '#2E2E2E',
 			'progress_canvas_highlight': '#4DD4AC',
@@ -69,7 +69,7 @@ class AlmaDataPaths:
 			'frame_highlight_bg': '#F8E7C9',
 			'frame_highlight_fg': '#2a2a2a',
 
-			'controls_fg': '#F8E7C9',
+			'controls_fg': '#4e3b06',
 
 			'progress_canvas_default': '#564b49',
 			'progress_canvas_highlight': '#F8E7C9',
@@ -98,7 +98,7 @@ class AlmaDataPaths:
 			'frame_highlight_bg': '#ffd6a5',
 			'frame_highlight_fg': '#020303',
 
-			'controls_fg': '#666f89',
+			'controls_fg': '#064e3b',
 
 			'progress_canvas_default': '#343845',
 			'progress_canvas_highlight': '#ffd6a5',
@@ -127,7 +127,7 @@ class AlmaDataPaths:
 		    'frame_highlight_bg': '#B06CFF',
 		    'frame_highlight_fg': '#0D0B12',
 
-		    'controls_fg': '#D8D0E2',
+		    'controls_fg': '#ff7f50',
 
 		    'progress_canvas_default': '#302A38',
 		    'progress_canvas_highlight': '#B06CFF',
@@ -157,7 +157,7 @@ class AlmaDataPaths:
 		    'frame_highlight_bg': '#C7A85A',
 		    'frame_highlight_fg': '#0A0F0D',
 
-		    'controls_fg': '#AEBBB4',
+		    'controls_fg': '#C7A85A',
 
 		    'progress_canvas_default': '#303A34',
 		    'progress_canvas_highlight': '#C7A85A',
@@ -187,7 +187,7 @@ class AlmaDataPaths:
 		    'frame_highlight_bg': '#C65F70',
 		    'frame_highlight_fg': '#0C090D',
 
-		    'controls_fg': '#B9B4BB',
+		    'controls_fg': '#C65F70',
 
 		    'progress_canvas_default': '#33272E',
 		    'progress_canvas_highlight': '#C65F70',
@@ -217,7 +217,7 @@ class AlmaDataPaths:
 		    'frame_highlight_bg': '#D27A68',
 		    'frame_highlight_fg': '#080E15',
 
-		    'controls_fg': '#B9C4CE',
+		    'controls_fg': '#D27A68',
 
 		    'progress_canvas_default': '#293542',
 		    'progress_canvas_highlight': '#D27A68',
