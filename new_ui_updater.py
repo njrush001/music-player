@@ -11,6 +11,156 @@ from tkinter import TclError
 # ========================================================================================================================
 # ============================================ ALL DEPENDENCIES
 
+# ------- Colour & Num maps: Helps in intepreting colour codes
+NUM_MAP = {
+    '10': 'A', '11': 'B',
+    '12': 'C', '13': 'D',
+    '14': 'E', '15': 'F'
+}
+
+COL_MAP = {value: int(key) for key, value in NUM_MAP.items()}
+# --------
+
+def rgb_to_hex(rgb: tuple[int, int, int]) -> str:
+	'''
+	Convert a tuple of rgb values to a Tk-friendly
+	colour string.
+	'''
+	def _convert_to_hex(col: int) -> str:
+		''' Convert an colour value into a 2-digit hex '''
+		# --
+		quotient = col // 16
+		remainder = col % 16
+
+		# --
+		q_hex = NUM_MAP.get(str(quotient), str(quotient))
+		rem_hex = NUM_MAP.get(str(remainder), str(remainder))
+
+		return q_hex + rem_hex
+
+		#<_end of inner function_>
+
+	# --
+	r, g, b = rgb  # -- unapacking
+	r_hex = _convert_to_hex(r)
+	g_hex = _convert_to_hex(g)
+	b_hex = _convert_to_hex(b)
+	# --
+
+	return '#' + r_hex + g_hex + b_hex
+
+	#<_end of the function_>
+
+def hex_to_rgb(hex: str) -> tuple[int, int, int]:
+	'''
+	Convert a colour string to RGB values
+	'''
+	def _convert_to_col(hex: str) -> int:
+		''' Convert the hex value to a value ranging 0-255 '''
+		char_1, char_2 = hex.upper()
+
+		# --
+		val_1 = COL_MAP.get(char_1, char_1)
+		val_2 = COL_MAP.get(char_2, char_2)
+		# --
+
+		return (int(val_1) * 16) + int(val_2)
+
+		#<_end of inner function_>
+
+	# -- #2E2E2E
+	hex_num = hex.removeprefix('#')
+	r = _convert_to_col(hex_num[0:2])
+	g = _convert_to_col(hex_num[2:4])
+	b = _convert_to_col(hex_num[4:6])
+
+	return r, g, b
+
+	#<_end of the function_>
+
+def rgb_at_step(start, end, step, steps) -> tuple[int, int, int]:
+	# -- Linear Interpolation
+	r = int(start[0] + (end[0] - start[0]) * (step / steps))
+	g = int(start[1] + (end[1] - start[1]) * (step / steps))
+	b = int(start[2] + (end[2] - start[2]) * (step / steps))
+
+	return (r, g, b)
+
+	#<_end of the function_>
+
+def fade_out_text(object, original: str, target: str, text: str, steps=10) -> None:
+	'''
+	Fade out text on the object.
+	The steps dictate how smmoth the animation
+	is going to be - higher=smoother.
+	'''
+	start = hex_to_rgb(original)
+	end = hex_to_rgb(target)
+
+	# -- Update col with steps: higher = smoother
+	for step in range(steps + 1):
+		# --
+		rgb = rgb_at_step(start, end, step, steps)
+
+		# --
+		hex_col = rgb_to_hex(rgb)
+		update_text_colour(object=object, col=hex_col, delta=(step * 50))
+
+	# -- Insert text & fade in
+	update_text(object=object, text=text)
+	object.after((step + 1) * 50, lambda: fade_in_text(object=object, original=target, target=original, text=text))
+
+	#<_end of the method_>
+
+def fade_in_text(object, original: str, target: str, text: str, steps=10) -> None:
+	'''
+	Fade in text on the object.
+	The steps dictate how smmoth the animation
+	is going to be - higher=smoother.
+	'''
+	original = hex_to_rgb(original)
+	target = hex_to_rgb(target)
+	update_text(object=object, text=text)
+
+	# --
+	for step in range(steps + 1):
+		# --
+		rgb = rgb_at_step(original, target, step, steps)
+
+		# --
+		hex_col = rgb_to_hex(rgb)
+		update_text_colour(object=object, col=hex_col, delta=(step * 50))
+
+	#<_end of the method_>
+
+def update_text_colour(object, col: str, delta: int) -> None:
+	'''
+	Update text colour on the passed object
+	'''
+	try:
+		object.after(
+			delta,
+			lambda: object.config(fg=col)
+		)
+	except TclError:
+		pass
+
+	#<_end of the method_>
+
+def update_text(object, text: str) -> None:
+	'''
+	Update text on the passed object
+	'''
+	try:
+		object.after(
+			0,
+			lambda: object.config(text=text)
+		)
+	except TclError:
+		pass
+
+	#<_end of the method_>
+
 def open_image_path(img_path):
 	''' Open image at the given path '''
 	return Image.open(img_path)
@@ -123,8 +273,21 @@ class UIUpdates:
 
 		#<__ end of the method __>
 
+	def animate_text(self, object, text: str, orig_col=None, target_col=None, animation_style=None) -> None:
+		''' Updates text with animations '''
+		if animation_style is None:
+			# -- No animation
+			update_text(object=object, text=text)
+		elif animation_style == 'fade':
+			# -- fade animation
+			fade_out_text(object=object, original=orig_col, target=target_col, text=text)
+
+		#<_end of the method_>
+
 	def update_text_on(self, object, text: str) -> None:
-		''' Update text on the passed object '''
+		'''
+		Update text on the passed object
+		'''
 		try:
 			# --
 			self.root.after(
@@ -132,7 +295,8 @@ class UIUpdates:
 				lambda: object.config(text=text)
 			)
 
-		except Exception:
+		except TclError:
+			# -- Incase object is destroyed before an update acts on it
 			pass
 
 		#<_end of the method_>
