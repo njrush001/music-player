@@ -98,9 +98,9 @@ class PlayerEngine:
 		Displays progress ratio, time elapsed and remaining time.
 		'''
 		# --
-		if not music_playing() and not self.track_paused and not self.app.uiu.generating_data:
+		if not music_playing() and not self.track_paused:
 			# -- Song ended naturally
-			self.app.pub.root.after_cancel(self.progress_update)
+			self.progress_update = None
 			self.next_playable(hint=1)
 
 			#<_>
@@ -176,14 +176,21 @@ class PlayerEngine:
 		artwork = extract_track_artwork(path)
 
 		# -- Update track name and artist
-		self.app.uiu.update_text_on(
+		a_p = self.app.pub.app_theme
+		self.app.uiu.animate_text(
 			object=self.app.pub.song_title,
 			text=track_name,
+			orig_col=a_p['primary_text_colour'],
+			target_col=a_p['secondary_bg'],
+			animation_style='fade'
 		)
 
-		self.app.uiu.update_text_on(
+		self.app.uiu.animate_text(
 			object=self.app.pub.artist,
 			text=artist,
+			orig_col=a_p['secondary_text_colour'],
+			target_col=a_p['secondary_bg'],
+			animation_style='fade'
 		)
 
 		# -- Cross_fade images
@@ -310,7 +317,7 @@ class PlayerEngine:
 	def next_playable(self, hint: int) -> None:
 		''' Play the next or previous track in queue '''
 		# --
-		if not self.app.main_playlist and music_playing():
+		if not self.app.main_playlist:
 			# -- No music playing
 			return
 
@@ -325,7 +332,8 @@ class PlayerEngine:
 		)
 
 		# -- Finalise current song's session
-		self.app.pub.root.after_cancel(self.progress_update)
+		if self.progress_update is not None:
+			self.app.pub.root.after_cancel(self.progress_update)
 
 		#<_end of the method_>
 
