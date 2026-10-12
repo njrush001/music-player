@@ -2962,6 +2962,11 @@ class MainUI:
                         'args': -1,
                         'item_type': 'label',
 
+                        'on_leave': {
+                            'fg': a_p['primary_text_colour'],
+                            'bg': a_p['secondary_bg']
+                        },
+
                         'on_click': {
                             'fg': a_p['controls_fg'],
                             'bg': a_p['secondary_bg'],
@@ -2973,6 +2978,11 @@ class MainUI:
                     pause_btn, {
                         'args': pause_btn,
                         'item_type': 'label',
+
+                        'on_leave': {
+                            'fg': a_p['primary_text_colour'],
+                            'bg': a_p['secondary_bg']
+                        },
 
                         'on_click': {
                             'fg': a_p['controls_fg'],
@@ -2986,6 +2996,11 @@ class MainUI:
                         'args': 1,
                         'item_type': 'label',
 
+                        'on_leave': {
+                            'fg': a_p['primary_text_colour'],
+                            'bg': a_p['secondary_bg']
+                        },
+
                         'on_click': {
                             'fg': a_p['controls_fg'],
                             'bg': a_p['secondary_bg'],
@@ -2997,6 +3012,11 @@ class MainUI:
                     shuffle_btn, {
                         'args': shuffle_btn,
                         'item_type': 'label',
+
+                        'on_leave': {
+                            'fg': a_p['primary_text_colour'],
+                            'bg': a_p['secondary_bg']
+                        },
 
                         'on_click': {
                             'fg': a_p['controls_fg'],
@@ -3010,6 +3030,11 @@ class MainUI:
                         'args': loop_btn,
                         'item_type': 'label',
 
+                        'on_leave': {
+                            'fg': a_p['primary_text_colour'],
+                            'bg': a_p['secondary_bg']
+                        },
+
                         'on_click': {
                             'fg': a_p['controls_fg'],
                             'bg': a_p['secondary_bg'],
@@ -3021,6 +3046,11 @@ class MainUI:
                     full_view_btn, {
                         'args': None,
                         'item_type': 'label',
+
+                        'on_leave': {
+                            'fg': a_p['primary_text_colour'],
+                            'bg': a_p['secondary_bg']
+                        },
 
                         'on_click': {
                             'fg': a_p['controls_fg'],
