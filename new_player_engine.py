@@ -3,7 +3,7 @@ import pygame, os, time
 from typing import Optional
 from mutagen.mp3 import MP3
 from pydub import AudioSegment
-from new_ui_updater import extract_metadata_for_track, extract_track_artwork
+from new_ui_updater import update_text, extract_metadata_for_track, extract_track_artwork
 # <====================================>
 
 # -- Engine used to play music
@@ -98,22 +98,18 @@ class PlayerEngine:
 		Displays progress ratio, time elapsed and remaining time.
 		'''
 		# --
-		if not music_playing() and not self.track_paused:
-			# -- Song ended naturally
+		if self.track_paused:
+			# --
 			self.progress_update = None
-			self.next_playable(hint=1)
 
-			#<_>
-
-		elif self.track_paused:
-			# -- Track is paused -> stop scheduling until unpaused
-			self.app.pub.root.after_cancel(self.progress_update)
+			return
 
 		elif self.user_seeking:
-			# -- Do not update UI67
+			# --
 			self.progress_update = self.app.pub.root.after(50, self.update_track_progress)
-		else:
-			# -- Update time
+
+		elif music_playing():
+			# -- Updates
 			p_c = self.app.pub.progress_canvas
 			elapsed = int(time.time() - self.start_time)
 			displayable_time = self.format_time(elapsed)
@@ -125,13 +121,18 @@ class PlayerEngine:
 				x_1=progress, y_1=p_c.winfo_height()
 			)
 
-			self.app.uiu.update_text_on(
+			update_text(
 				object=self.app.pub.time_elapsed,
 				text=displayable_time
 			)
 
 			# --
 			self.progress_update = self.app.pub.root.after(50, self.update_track_progress)
+
+		else:
+			# -- Music Naturally ended
+			self.progress_update = None
+			self.next_playable(hint=1)
 
 		#<_end of the method_>
 
@@ -166,10 +167,6 @@ class PlayerEngine:
 			object=self.app.pub.remaining_time,
 			text=self.app.pda.player_data['tracks_data'][base]['duration']
 		)
-
-		# -- Update  progress
-		self.track_duration = get_track_duration(path)
-		self.update_track_progress()
 
 		# -- Get artist, song_name and artwork
 		track_name, artist = extract_metadata_for_track(path)
@@ -227,6 +224,9 @@ class PlayerEngine:
 			path
 		)
 
+		# -- Update  progress
+		self.track_duration = get_track_duration(path)
+		self.update_track_progress()
 
 		#<_end of the method_>
 
