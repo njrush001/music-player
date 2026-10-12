@@ -223,7 +223,7 @@ class ProgramPlaylists:
 			start_point: int = m_b.index(tracks[0])
 			build_mini_queue: bool = True
 
-		elif abs(self.pyr.track_index - prev_index) > 4:
+		elif abs(self.pyr.track_index - prev_index) > 5:
 			# -- Find start point
 			pos: int = self.pyr.track_index
 
