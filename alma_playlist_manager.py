@@ -1,4 +1,3 @@
-
 import os, json
 from config import AlmaDataPaths
 
@@ -7,6 +6,26 @@ class PlaylistManager:
         self.app = app
         self.playlists = {}
         self.playlist_dir = AlmaDataPaths.PLAYLIST_DIR
+
+    def get_artist_music(self, args) -> None:
+        ''' Get songs from the passed artist '''
+        # --
+        data_file = self.playlist_dir / 'artists_music.json'
+        data = self.app.dbm.read_data(data_file)
+        tracks = data.get(args[0], None)
+
+        if not isinstance(tracks, list):
+            raise KeyError('Tracks Unavailable: Could Not Fnd Tracks By That Artist')
+        data = {}
+        for p in tracks:
+            base = os.path.basename(p)
+            data[base.replace('.mp3', '')] = p
+        self.app.clear_playlist_bags()
+        self.app.pyr.track_index = 0
+        self.app.select_tracks_to_add(data)
+        args[1].destroy()
+
+        #<_end of the method_>
 
     def load_playlist_manager(self) -> None:
         '''
