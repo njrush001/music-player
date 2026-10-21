@@ -341,6 +341,26 @@ class ProgramUIConfigurer():
 
         #<_end of the method_>
 
+    def on_artist_seek(self) -> None:
+        '''
+        Initiate build of window to prompt user to choose
+        whether to load music from this artist or not.
+        '''
+        # --
+        if not new_player_engine.music_playing():
+            # -- No music playing and no artist available
+            return
+        m_b = self.app.main_basenames
+        t_i = self.app.pyr.track_index
+        t_d = self.app.pda.player_data['tracks_data']
+        artist = t_d[m_b[t_i]].get('artist', None)
+        if (artist is None) or (artist.lower() == 'alma'):
+            # -- Artist unavailable
+            return
+        self.app.pub.build_prompt_for_artist(artist_name=artist)
+
+        #<_end of the method_>
+
     def on_track_frame_click(self, args) -> None:
         '''
         What happens when you click a frame that should
