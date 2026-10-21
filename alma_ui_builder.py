@@ -722,6 +722,133 @@ class PlaylistManagerUI:
             length_label.place(x=620, y=1)
 
         #<_end of the method_>
+
+    def build_prompt_for_artist(self, artist_name: str) -> None:
+        '''
+        Build Prompt asking user wheether to load the current artist
+        songs. A simple yes or no can do.
+        '''
+        # --
+        a_p = self.app_theme
+
+        # --
+        self.artist_prompt = build_canvas(
+            parent=self.audio_info,
+            highlightthickness=0,
+            bd=0, bg=a_p['secondary_bg']
+        )
+
+        text_1 = build_label(
+            parent=self.artist_prompt,
+            text=f'Explore {artist_name}?',
+            font=('Franklin Gothic Heavy', 23),
+            fg=a_p['secondary_text_colour'],
+            bg=a_p['secondary_bg']
+        )
+
+        text_2 = build_label(
+            parent=self.artist_prompt,
+            text='Would You Like To Find Other Songs By This Artist?',
+            font=('Tahoma', 12, 'bold'),
+            fg=a_p['third_text_colour'],
+            bg=a_p['secondary_bg']
+        )
+
+        okay = build_label(
+            parent=self.artist_prompt,
+            text='Yes', padx=5, cursor='hand2',
+            font=('Franklin Gothic Heavy', 12),
+            fg=a_p['frame_highlight_fg'],
+            bg=a_p['frame_highlight_bg']
+        )
+
+        not_okay = build_label(
+            parent=self.artist_prompt,
+            text='No', padx=5, cursor='hand2',
+            font=('Franklin Gothic Heavy', 12),
+            fg=a_p['frame_highlight_fg'],
+            bg=a_p['frame_highlight_bg']
+        )
+
+        # -------------------------------------------------------------------------------------
+        # -------------------------------------------------------------------------------------
+        # -- placements
+
+        self.app.uiu.pack_object(
+            object=text_1,
+            delta=0, pady=(50, 0)
+        )
+
+        self.app.uiu.pack_object(
+            object=text_2,
+            delta=10, pady=(10, 0)
+        )
+
+        self.app.uiu.place_object(
+            object=okay,
+            delta=20, x=210, y=140
+        )
+
+        self.app.uiu.place_object(
+            object=not_okay,
+            delta=30, x=260, y=140
+        )
+
+        self.app.uiu.place_object(
+            object=self.artist_prompt,
+            delta=100, x=230, y=5,
+            width=558, height=210
+        )
+        # -------------------------------------------------------------------------------------
+        # -------------------------------------------------------------------------------------
+
+        # -- Configuration
+        data = {
+            str(id(okay)): [
+                okay, {
+                    'args': [artist_name, self.artist_prompt],
+                    'item_type': 'label',
+
+                    'on_leave': {
+                        'fg': a_p['frame_highlight_fg'],
+                        'bg': a_p['frame_highlight_bg']
+                    },
+
+                    'on_click': {
+                        'fg': a_p['primary_text_colour'],
+                        'bg': a_p['primary_bg'],
+                        'command': self.app.pst.get_artist_music
+                    }
+                }
+            ],
+
+            str(id(not_okay)): [
+                not_okay, {
+                    'args': None,
+                    'item_type': 'label',
+
+                    'on_leave': {
+                        'fg': a_p['frame_highlight_fg'],
+                        'bg': a_p['frame_highlight_bg']
+                    },
+
+                    'on_click': {
+                        'fg': a_p['primary_text_colour'],
+                        'bg': a_p['primary_bg'],
+                        'command': self.artist_prompt.destroy
+                    }
+                }
+            ]
+        }
+
+        # -- Configure
+        self.root.after(
+            120,
+            self.app.puc.configure_frame_and_labels,
+            data
+        )
+
+        #<_end of the method_>
     
     def destroy_playlist_manager_ui(self) -> None:
         ''' Destroy playlist manager ui '''
@@ -2208,7 +2335,7 @@ class MainUI:
         )
 
         self.artist = build_label(
-            parent=self.audio_info,
+            parent=self.audio_info, cursor='hand2',
             text=MainUI.greeting_2, highlightthickness=0,
             bd=0, bg=a_p['secondary_bg'],
             fg=a_p['secondary_text_colour'],
@@ -2954,6 +3081,27 @@ class MainUI:
                             'fg': a_p['frame_highlight_fg'],
                             'bg': a_p['frame_highlight_bg'],
                             'command': self.app.puc.on_recommendations_press
+                        }
+                    }
+                ],
+                str(id(self.artist)): [
+                    self.artist, {
+                        'args': None,
+                        'item_type': 'label',
+
+                        'on_enter': {
+                            'fg': a_p['third_text_colour'],
+                            'bg': a_p['secondary_bg']
+                        },
+                        'on_leave': {
+                            'fg': a_p['secondary_text_colour'],
+                            'bg': a_p['secondary_bg']
+                        },
+
+                        'on_click': {
+                            'fg': a_p['third_text_colour'],
+                            'bg': a_p['secondary_bg'],
+                            'command': self.app.puc.on_artist_seek
                         }
                     }
                 ],
