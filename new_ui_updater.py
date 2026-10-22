@@ -1,5 +1,5 @@
 # <============ IMPORTS ===============>
-import os, io
+import os, io, random
 from mutagen.mp3 import MP3
 from mutagen.id3 import ID3
 from PIL import Image, ImageTk
@@ -268,7 +268,7 @@ class UIUpdates:
 		self.app = app
 		self.root = None
 		self.generating_data = False
-		self.waveform_lines = None   # Will hold waveform lines drawn on the canvas
+		self.waveform_lines = list('-' * 400)   # Will hold waveform lines drawn on the canvas
 		self.anime_job = None
 
 		#<__ end of the method __>
@@ -407,7 +407,7 @@ class UIUpdates:
 
 		#<_end of the method_>
 
-	def draw_wave_for_track(self, path, center: int = 30) -> None:
+	def draw_wave_for_track(self, path, center: int = 30, animation_type='swipe_both') -> None:
 		''' Draw wave for song given the norm '''
 		# --
 		base = os.path.basename(path).replace('.mp3', '')
@@ -445,42 +445,82 @@ class UIUpdates:
 					fill=a_p['waveform_colour']
 				)
 
-				self.waveform_lines.insert(x_pos, line)
+				self.waveform_lines[x_pos] = line
 
 				#<_end of inner function_>
 
-			if self.waveform_lines is None:
-				# --
-				self.waveform_lines = []
-
-				for x, norm in enumerate(waveform_data):
-					# --
-					_draw(x_pos=x, norm=norm)
-
-			elif (self.waveform_lines is not None) and (self.waveform_lines != []):
-
-				def _animate(i):
-					try:
+			def _animate(i: int, hints=None) -> None:
+				try:
+					if isinstance(self.waveform_lines[i], str):
+						# -- First drawing yet: On startup
+						line = None
+					else:
 						line = self.waveform_lines.pop(i)
+						self.waveform_lines.insert(i, '-')
+
+				except IndexError:
+					# -- Animation end
+					return
+
+				if line is not None:
+					# -- Delete line at that idx
+					self.app.pub.waveform_canvas.delete(line)
+
+				_draw(x_pos=i, norm=waveform_data[i])
+
+				if animation_type == 'swipe_left':
+					# --
+					self.anime_job = self.root.after(
+						2, lambda: _animate(i + 1)
+					)
+				elif animation_type == 'transform':
+					# --
+					try:
+						i = random.choice(hints)
 					except IndexError:
-						# -- Animation end
 						return
 
-					# -- Delete and draw
-					self.app.pub.waveform_canvas.delete(line)
-					_draw(x_pos=i, norm=waveform_data[i])
+					hints.pop(hints.index(i))
+					self.anime_job = self.root.after(
+						2, lambda: _animate(i, hints=hints)
+					)
+				elif animation_type == 'swipe_both':
+					# --
 
-					self.anime_job = self.root.after(2, lambda: _animate(i + 1))
+					if hints[0] == 'start':
+						# -- pick idx from end [1, 2, 3, 4, 5, 6, 7, 8, 9]
+						i = hints[2] - 1
+						hints[2] -= 1
+						hints[0] = 'end'  # last animated
+					elif hints[0] == 'end':
+						# -- pick from start
+						i = hints[1] + 1
+						hints[1] += 1
+						hints[0] = 'start'  # last animated
 
-					#<_end of inner function_>
+					self.anime_job = self.root.after(
+						2, lambda: _animate(i, hints=hints)
+					)
 
-				if self.anime_job is not None:
-					# -- Stop previous animation
-					self.root.after_cancel(self.anime_job)
-					
+				#<_end of inner function_>
+
+			if self.anime_job is not None:
+				# --
+				self.root.after_cancel(self.anime_job)
+
+			# -- ANIMATION STYLE
+			if animation_type == 'swipe_left':
 				_animate(0)
 
-		# --
+			elif animation_type == 'transform':
+				# --
+				hints = list(range(400))
+				i = random.choice(hints)
+				hints.pop(hints.index(i))
+				_animate(i, hints=hints)
+			elif animation_type == 'swipe_both':
+				# --
+				_animate(0, hints=['start', 0, 400])
 
 		#<_end of the method_>
 
