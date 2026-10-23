@@ -1,6 +1,7 @@
 # <============ IMPORTS ===============>
 import os
 import tkinter as tk
+from tkinter import TclError
 from datetime import datetime
 from PIL import Image, ImageTk
 from config import AlmaDataPaths
@@ -55,671 +56,635 @@ class PlaylistManagerUI:
 
     def build_playlist_manager_ui(self) -> None:
         ''' Build the UI when needed '''
-        return
         # --
         a_p = self.app_theme
+        self.tabs_data = {}
 
-        # -- Manager UI: Holds all the elements
-        self.playlist_ui = build_frame(
+        # -- Settings UI
+        self.playlist_canvas = build_canvas(
             parent=self.root,
-            bg=a_p['primary_bg'],
-            width=1020, height=540
+            bg=a_p['secondary_bg'],
+            highlightthickness=0,
+            bd=0
         )
 
+        # -- loading state
         prompt = build_label(
-            parent=self.playlist_ui,
-            text='Loading ...',
-            font=('Franklin Gothic Heavy', 20),
-            fg=a_p['primary_text_colour'], bg=a_p['primary_bg']
+            parent=self.playlist_canvas,
+            text='Loading Your Playlists ...',
+            font=('Franklin Gothic Heavy', 15),
+            fg=a_p['primary_text_colour'],
+            bg=a_p['secondary_bg']
         )
-        prompt.pack(padx=50, pady=200)
+
+        # -- Placements
+        self.app.uiu.pack_object(
+            object=prompt,
+            delta=0, padx=50,
+            pady=200
+        )
 
         self.app.uiu.place_object(
-            object=self.playlist_ui,
-            delta=600, x=0, y=0,
-            width=1020, height=540
+            object=self.playlist_canvas,
+            delta=500, x=224, y=24,
+            width=793, height=445
         )
 
-        # -- Create elements (1 sec delay)
+        # -- Other elements
         self.root.after(
-            1000,
-            self._playlist_manager_elements,
-            self.playlist_ui
+            1500,
+            self.playlist_ui_elements,
+            prompt
         )
 
         #<_end of the method_>
-    
-    def _playlist_manager_elements(self, win) -> None:
-        ''' Build elements in the playlist manager ui '''
-        # -- Canvas
+
+    def playlist_ui_elements(self, obj: tk.Label) -> None:
+        ''' Build playlist elements in the playist UI '''
+        # --
         a_p = self.app_theme
 
-        # -- Create Canvas (All UI elements will be shown here)
-        self.playlist_canvas = build_canvas(
-            parent=win, bg=a_p['primary_bg'],
-            highlightthickness=0, bd=0
+        # -- canvas where all items will be shown
+        self.playlist_navigation = build_canvas(
+            parent=self.main_canvas,
+            bg=a_p['secondary_bg'],
+            highlightthickness=0,
+            bd=0
         )
 
-        # -------------------------------------------------------------------------------------
-        # ------------------------------      PARTION        ----------------------------------
+        new_pst = build_frame(
+            parent=self.playlist_navigation,
+            bg=a_p['navigator_default_bg'],
+            cursor='hand2'
+        )
 
-        # -------------------------------------------------------------------------------------
-        # -------------------------------------------------------------------------------------
+        new_pst_label = build_label(
+            parent=new_pst,
+            text='➕   New Playlist', cursor='hand2',
+            font=('Franklin Gothic Heavy', 8),
+            fg=a_p['navigator_default_fg'],
+            bg=a_p['navigator_default_bg']
+        )
 
-        # -- QUIT (helps to exit the playlist manager)
-        quit_label = build_label(
+        edit_pst = build_frame(
+            parent=self.playlist_navigation,
+            bg=a_p['navigator_default_bg'],
+            cursor='hand2'
+        )
+
+        edit_pst_label = build_label(
+            parent=edit_pst,
+            text='▶   Edit Playlist', cursor='hand2',
+            font=('Franklin Gothic Heavy', 8),
+            fg=a_p['navigator_default_fg'],
+            bg=a_p['navigator_default_bg']
+        )
+
+        delete_pst = build_frame(
+            parent=self.playlist_navigation,
+            bg=a_p['navigator_default_bg'],
+            cursor='hand2'
+        )
+
+        delete_pst_label = build_label(
+            parent=delete_pst,
+            text='🎨   Delete Playlist', cursor='hand2',
+            font=('Franklin Gothic Heavy', 8),
+            fg=a_p['navigator_default_fg'],
+            bg=a_p['navigator_default_bg']
+        )
+
+        rename_pst = build_frame(
+            parent=self.playlist_navigation,
+            bg=a_p['navigator_default_bg'],
+            cursor='hand2'
+        )
+
+        rename_pst_label = build_label(
+            parent=rename_pst,
+            text='❕      Rename Playlist', cursor='hand2',
+            font=('Franklin Gothic Heavy', 8),
+            fg=a_p['navigator_default_fg'],
+            bg=a_p['navigator_default_bg']
+        )
+
+        quit_btn = build_frame(
+            parent=self.playlist_navigation,
+            bg=a_p['navigator_default_bg'],
+            cursor='hand2'
+        )
+
+        quit_btn_lbl = build_label(
+            parent=quit_btn,
+            text='❕     Close Manager', cursor='hand2',
+            font=('Franklin Gothic Heavy', 8),
+            fg=a_p['navigator_default_fg'],
+            bg=a_p['navigator_default_bg']
+        )
+
+        # -------------------
+        # -- Tabs
+
+        all_pst = build_label(
             parent=self.playlist_canvas,
-            text='CLOSE',
-            font=('Franklin Gothic Heavy', 11),
-            fg=a_p['primary_text_colour'], bg=a_p['primary_bg']
+            text='All Playlist', cursor='hand2',
+            font=('Franklin Gothic Heavy', 9),
+            fg=a_p['frame_highlight_fg'],
+            bg=a_p['frame_highlight_bg'], width=21
         )
 
-        # -- UI_ICON (image)
-        ui_icon = build_label(
+        new_pst_tab = build_label(
             parent=self.playlist_canvas,
-            highlightthickness=0, bd=0
+            text='New Playlist', cursor='hand2',
+            font=('Franklin Gothic Heavy', 9),
+            fg=a_p['primary_text_colour'],
+            bg=a_p['primary_bg'], width=21
         )
 
-        ui_title = build_label(
+        edit_pst_tab = build_label(
             parent=self.playlist_canvas,
-            text='ALMA PLAYLIST MANAGER',
-            font=('Franklin Gothic Heavy', 13),
-            fg='#FFFFFF', bg='#1B1E33'
+            text='Edit Playlist', cursor='hand2',
+            font=('Franklin Gothic Heavy', 9),
+            fg=a_p['primary_text_colour'],
+            bg=a_p['primary_bg'], width=21
         )
 
-        section_title = build_label(
+        delete_pst_tab = build_label(
             parent=self.playlist_canvas,
-            text='PLAYLIST', bg='#1B1E33',
-            fg='#FFFFFF', font=('Franklin Gothic Heavy', 11)
+            text='Delete Playlist', cursor='hand2',
+            font=('Franklin Gothic Heavy', 9),
+            fg=a_p['primary_text_colour'],
+            bg=a_p['primary_bg'], width=21
         )
 
-        self.pst_search = build_entry(
+        rename_pst_tab = build_label(
             parent=self.playlist_canvas,
-            width=32, bg='#1B1E33',
-            fg='#FFFFFF', insertbackground='#FFFFFF',
-            relief='flat', font=('Segoe UI', 10)
+            text='Rename Playlist', cursor='hand2',
+            font=('Franklin Gothic Heavy', 9),
+            fg=a_p['primary_text_colour'],
+            bg=a_p['primary_bg'], width=21
         )
-
-        # -------------------------------------------------------------------------------------
-        # -----------------------------      ESSENTIALS      ----------------------------------
-
-        # -- Base frame (hold the essentials in one place)
-        base_frame = build_frame(
-            parent=self.playlist_canvas,
-            bg='#1B1E33'
-        )
-
-        self.new_pst = build_label(
-            parent=base_frame,
-            text='➕', width=3,
-            font=('Franklin Gothic Heavy', 18),
-            fg='#FFFFFF', bg='#2A2B3D'
-        )
-
-        self.refresh = build_label(
-            parent=base_frame,
-            text='🔃', width=3,
-            font=('Franklin Gothic Heavy', 18),
-            fg='#FFFFFF', bg='#2A2B3D'
-        )
-
-        self.delete = build_label(
-            parent=base_frame,
-            text='🚮', width=3,
-            font=('Franklin Gothic Heavy', 18),
-            fg='#FFFFFF', bg='#2A2B3D'
-        )
-
-        self.edit = build_label(
-            parent=base_frame,
-            text='📝', width=3,
-            font=('Franklin Gothic Heavy', 18),
-            fg='#FFFFFF', bg='#2A2B3D'
-        )
-
-        # -------------------------------------------------------------------------------------
-        # ----------------------------      DEFAULT VIEW     ----------------------------------
-        default_view_frame = build_frame(
-            parent=self.playlist_canvas,
-            bg='#1B1E33'
-        )
-
-        empty_icon = build_label(
-            parent=default_view_frame,
-            highlightthickness=0, bd=0,
-            bg='#1E1E2E'
-        )
-
-        prompt_1 = build_label(
-            parent=default_view_frame,
-            text='Select Playlist',
-            font=('Franklin Gothic Heavy', 11),
-            fg='#B973F4', bg='#1B1E33'
-        )
-
-        text: str = 'Choose a playlist from the list or create a new one.'
-        prompt_2 = build_label(
-            parent=default_view_frame,
-            text=text, font=('Franklin Gothic Heavy', 10),
-            fg='#FFFFFF', bg='#1B1E33', wraplength=190,
-            justify='center', anchor='n'
-        )
+        # -------------------
 
         # -------------------------------------------------------------------------------------
         # -------------------------------------------------------------------------------------
         # -- placements
 
-        # -- playlist canvas (where all playlist manager elements live)
+        # -- main canvas (wheree all settings ui elements live)
         self.app.uiu.place_object(
-            object=self.playlist_canvas,
-            delta=0,
-            x=0,
-            y=0,
-            width=1020,
-            height=540,
-        )
-
-        # -------------------------------------------------------------------------------------
-        # -- partition playlist canvas
-        self.root.after(
-            1000,
-            lambda: self.playlist_canvas.create_line(
-                0, 35, 1020, 35,
-                fill='#353A4F'
-            )
-        )
-
-        self.root.after(
-            100,
-            lambda: self.playlist_canvas.create_line(
-                270, 35, 270, 540,
-                fill='#353A4F'
-            )
-        )
-
-        self.root.after(
-            150,
-            lambda: self.playlist_canvas.create_line(
-                270, 55, 1020, 55,
-                fill='#353A4F'
-            )
-        )
-
-        self.root.after(
-            200,
-            lambda: self.playlist_canvas.create_line(
-                0, 480, 1020, 480,
-                fill='#353A4F'
-            )
-        )
-
-        self.root.after(
-            250,
-            lambda: self.playlist_canvas.create_rectangle(
-                12, 70, 257, 100,
-                fill='#1B1E33',
-                outline='#353A4F'
-            )
-        )
-
-        self.root.after(
-            300,
-            lambda: self.playlist_canvas.create_rectangle(
-                300, 70, 995, 463,
-                fill='#1B1E33',
-                outline='#353A4F',
-                dash=(4, 6)
-            )
-        )
-
-        # -------------------------------------------------------------------------------------
-        # --
-        self.app.uiu.place_object(
-            object=quit_label,
-            delta=350,
-            x=960,
-            y=6,
-        )
-
-        self.root.after(
-            400,
-            lambda: set_image(
-                label=ui_icon,
-                img=AlmaDataPaths.BG_DIR / 'player_icon.png',
-                size=(26, 26)
-            )
-        )
-
-        self.app.uiu.place_object(
-            object=ui_icon,
-            delta=450,
-            x=8,
-            y=6,
-        )
-
-        # -------------------------------------------------------------------------------------
-        # --
-        self.app.uiu.place_object(
-            object=ui_title,
-            delta=500,
-            x=39,
-            y=7,
-        )
-
-        self.app.uiu.place_object(
-            object=section_title,
-            delta=550,
-            x=8,
-            y=40,
-        )
-        # -------------------------------------------------------------------------------------
-        # --
-        self.app.uiu.place_object(
-            object=self.pst_search,
-            delta=600,
-            x=20,
-            y=76,
-        )
-        self.root.after(
-            650,
-            lambda: self.pst_search.insert(
-                0, '🔍 Search Playlists ...'
-            )
-        )
-
-        # -------------------------------------------------------------------------------------
-        # -- essentials
-        self.app.uiu.place_object(
-            object=base_frame,
-            delta=750,
-            x=12,
-            y=490,
-            width=245,
-            height=40,
+            object=self.playlist_navigation,
+            delta=0, x=2, y=53, width=215,
+            height=195
         )
 
         self.app.uiu.pack_object(
-            object=self.new_pst,
-            delta=760,
+            object=new_pst_label,
+            delta=100,
             side='left',
-            padx=(15, 0),
+            anchor='w',
+            padx=5,
+            pady=0,
         )
 
         self.app.uiu.pack_object(
-            object=self.refresh,
-            delta=770,
+            object=edit_pst_label,
+            delta=100,
             side='left',
-            padx=(7, 0),
+            anchor='w',
+            padx=5,
+            pady=0,
         )
 
         self.app.uiu.pack_object(
-            object=self.delete,
-            delta=780,
+            object=delete_pst_label,
+            delta=100,
             side='left',
-            padx=(7, 0),
+            anchor='w',
+            padx=5,
+            pady=0,
         )
 
         self.app.uiu.pack_object(
-            object=self.edit,
-            delta=790,
+            object=rename_pst_label,
+            delta=100,
             side='left',
-            padx=(7, 0),
+            anchor='w',
+            padx=5,
+            pady=0,
         )
+
+        self.app.uiu.pack_object(
+            object=quit_btn_lbl,
+            delta=100,
+            side='left',
+            anchor='w',
+            padx=5,
+            pady=0,
+        )
+
+        self.app.uiu.place_object(
+            object=new_pst,
+            delta=120,
+            x=2,
+            y=5,
+            width=210,
+            height=25,
+        )
+
+        self.app.uiu.place_object(
+            object=edit_pst,
+            delta=130,
+            x=2,
+            y=35,
+            width=210,
+            height=25,
+        )
+
+        self.app.uiu.place_object(
+            object=delete_pst,
+            delta=140,
+            x=2,
+            y=65,
+            width=210,
+            height=25,
+        )
+
+        self.app.uiu.place_object(
+            object=rename_pst,
+            delta=150,
+            x=2,
+            y=95,
+            width=210,
+            height=25,
+        )
+
+        self.app.uiu.place_object(
+            object=quit_btn,
+            delta=160,
+            x=2,
+            y=125,
+            width=210,
+            height=25,
+        )
+
+        # ----------------
+        # --- Tabs
+        self.app.uiu.pack_object(
+            object=all_pst,
+            delta=200, padx=(2, 0),
+            pady=(1, 0), side='left',
+            anchor='n'
+        )
+
+        self.app.uiu.pack_object(
+            object=new_pst_tab,
+            delta=200, padx=(6, 0),
+            pady=(1, 0), side='left',
+            anchor='n'
+        )
+
+        self.app.uiu.pack_object(
+            object=edit_pst_tab,
+            delta=200, padx=(6, 0),
+            pady=(1, 0), side='left',
+            anchor='n'
+        )
+
+        self.app.uiu.pack_object(
+            object=delete_pst_tab,
+            delta=200, padx=(6, 0),
+            pady=(1, 0), side='left',
+            anchor='n'
+        )
+
+        self.app.uiu.pack_object(
+            object=rename_pst_tab,
+            delta=200, padx=(6, 0),
+            pady=(1, 0), side='left',
+            anchor='n'
+        )
+        # ------------
 
         # -------------------------------------------------------------------------------------
-        # -- default view
-        self.app.uiu.place_object(
-            object=default_view_frame,
-            delta=850,
-            x=480,
-            y=178,
-            width=340,
-            height=182,
-        )
-
-        self.app.uiu.place_object(
-            object=empty_icon,
-            delta=900,
-            x=110,
-            y=2,
-        )
-
-        self.root.after(
-            1000,
-            lambda: set_image(
-                label=empty_icon,                                 # -- where the icon will be displayed
-                img=AlmaDataPaths.BG_DIR / 'empty_display.png',   # -- location of the icon
-                size=(120, 114)                                   # -- the size to be displayed
-            )
-        )
-
-        self.app.uiu.place_object(
-            object=prompt_1,
-            delta=1050,
-            x=117,
-            y=115,
-        )
-
-        self.app.uiu.place_object(
-            object=prompt_2,
-            delta=1100,
-            x=45,
-            y=140,
-            width=250,
-            height=40,
-        )
-        # -------------------------------------------------------------------------------------
         # -------------------------------------------------------------------------------------
 
+        # Configuration data
+        data = {
+            str(id(new_pst)): [
+                new_pst, {
+                    'args': new_pst_tab,
+                    'item_type': 'frame',
 
-        # --
-        data = {}
-        data.update(
+                    'on_enter': {
+                        'fg': a_p['navigator_hover_fg'],
+                        'bg': a_p['navigator_hover_bg']
+                    },
+                    'on_leave': {
+                        'fg': a_p['navigator_default_fg'],
+                        'bg': a_p['navigator_default_bg']
+                    },
+
+                    'on_click': {
+                        'fg': a_p['frame_highlight_fg'],
+                        'bg': a_p['frame_highlight_bg'],
+                        'command': self.new_pst_ui
+                    }
+                }
+            ],
+
+            str(id(edit_pst)): [
+                edit_pst, {
+                    'args': edit_pst_tab,
+                    'item_type': 'frame',
+
+                    'on_enter': {
+                        'fg': a_p['navigator_hover_fg'],
+                        'bg': a_p['navigator_hover_bg']
+                    },
+                    'on_leave': {
+                        'fg': a_p['navigator_default_fg'],
+                        'bg': a_p['navigator_default_bg']
+                    },
+
+                    'on_click': {
+                        'fg': a_p['frame_highlight_fg'],
+                        'bg': a_p['frame_highlight_bg'],
+                        'command': self.edit_pst_ui
+                    }
+                }
+            ],
+
+            str(id(delete_pst)): [
+                delete_pst, {
+                    'args': delete_pst_tab,
+                    'item_type': 'frame',
+
+                    'on_enter': {
+                        'fg': a_p['navigator_hover_fg'],
+                        'bg': a_p['navigator_hover_bg']
+                    },
+                    'on_leave': {
+                        'fg': a_p['navigator_default_fg'],
+                        'bg': a_p['navigator_default_bg']
+                    },
+
+                    'on_click': {
+                        'fg': a_p['frame_highlight_fg'],
+                        'bg': a_p['frame_highlight_bg'],
+                        'command': self.delete_pst_ui
+                    }
+                }
+            ],
+
+            str(id(rename_pst)): [
+                rename_pst, {
+                    'args': rename_pst_tab,
+                    'item_type': 'frame',
+
+                    'on_enter': {
+                        'fg': a_p['navigator_hover_fg'],
+                        'bg': a_p['navigator_hover_bg']
+                    },
+                    'on_leave': {
+                        'fg': a_p['navigator_default_fg'],
+                        'bg': a_p['navigator_default_bg']
+                    },
+
+                    'on_click': {
+                        'fg': a_p['frame_highlight_fg'],
+                        'bg': a_p['frame_highlight_bg'],
+                        'command': self.rename_pst_ui
+                    }
+                }
+            ],
+
+            str(id(quit_btn)): [
+                quit_btn, {
+                    'args': None,
+                    'item_type': 'frame',
+
+                    'on_enter': {
+                        'fg': a_p['navigator_hover_fg'],
+                        'bg': a_p['navigator_hover_bg']
+                    },
+                    'on_leave': {
+                        'fg': a_p['navigator_default_fg'],
+                        'bg': a_p['navigator_default_bg']
+                    },
+
+                    'on_click': {
+                        'fg': a_p['frame_highlight_fg'],
+                        'bg': a_p['frame_highlight_bg'],
+                        'command': self.destroy_playlist_manager_ui
+                    }
+                }
+            ],
+
+            str(id(all_pst)): [
+                all_pst, {
+                    'args': all_pst,
+                    'item_type': 'label',
+
+                    'on_click': {
+                        'fg': a_p['frame_highlight_fg'],
+                        'bg': a_p['frame_highlight_bg'],
+                        'command': self.all_playlists
+                    }
+                }
+            ],
+
+            str(id(new_pst_tab)): [
+                new_pst_tab, {
+                    'args': new_pst_tab,
+                    'item_type': 'label',
+
+                    'on_click': {
+                        'fg': a_p['frame_highlight_fg'],
+                        'bg': a_p['frame_highlight_bg'],
+                        'command': self.new_pst_ui
+                    }
+                }
+            ],
+
+            str(id(edit_pst_tab)): [
+                edit_pst_tab, {
+                    'args': edit_pst_tab,
+                    'item_type': 'label',
+
+                    'on_click': {
+                        'fg': a_p['frame_highlight_fg'],
+                        'bg': a_p['frame_highlight_bg'],
+                        'command': self.edit_pst_ui
+                    }
+                }
+            ],
+
+            str(id(delete_pst_tab)): [
+                delete_pst_tab, {
+                    'args': delete_pst_tab,
+                    'item_type': 'label',
+
+                    'on_click': {
+                        'fg': a_p['frame_highlight_fg'],
+                        'bg': a_p['frame_highlight_bg'],
+                        'command': self.delete_pst_ui
+                    }
+                }
+            ],
+
+            str(id(rename_pst_tab)): [
+                rename_pst_tab, {
+                    'args': rename_pst_tab,
+                    'item_type': 'label',
+
+                    'on_click': {
+                        'fg': a_p['frame_highlight_fg'],
+                        'bg': a_p['frame_highlight_bg'],
+                        'command': self.rename_pst_ui
+                    }
+                }
+            ],
+        }
+
+        # --- tabs data: Helps to remove highlights from inactive tabs
+        self.tabs_data.update(
             {
-                str(id(quit_label)): [
-                    quit_label, {
-                        'args': None,
-                        'item_type': 'label',
-
-                        'on_enter': {
-                            'fg': '#FFFFFF',
-                            'bg': 'red'
-                        },
-
-                        'on_leave': {
-                            'fg': '#FFFFFF',
-                            'bg': '#1B1E33'
-                        },
-
-                        'on_click': {
-                            'fg': '#FFFFFF',
-                            'bg': 'red',
-                            'command': self.destroy_playlist_manager_ui
-                        }
-                    }
-                ],
-
-                str(id(self.new_pst)): [
-                    self.new_pst, {
-                        'args': None,
-                        'item_type': 'label',
-
-                        'on_enter': {
-                            'fg': '#FFFFFF',
-                            'bg': 'green'
-                        },
-
-                        'on_leave': {
-                            'fg': '#FFFFFF',
-                            'bg': '#2A2B3D'
-                        },
-
-                        'on_click': {
-                            'fg': '#FFFFFF',
-                            'bg': '#B973F4',
-                            'command': lambda: print('Create New Playlists!!')
-                        }
-                    }
-                ],
-
-                str(id(self.refresh)): [
-                    self.refresh, {
-                        'args': None,
-                        'item_type': 'label',
-
-                        'on_enter': {
-                            'fg': '#FFFFFF',
-                            'bg': 'green'
-                        },
-
-                        'on_leave': {
-                            'fg': '#FFFFFF',
-                            'bg': '#2A2B3D'
-                        },
-
-                        'on_click': {
-                            'fg': '#FFFFFF',
-                            'bg': '#B973F4',
-                            'command': lambda: print('See if any new are created')
-                        }
-                    }
-                ],
-
-                str(id(self.edit)): [
-                    self.edit, {
-                        'args': None,
-                        'item_type': 'label',
-
-                        'on_enter': {
-                            'fg': '#FFFFFF',
-                            'bg': 'green'
-                        },
-
-                        'on_leave': {
-                            'fg': '#FFFFFF',
-                            'bg': '#2A2B3D'
-                        },
-
-                        'on_click': {
-                            'fg': '#FFFFFF',
-                            'bg': '#B973F4',
-                            'command': lambda: print('Edit Your Playlists!!')
-                        }
-                    }
-                ],
-                str(id(self.delete)): [
-                    self.delete, {
-                        'args': None,
-                        'item_type': 'label',
-
-                        'on_enter': {
-                            'fg': '#FFFFFF',
-                            'bg': 'green'
-                        },
-
-                        'on_leave': {
-                            'fg': '#FFFFFF',
-                            'bg': '#2A2B3D'
-                        },
-
-                        'on_click': {
-                            'fg': '#FFFFFF',
-                            'bg': '#B973F4',
-                            'command': lambda: print('Delete unwanted Playlists!!')
-                        }
-                    }
-                ]
+                str(id(all_pst)): all_pst,
+                str(id(new_pst_tab)): new_pst_tab,
+                str(id(edit_pst_tab)): edit_pst_tab,
+                str(id(delete_pst_tab)): delete_pst_tab,
+                str(id(rename_pst_tab)): rename_pst_tab,
+                'active_tab': str(id(all_pst))
             }
         )
+        # ---
 
         # -- Configure
-        self.app.puc.configure_frame_and_labels(data)
-
-        #<_end of the method_>
-    
-    def playlist_name_ui(self, playlist_data: dict) -> None:
-        '''
-        Create labels that will act as buttons.
-        count: int -> represents the no. of labels to build.
-        playlist_data: dict -> Gives the information to display
-         about the playlist
-            - data = {
-                'name': name,
-                'total': total
-            }
-        max_count: int -> Gives the max number of playlists that can
-         be displayed on the window
-        '''
-        self.visible_frame = build_frame(
-            parent=self.playlist_canvas,
-            bg='#1B1E33'
-        )
-        
-        self.visible_frame.place(
-                x=12, y=110,
-                width=247,
-                height=362
-            )
-
-        # --
-        count: int = len(playlist_data)
-        max_count: int = 7
-
-        def _build() -> None:
-            ''' Create the actual labels '''
-            nonlocal count
-            # -- visible frame can hold max of 7 pst names
-            if count > max_count:
-                # --  Build the first seven
-                count = 7
-
-            for i, ID in enumerate(playlist_data, start=1):
-                # -- Stop building when seven items are built
-                if i <= count:
-                    # -- Playlist buttons
-
-                    frame = build_frame(
-                        parent=self.visible_frame,
-                        bg='#2A2B3D', width=240,
-                        height=47
-                    )
-
-                    frame.pack(padx=(4, 0), pady=(4, 0), anchor='w')
-                    frame.pack_propagate(False)
-
-                    #colours = ['#4DD4AC', '#FF689D', '#7B61FF']
-
-                    icon_label = build_label(
-                        parent=frame,
-                        text='🎵', width=2,
-                        font=('Franklin Gothic Heavy', 18),
-                        fg='#FFFFFF', bg='#2A2B3D', bd=0
-                    )
-
-                    icon_label.pack(padx=(7, 0), pady=2, side='left')
-
-                    pst_name = build_label(
-                        parent=frame,
-                        text=playlist_data[ID]['name'],
-                        font=('Franklin Gothic Heavy', 10),
-                        fg='#FFFFFF', bg='#2A2B3D', bd=0
-                    )
-
-                    pst_name.pack(padx=(5, 0), pady=6, side='left', anchor='n')
-
-                    total_songs = build_label(
-                        parent=frame,
-                        text=playlist_data[ID]['total'],
-                        font=('Franklin Gothic Heavy', 6),
-                        fg='#FFFFFF', bg='#2A2B3D', bd=0
-                    )
-
-                    total_songs.place(x=42, y=30)
-
-                    self.app.puc.playlist_manager_ui_data.update(
-                        {
-                            str(id(frame)): [
-                                frame, {
-                                    'args': ID,
-                                    'item_type': 'frame',
-
-                                    'on_enter': {
-                                        'fg': '#FFFFFF',
-                                        'bg': 'green'
-                                    },
-
-                                    'on_leave': {
-                                        'fg': '#FFFFFF',
-                                        'bg': '#2A2B3D'
-                                    },
-
-                                    'on_click': {
-                                        'fg': '#FFFFFF',
-                                        'bg': '#B973F4',
-                                        'command': self.app.pst.open_playlist
-                                    }
-                                }
-                            ]
-                        }
-                    )
-
-            #<_end of the function_>
-        
-        # --
-        _build()
-
-        #<_end of the method_>
-    
-    def playlist_items_ui(self, playlist_items: list, max_items=10) -> None:
-        ''' UI for songs in playlist '''
-        # -- Destroy frame if active
-        try:
-            # --
-            self.playlist_items_frame.destroy()
-        except Exception:
-            # -- Frame not created
-            pass
-
-        # -- Create frame
-        self.playlist_items_frame = build_frame(
-            parent=self.playlist_canvas,
-            bg='#1B1E33', highlightthickness=0,
-            bd=0
+        self.root.after(
+            200,
+            self.app.puc.configure_frame_and_labels,
+            data
         )
 
-        self.playlist_items_frame.place(x=300, y=70, width=696, height=394)
+        # -- Build First section
+        self.root.after(
+            300,
+            obj.destroy
+        )
 
-        count: int = len(playlist_items)
-        if count > 10:
-            count = 10
+        self.playlist_canvas.create_line(
+            0, 26, 793, 26,
+            fill=a_p['border']
+        )
 
-        items = playlist_items[:count]
+        #<_end of the method_>
 
-        for path in items:
-            song_frame = build_frame(
-                parent=self.playlist_items_frame,
-                bg='#1B1E33', width=690, height=35
-            )
+    def all_playlists(self, tab) -> None:
+        '''
+        Build little frames in a scrollable frame
+        indicating the playlist name and number of
+        songs available
+        '''
+        # --
+        a_p = self.app_theme
+        # -- Unhighlight Inactive tab
+        ts_d = self.tabs_data
+        active_tab = ts_d[ts_d['active_tab']]
+        active_tab.config(
+            fg=a_p['primary_text_colour'],
+            bg=a_p['primary_bg']
+        )
 
-            song_frame.pack(padx=(3, 0), pady=(4, 0), side='top', anchor='w')
-            song_frame.pack_propagate(False)
+        # -- Highlight active & Set active
+        tab.config(
+            fg=a_p['frame_highlight_fg'],
+            bg=a_p['frame_highlight_bg']
+        )
+        self.tabs_data['active_tab'] = str(id(tab))
 
-            artwork_label = build_label(
-                parent=song_frame,
-                highlightthickness=0, bd=0
-            )
+        #<_end of the method_>
 
-            artwork_label.pack(side='left', padx=(5, 0))
+    def new_pst_ui(self, tab) -> None:
+        ''' Build _ UI '''
+        # --
+        a_p = self.app_theme
+        # -- Unhighlight Inactive tab
+        ts_d = self.tabs_data
+        active_tab = ts_d[ts_d['active_tab']]
+        active_tab.config(
+            fg=a_p['primary_text_colour'],
+            bg=a_p['primary_bg']
+        )
 
-            set_image(artwork_label, AlmaDataPaths.BG_DIR / 'alma_bgd.png', (30, 30))
+        # -- Highlight active & Set active
+        tab.config(
+            fg=a_p['frame_highlight_fg'],
+            bg=a_p['frame_highlight_bg']
+        )
+        self.tabs_data['active_tab'] = str(id(tab))
 
-            text: str = os.path.basename(path)
-            song_name = build_label(
-                parent=song_frame,
-                text=text, font=('Calibri', 10),
-                fg='#FFFFFF', bg='#1B1E33'
-            )
+        #<_end of the method_>
 
-            song_name.pack(padx=(5, 0), pady=(0, 0), side='top', anchor='w')
+    def edit_pst_ui(self, tab) -> None:
+        ''' Build _ UI '''
+        # --
+        a_p = self.app_theme
+        # -- Unhighlight Inactive tab
+        ts_d = self.tabs_data
+        active_tab = ts_d[ts_d['active_tab']]
+        active_tab.config(
+            fg=a_p['primary_text_colour'],
+            bg=a_p['primary_bg']
+        )
 
-            text: str = 'Alan Walker'
-            song_artist = build_label(
-                parent=song_frame,
-                text=text, font=('Calibri', 8),
-                fg='#FFFFFF', bg='#1B1E33'
-            )
+        # -- Highlight active & Set active
+        tab.config(
+            fg=a_p['frame_highlight_fg'],
+            bg=a_p['frame_highlight_bg']
+        )
+        self.tabs_data['active_tab'] = str(id(tab))
 
-            song_artist.place(x=40, y=18)
+        #<_end of the method_>
 
-            length_label = build_label(
-                parent=song_frame,
-                text='00:03:45',
-                font=('Calibri', 10),
-                fg='#FFFFFF', bg='#1B1E33'
-            )
+    def delete_pst_ui(self, tab) -> None:
+        ''' Build _ UI '''
+        # --
+        a_p = self.app_theme
+        # -- Unhighlight Inactive tab
+        ts_d = self.tabs_data
+        active_tab = ts_d[ts_d['active_tab']]
+        active_tab.config(
+            fg=a_p['primary_text_colour'],
+            bg=a_p['primary_bg']
+        )
 
-            length_label = tk.Label()
-            length_label.place(x=620, y=1)
+        # -- Highlight active & Set active
+        tab.config(
+            fg=a_p['frame_highlight_fg'],
+            bg=a_p['frame_highlight_bg']
+        )
+        self.tabs_data['active_tab'] = str(id(tab))
+
+        #<_end of the method_>
+
+    def rename_pst_ui(self, tab) -> None:
+        ''' Build _ UI '''
+        # --
+        a_p = self.app_theme
+        # -- Unhighlight Inactive tab
+        ts_d = self.tabs_data
+        active_tab = ts_d[ts_d['active_tab']]
+        active_tab.config(
+            fg=a_p['primary_text_colour'],
+            bg=a_p['primary_bg']
+        )
+
+        # -- Highlight active & Set active
+        tab.config(
+            fg=a_p['frame_highlight_fg'],
+            bg=a_p['frame_highlight_bg']
+        )
+        self.tabs_data['active_tab'] = str(id(tab))
 
         #<_end of the method_>
 
@@ -852,11 +817,11 @@ class PlaylistManagerUI:
     
     def destroy_playlist_manager_ui(self) -> None:
         ''' Destroy playlist manager ui '''
-        # -- Clear states
-        self.app.pub.playlist_manager_ui_data = {}
+        # --  Destroy playlist navigation and the UI itself
+        self.root.after(1000, self.playlist_canvas.destroy)
+        self.root.after(1030, self.playlist_navigation.destroy)
 
-        # -- Destroy
-        self.playlist_ui.destroy()
+        self.tabs_data = {}
 
         #<_end of the method_>
 
@@ -1734,8 +1699,6 @@ class AudioDownloaderUI:
 
     def build_downloader_ui(self, win) -> None:
         ''' Build the downloader UI when called '''
-        print("SERVICE POSTPONED!!")
-        return
         # --
         a_p = self.app_theme
         
@@ -1751,7 +1714,14 @@ class AudioDownloaderUI:
             parent=self.yt_canvas,
             text='Download Music',
             font=('Franklin Gothic Heavy', 10),
-            fg=a_p['primary_text_colour'], bg=a_p['secondary_bg']
+            fg=a_p['secondary_text_colour'], bg=a_p['secondary_bg']
+        )
+
+        close_downloader = build_label(
+            parent=self.yt_canvas, text='CLOSE',
+            font=('Franklin Gothic Heavy', 10),
+            fg=a_p['secondary_text_colour'],
+            bg=a_p['secondary_bg'], cursor='hand2'
         )
 
         url_tab = build_frame(
@@ -1787,9 +1757,12 @@ class AudioDownloaderUI:
         # --- placements
         self.app.uiu.place_object(
             object=downloader_title,
-            delta=50,
-            x=5,
-            y=2,
+            delta=50, x=5, y=2
+        )
+
+        self.app.uiu.place_object(
+            object=close_downloader,
+            delta=50, x=725, y=2
         )
 
         self.root.after(
@@ -1893,7 +1866,30 @@ class AudioDownloaderUI:
                             'command': self.app.puc.on_search_tab_press
                         }
                     }
-                ]
+                ],
+
+                str(id(close_downloader)): [
+                    close_downloader, {
+                        'args': None,
+                        'item_type': 'label',
+
+                        'on_enter': {
+                            'fg': a_p['frame_highlight_fg'],
+                            'bg': a_p['frame_highlight_bg']
+                        },
+
+                        'on_leave': {
+                            'fg': a_p['secondary_text_colour'],
+                            'bg': a_p['secondary_bg']
+                        },
+
+                        'on_click': {
+                            'fg': a_p['frame_highlight_fg'],
+                            'bg': a_p['frame_highlight_bg'],
+                            'command': self.destroy_audio_downloader_ui
+                        }
+                    }
+                ],
             }
         )
 
@@ -1932,13 +1928,13 @@ class AudioDownloaderUI:
             # -- Assume this is not the first time build
             self.hint_a.config(text='Download From URL')
 
-        except AttributeError:
+        except (AttributeError, TclError):
             # -- Fist time build
             self.hint_a = build_label(
                 parent=self.yt_canvas,
                 text='Download From URL',
                 font=('Franklin Gothic Heavy', 9),
-                fg=a_p['primary_text_colour'],
+                fg=a_p['secondary_text_colour'],
                 bg=a_p['secondary_bg']
             )
 
@@ -1946,7 +1942,7 @@ class AudioDownloaderUI:
             # -- Assume this is not the first time build
             self.hint_b.config(text='Paste a Music URL from YouTube')
 
-        except AttributeError:
+        except (AttributeError, TclError):
             # -- Fist time build
             self.hint_b = build_label(
                 parent=self.yt_canvas,
@@ -1960,12 +1956,12 @@ class AudioDownloaderUI:
             self.query_input.delete(0, 'end')
             self.query_input.insert('end', 'Paste URL Here ...')
 
-        except AttributeError:
+        except (AttributeError, TclError):
             # --
             self.query_input = build_entry(
                 parent=self.yt_canvas,
-                bg=a_p['secondary_bg'], fg=a_p['primary_text_colour'],
-                insertbackground=a_p['primary_text_colour'],
+                bg=a_p['secondary_bg'], fg=a_p['third_text_colour'],
+                insertbackground=a_p['third_text_colour'],
                 relief='flat', font=('Segoe UI', 11)
             )
             self.query_input.insert('end', 'Paste URL Here ...')
@@ -1974,7 +1970,7 @@ class AudioDownloaderUI:
             # --
             self.execute_query.config(text='📥 Download')
 
-        except AttributeError:
+        except (AttributeError, TclError):
             # --
             self.execute_query = build_label(
                 parent=self.yt_canvas,
@@ -1995,7 +1991,7 @@ class AudioDownloaderUI:
             parent=self.yt_canvas,
             text='💱 Recent Downloads',
             font=('Franklin Gothic Heavy', 9),
-            fg=a_p['primary_text_colour'],
+            fg=a_p['secondary_text_colour'],
             bg=a_p['secondary_bg']
         )
 
@@ -2135,6 +2131,15 @@ class AudioDownloaderUI:
                 }
             ]
         }
+
+        #<_end of the method_>
+
+    def destroy_audio_downloader_ui(self) -> None:
+        ''' Destroy playlist manager ui '''
+        # --  Destroy playlist navigation and the UI itself
+        self.root.after(1000, self.yt_canvas.destroy)
+        self.url_tab_active: bool = False
+        self.search_tab_active: bool = False
 
         #<_end of the method_>
 
@@ -2996,7 +3001,7 @@ class MainUI:
                         'on_click': {
                             'fg': a_p['frame_highlight_fg'],
                             'bg': a_p['frame_highlight_bg'],
-                            'command': self.app.puc.on_playlist_press
+                            'command': self.app.pub.build_playlist_manager_ui
                         }
                     }
                 ],
