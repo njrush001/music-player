@@ -26,76 +26,29 @@ class PlaylistManager:
         args[1].destroy()
 
         #<_end of the method_>
-
-    def load_playlist_manager(self) -> None:
-        '''
-        Calls the UI builder and configurer and shows
-        user's created Playlist
-        '''
-        playlists_data: dict = self.load_users_playlist()
-
-        self.app.pub.build_playlist_manager_ui()
-
-
-        self.app.root.after(
-            1200,
-            self.app.pub.playlist_name_ui,
-            playlists_data
-        )
-
-        #<_end of the method_>
     
     def load_users_playlist(self) -> dict:
         '''
         Opens the folder where playlists are saved and extracts
         important info.
         '''
-        data = {}
+        visualisation_data = {}
         for r, _, files in os.walk(self.playlist_dir):
             for f in files:
-                if f.lower().endswith('.json'):
-                    with open(os.path.join(r, f), 'r') as file:
-                        db_data = json.load(file)
-                    
-                    ID: str = db_data[0]
-                    name: str = f.replace('.json', '').title()
+                data = self.app.dbm.read_data(self.playlist_dir / f)
+                for name in data:
+                    if len(data[name]) == 0:
+                        # -- Empty playlist
+                        continue
 
-                    total: int = len(db_data[1])
-                    if total < 2:
-                        total = '1 Song' if total == 1 else '-'
-                    else:
-                        total = f'{total} Songs'
+                    visualisation_data[name] = data[name]['total']
 
-                    data[ID] = {
-                        'name': name,
-                        'total': total
-                    }
-
-                    self.playlists[ID] = db_data[1]
-
-                else:
-                    os.remove(os.path.join(r, f))
-
-        return data
+        return visualisation_data
 
         #<_end of the method_>
     
     def open_playlist(self, playlist_id: str) -> None:
         ''' Open the selected playlist '''
-        # -- Supply paths
-        paths = [p for p in self.playlists[playlist_id].values()]
-
-        self.app.pub.root.after(
-            50,
-            self.app.ui.playlist_items_ui,
-            paths
-        )
-
-        #<_end of the method_>
-    
-    def close_playlist_manager(self) -> None:
-        '''  Close the playlist UI then delete all data '''
-        # -- Close the playlist UI
-        self.app.pub.destroy_playlist_manager_ui()
+        pass
 
         #<_end of the method_>
