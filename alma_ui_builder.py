@@ -6,9 +6,9 @@ from datetime import datetime
 from PIL import Image, ImageTk
 from config import AlmaDataPaths
 from new_ui_updater import set_image
-from alma_ui_configurer import on_seek
 from new_ui_updater import clean_title
 from new_player_engine import get_track_duration
+from alma_ui_configurer import on_seek, on_mousewheel, on_update
 from new_ui_updater import extract_track_artwork, extract_metadata_for_track
 # <====================================>
 
@@ -363,6 +363,11 @@ class PlaylistManagerUI:
             pady=(1, 0), side='left',
             anchor='n'
         )
+
+        self.playlist_canvas.create_line(
+            0, 26, 793, 26,
+            fill=a_p['border']
+        )
         # ------------
 
         # -------------------------------------------------------------------------------------
@@ -572,35 +577,146 @@ class PlaylistManagerUI:
             obj.destroy
         )
 
-        self.playlist_canvas.create_line(
-            0, 26, 793, 26,
-            fill=a_p['border']
+        self.root.after(
+            310,
+            lambda: self.all_playlists(all_pst, bypass=True)
         )
 
         #<_end of the method_>
 
-    def all_playlists(self, tab) -> None:
+    def all_playlists(self, tab, bypass=False) -> None:
         '''
         Build little frames in a scrollable frame
         indicating the playlist name and number of
-        songs available
+        songs availables
         '''
         # --
         a_p = self.app_theme
         # -- Unhighlight Inactive tab
         ts_d = self.tabs_data
-        active_tab = ts_d[ts_d['active_tab']]
-        active_tab.config(
+        if (str(id(tab)) == ts_d['active_tab']) and (not bypass):
+            # -- Current tab active: No need to rebuild
+            return
+        elif bypass:
+            pass
+        else:
+            active_tab = ts_d[ts_d['active_tab']]
+            active_tab.config(
+                fg=a_p['primary_text_colour'],
+                bg=a_p['primary_bg']
+            )
+
+            # -- Highlight active & Set active
+            tab.config(
+                fg=a_p['frame_highlight_fg'],
+                bg=a_p['frame_highlight_bg']
+            )
+            self.tabs_data['active_tab'] = str(id(tab))
+
+        # -------------------------------------------
+        # -------------------------------------------
+        # -- content
+
+        p_t = build_label(
+            parent=self.playlist_canvas,
+            text='All Playlist',
+            fg=a_p['secondary_text_colour'],
+            bg=a_p['secondary_bg'],
+            font=('Franklin Gothic Heavy', 17)
+        )
+
+        p_w = build_label(
+            parent=self.playlist_canvas,
+            text='Your Music. Your Playlists. Your Choice.',
             fg=a_p['primary_text_colour'],
+            bg=a_p['secondary_bg'],
+            font=('Tahoma', 8, 'bold')
+        )
+
+        f = build_frame(
+            parent=self.playlist_canvas,
+            bg=a_p['secondary_bg'],
+            width=789, height=345
+        )
+
+        canvas = build_canvas(
+            parent=f,
+            bg=a_p['secondary_bg'], bd=0,
+            highlightthickness=0
+        )
+
+        content_frame = build_frame(
+            parent=canvas,
             bg=a_p['primary_bg']
         )
 
-        # -- Highlight active & Set active
-        tab.config(
-            fg=a_p['frame_highlight_fg'],
-            bg=a_p['frame_highlight_bg']
+        for col in range(4):
+            content_frame.grid_columnconfigure(
+                col, weight=1,
+                uniform='playlist'
+            )
+
+        canvas.create_window(
+            (0, 0),
+            window=content_frame,
+            anchor='nw'
         )
-        self.tabs_data['active_tab'] = str(id(tab))
+        #canvas.bind('<Configure>', lambda e: canvas.itemconfigure(window_id, width=e.width))
+
+        # -------------------------------------------
+        # -------------------------------------------
+
+        # -------------------------------------------
+        # -------------------------------------------
+        # -- placements
+        self.app.uiu.place_object(
+            object=p_t, delta=20,
+            x=2, y=30
+        )
+
+        self.app.uiu.place_object(
+            object=p_w, delta=20,
+            x=2, y=70
+        )
+
+        self.app.uiu.place_object(
+            object=f, delta=20, x=2,
+            y=95, width=789, height=345
+        )
+
+        self.app.uiu.pack_object(
+            object=canvas, delta=20,
+            fill='both', expand=True
+        )
+        # -------------------------------------------
+        # -------------------------------------------
+        # -- Configure
+
+        visualisation_data = self.app.pst.load_users_playlist()
+
+        delta = 10
+        for i, (name, total) in enumerate(visualisation_data.items()):
+            row = i // 4
+            column = i % 4
+
+            frame = build_frame(
+                parent=content_frame,
+                bg=a_p['secondary_bg'],
+                width=189, height=150
+            )
+
+            # -- Grid
+            self.app.uiu.grid_object(
+                object=frame, delta=10,
+                row=row, column=column,
+                padx=4, pady=(4, 0)
+            )
+            on_mousewheel(frame, canvas)
+
+
+        on_update(content_frame, canvas)
+        on_mousewheel(content_frame, canvas)
+        on_mousewheel(canvas, canvas)
 
         #<_end of the method_>
 
@@ -610,6 +726,8 @@ class PlaylistManagerUI:
         a_p = self.app_theme
         # -- Unhighlight Inactive tab
         ts_d = self.tabs_data
+        if str(id(tab)) == ts_d['active_tab']:
+            return
         active_tab = ts_d[ts_d['active_tab']]
         active_tab.config(
             fg=a_p['primary_text_colour'],
@@ -631,6 +749,8 @@ class PlaylistManagerUI:
         a_p = self.app_theme
         # -- Unhighlight Inactive tab
         ts_d = self.tabs_data
+        if str(id(tab)) == ts_d['active_tab']:
+            return
         active_tab = ts_d[ts_d['active_tab']]
         active_tab.config(
             fg=a_p['primary_text_colour'],
@@ -652,6 +772,8 @@ class PlaylistManagerUI:
         a_p = self.app_theme
         # -- Unhighlight Inactive tab
         ts_d = self.tabs_data
+        if str(id(tab)) == ts_d['active_tab']:
+            return
         active_tab = ts_d[ts_d['active_tab']]
         active_tab.config(
             fg=a_p['primary_text_colour'],
@@ -673,6 +795,8 @@ class PlaylistManagerUI:
         a_p = self.app_theme
         # -- Unhighlight Inactive tab
         ts_d = self.tabs_data
+        if str(id(tab)) == ts_d['active_tab']:
+            return
         active_tab = ts_d[ts_d['active_tab']]
         active_tab.config(
             fg=a_p['primary_text_colour'],
