@@ -51,6 +51,21 @@ def on_seek(data: dict) -> None:
         
     #<_end of the function_>
 
+def _update_scrollregion(event=None, canvas=None) -> None:
+    canvas.configure(scrollregion=canvas.bbox('all'))
+
+def on_update(frame, canvas) -> None:
+    frame.bind('<Configure>', lambda e: _update_scrollregion(canvas=canvas))
+
+def _scroll(e, canvas) -> None:
+    canvas.yview_scroll(
+        -1 if e.delta > 0 else 1,
+        'units'
+    )
+
+def on_mousewheel(obj, canvas) -> None:
+    obj.bind('<MouseWheel>', lambda e: _scroll(e, canvas))
+
 
 # ========================================================================================================================
 # ========================================================================================================================
