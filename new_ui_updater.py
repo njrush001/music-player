@@ -322,6 +322,27 @@ class UIUpdates:
 
 		#<_end of the function_>
 
+	def grid_object(self, object, delta: int, **kwargs) -> None:
+		'''
+		Place an object in a grid after some time delta using the properties
+		specified under kwargs
+		'''
+		# --
+		def _grid():
+			''' grid the object using properties in kwargs '''
+			try:
+				# -- Incase object does exist
+				object.grid(**kwargs)
+			except TclError:
+				pass
+
+			#<_end of inner function_>
+
+		# -- Operate
+		self.root.after(delta, _grid)
+
+		#<_end of the function_>
+
 	def pack_object(self, object, delta: int, **kwargs) -> None:
 		'''
 		Pack an object after some time delta using the properties
@@ -407,7 +428,7 @@ class UIUpdates:
 
 		#<_end of the method_>
 
-	def draw_wave_for_track(self, path, center: int = 30, animation_type='swipe_both') -> None:
+	def draw_wave_for_track(self, path, center: int = 30, animation_type='transform') -> None:
 		''' Draw wave for song given the norm '''
 		# --
 		base = os.path.basename(path).replace('.mp3', '')
