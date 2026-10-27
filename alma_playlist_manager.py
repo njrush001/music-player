@@ -47,8 +47,8 @@ class PlaylistManager:
 
         #<_end of the method_>
     
-    def open_playlist(self, playlist_id: str) -> None:
+    def open_playlist(self, name: str) -> None:
         ''' Open the selected playlist '''
-        pass
+        print(name)
 
         #<_end of the method_>
