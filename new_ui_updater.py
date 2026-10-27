@@ -167,7 +167,7 @@ def open_image_path(img_path):
 
 	#<_end of the function_>
 
-def set_image(label, img, size: tuple[int, int], blended_img=None) -> None:
+def set_image(label, img, size: tuple[int, int], blended_img=None, return_photo=False) -> None:
 	''' Set Image '''
 	if blended_img is None:
 	# -- Open img and resize
@@ -182,6 +182,9 @@ def set_image(label, img, size: tuple[int, int], blended_img=None) -> None:
 
 		finally:
 			_photo = ImageTk.PhotoImage(_img)
+
+			if return_photo:
+				return _photo
 
 	else:
 		# -- cross fading in action
@@ -301,7 +304,7 @@ class UIUpdates:
 
 		#<_end of the method_>
 
-	def place_object(self, object, delta: int, **kwargs) -> None:
+	def place_object(self, object, delta: int, escape_delta=False, **kwargs) -> None:
 		'''
 		Place an object after some time delta using the properties
 		specified under kwargs
@@ -318,32 +321,17 @@ class UIUpdates:
 			#<_end of inner function_>
 
 		# -- Operate
+		if escape_delta:
+			# -- Apply directly
+			_place()
+
+			return
+
 		self.root.after(delta, _place)
 
 		#<_end of the function_>
 
-	def grid_object(self, object, delta: int, **kwargs) -> None:
-		'''
-		Place an object in a grid after some time delta using the properties
-		specified under kwargs
-		'''
-		# --
-		def _grid():
-			''' grid the object using properties in kwargs '''
-			try:
-				# -- Incase object does exist
-				object.grid(**kwargs)
-			except TclError:
-				pass
-
-			#<_end of inner function_>
-
-		# -- Operate
-		self.root.after(delta, _grid)
-
-		#<_end of the function_>
-
-	def pack_object(self, object, delta: int, **kwargs) -> None:
+	def pack_object(self, object, delta: int, escape_delta=False, **kwargs) -> None:
 		'''
 		Pack an object after some time delta using the properties
 		specified under kwargs
@@ -360,6 +348,12 @@ class UIUpdates:
 			#<_end of inner function_>
 
 		# -- Operate
+		if escape_delta:
+			# -- Apply directly
+			_pack()
+
+			return
+
 		self.root.after(delta, _pack)
 
 		#<_end of the function_>
