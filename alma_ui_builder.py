@@ -594,12 +594,10 @@ class PlaylistManagerUI:
         a_p = self.app_theme
         # -- Unhighlight Inactive tab
         ts_d = self.tabs_data
-        if (str(id(tab)) == ts_d['active_tab']) and (not bypass):
-            # -- Current tab active: No need to rebuild
-            return
-        elif bypass:
-            pass
-        else:
+        if not bypass:
+            if (str(id(tab)) == ts_d['active_tab']):
+                # -- Current tab active: No need to rebuild
+                return
             active_tab = ts_d[ts_d['active_tab']]
             active_tab.config(
                 fg=a_p['primary_text_colour'],
@@ -647,21 +645,14 @@ class PlaylistManagerUI:
 
         content_frame = build_frame(
             parent=canvas,
-            bg=a_p['primary_bg']
+            bg=a_p['secondary_bg']
         )
-
-        for col in range(4):
-            content_frame.grid_columnconfigure(
-                col, weight=1,
-                uniform='playlist'
-            )
 
         canvas.create_window(
             (0, 0),
             window=content_frame,
             anchor='nw'
         )
-        #canvas.bind('<Configure>', lambda e: canvas.itemconfigure(window_id, width=e.width))
 
         # -------------------------------------------
         # -------------------------------------------
@@ -692,31 +683,140 @@ class PlaylistManagerUI:
         # -------------------------------------------
         # -- Configure
 
-        visualisation_data = self.app.pst.load_users_playlist()
+        visualisation_data: dict = self.app.pst.load_users_playlist()
+        data = list(visualisation_data.items())
+        total_playlists = len(data)
+        photo = set_image('', '', size=(100, 100), return_photo=True)
 
-        delta = 10
-        for i, (name, total) in enumerate(visualisation_data.items()):
-            row = i // 4
-            column = i % 4
+        # -- Get the total number of frames needed
+        if (total_playlists % 4) == 0:
+            maximum_frames = total_playlists // 4
+        else:
+            maximum_frames = (total_playlists // 4) + 1
 
-            frame = build_frame(
+        def _build(maximum_frames: int, start=0, end=4) -> None:
+            if maximum_frames == 0:
+                return
+
+            # -- row frame: hold approximately four framess
+            row_frame = build_frame(
                 parent=content_frame,
                 bg=a_p['secondary_bg'],
-                width=189, height=150
+                width=784, height=180
+            )
+            row_frame.pack_propagate(False)
+
+            for name, total in data[start:end]:
+                playlist_frame = build_frame(
+                    parent=row_frame, cursor='hand2',
+                    bg=a_p['primary_bg'],
+                    width=192, height=174
+                )
+                playlist_frame.pack_propagate(False)
+
+                # -- artwork
+                cover_art = build_label(
+                    parent=playlist_frame,
+                    highlightthickness=0,
+                    bd=0, image=photo
+                )
+                cover_art.image = photo # -- reference
+
+                # -- playlist name & Total
+                playlist_name = build_label(
+                    parent=playlist_frame, cursor='hand2', bg=a_p['primary_bg'],
+                    text=f'Name: {clean_title(name, max_lmt=17, max_show=15)}',
+                    font=('Calibri', 10, 'bold'), fg=a_p['primary_text_colour']
+                )
+
+                total_songs = build_label(
+                    parent=playlist_frame, text=f'Total: {total} Song' if 0 <= total <= 1 else f'Total: {total} Songs',
+                    font=('Calibri', 10, 'bold'), fg=a_p['primary_text_colour'], bg=a_p['primary_bg']
+                )
+                # -----
+
+                # -- Data for configuration
+                configuration_data = {
+                    str(id(playlist_frame)): [
+                        playlist_frame, {
+                            'args': name,
+                            'item_type': 'frame',
+
+                            'on_enter': {
+                                'fg': a_p['navigator_hover_fg'],
+                                'bg': a_p['navigator_hover_bg']
+                            },
+
+                            'on_leave': {
+                                'fg': a_p['primary_text_colour'],
+                                'bg': a_p['primary_bg']
+                            },
+
+                            'on_click': {
+                                'fg': a_p['frame_highlight_fg'],
+                                'bg': a_p['frame_highlight_bg'],
+                                'command': self.app.pst.open_playlist
+                            }
+                        }
+                    ]
+                }
+                # ---
+
+                # -------------------
+                # -- placements
+                self.app.uiu.pack_object(
+                    object=cover_art, delta=0,
+                    escape_delta=True, pady=(7, 0)
+                )
+                self.app.uiu.pack_object(
+                    object=playlist_name, delta=0,
+                    escape_delta=True, pady=7,
+                    padx=2
+                )
+                self.app.uiu.pack_object(
+                    object=total_songs, delta=0,
+                    escape_delta=True, pady=(2, 0),
+                    padx=2
+                )
+                self.app.uiu.pack_object(
+                    object=playlist_frame, delta=0,
+                    escape_delta=True, pady=2,
+                    padx=2, side='left'
+                )
+                # -------------------
+
+                # -- configure
+                on_mousewheel(playlist_frame, canvas)
+                on_mousewheel(cover_art, canvas)
+                on_mousewheel(playlist_name, canvas)
+                on_mousewheel(total_songs, canvas)
+                self.app.puc.configure_frame_and_labels(configuration_data)
+                # --
+            
+            # --------
+            # -- row frame placement
+            self.app.uiu.pack_object(
+                object=row_frame, delta=0,
+                escape_delta=True, pady=(4, 0),
+                padx=3
+            )
+            # --
+
+            # -- Configure
+            on_mousewheel(row_frame, canvas)
+            # --
+
+            # -- Schedule
+            self.root.after(
+                10,
+                lambda: _build(maximum_frames - 1, start=start+4, end=end+4)
             )
 
-            # -- Grid
-            self.app.uiu.grid_object(
-                object=frame, delta=10,
-                row=row, column=column,
-                padx=4, pady=(4, 0)
-            )
-            on_mousewheel(frame, canvas)
+        _build(maximum_frames)
 
-
+        # --
         on_update(content_frame, canvas)
         on_mousewheel(content_frame, canvas)
-        on_mousewheel(canvas, canvas)
 
         #<_end of the method_>
 
