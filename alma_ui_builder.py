@@ -753,8 +753,8 @@ class PlaylistManagerUI:
                             },
 
                             'on_click': {
-                                'fg': a_p['frame_highlight_fg'],
-                                'bg': a_p['frame_highlight_bg'],
+                                'fg': a_p['navigator_hover_fg'],
+                                'bg': a_p['navigator_hover_bg'],
                                 'command': self.app.pst.open_playlist
                             }
                         }
