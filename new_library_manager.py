@@ -1,5 +1,5 @@
 # <============ IMPORTS ===============>
-import os
+import os, threading
 from typing import Optional
 from tkinter import filedialog
 from new_player_engine import music_playing
@@ -66,5 +66,58 @@ class LibraryManager:
 
 				# -- track is unavailable (build mini queue - probably the program has just started)
 				self.app.select_tracks_to_add(paths)
+
+		#<_end of the method_>
+
+	def _search_file(self, track) -> None:
+		''' Find the location of the given song '''
+		# -- Folders To Search
+		FOLDERS: list = self.app.pda.player_data['music_folders'].copy()
+
+		# -- Attempt search
+		for _dir in FOLDERS:
+			for r, _, files in os.walk(_dir):
+				# -- Attempt search in this folder's files
+				if track in files:
+					# -- Return file path
+					return os.path.join(r, track)
+		
+		# -- Song not available
+		return None
+
+		#<_end of the method_>
+
+	def _get_paths(self, tracks: list, last_play=False) -> None:
+		''' Find paths in Know Folders '''
+		# -- Will Hold All Paths That Are Found
+		found = {}
+
+		# -- For Every Track, Attempt Finding its location
+		for track in tracks:
+			# -- Attempt Search
+			path = self._search_file(track)
+
+			# -- Add Found paths to found
+			if path is not None:
+				# -- Add
+				found[track.replace('.mp3', '')] = path
+		# --
+		if len(found) > 0:
+			# -- Clear playlists & Add
+			self.app.clear_playlist_bags()
+			self.app.select_tracks_to_add(paths=found)
+
+		#<_end of the method_>
+
+	def thread_worker_for_search(self, tracks, last_play=False) -> None:
+		''' Initiate thread worker for search '''
+		# -- Create task
+		_task = threading.Thread(
+			target=self._get_paths,
+			args=(tracks,), kwargs={'last_play': last_play},
+			daemon=True)
+
+		# -- Start the task
+		_task.start()
 
 		#<_end of the method_>
