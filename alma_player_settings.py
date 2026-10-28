@@ -75,7 +75,7 @@ class PlayerData:
 
 			#<_>
 
-		return ''
+		return None, None, None
 
 		#<_end of the method_>
 	
