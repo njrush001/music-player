@@ -10,19 +10,18 @@ class PlaylistManager:
     def get_artist_music(self, args) -> None:
         ''' Get songs from the passed artist '''
         # --
-        data_file = self.playlist_dir / 'artists_music.json'
+        data_file = self.playlist_dir / 'artists_playlists.json'
         data = self.app.dbm.read_data(data_file)
         tracks = data.get(args[0], None)
 
-        if not isinstance(tracks, list):
+        if not isinstance(tracks['songs'], list):
             raise KeyError('Tracks Unavailable: Could Not Fnd Tracks By That Artist')
-        data = {}
-        for p in tracks:
-            base = os.path.basename(p)
-            data[base.replace('.mp3', '')] = p
-        self.app.clear_playlist_bags()
-        self.app.pyr.track_index = 0
-        self.app.select_tracks_to_add(data)
+
+        # -- Search and load
+        self.app.lib.thread_worker_for_search(
+            tracks=tracks['songs']
+        )
+
         args[1].destroy()
 
         #<_end of the method_>
@@ -42,6 +41,8 @@ class PlaylistManager:
                         continue
 
                     visualisation_data[name] = data[name]['total']
+                # --
+                self.playlists.update(data)
 
         return visualisation_data
 
@@ -49,6 +50,11 @@ class PlaylistManager:
     
     def open_playlist(self, name: str) -> None:
         ''' Open the selected playlist '''
-        print(name)
+        # --- Load playlist to UI
+        tracks = self.playlists[name]['songs']
+        self.app.lib.thread_worker_for_search(
+            tracks=tracks
+        )
+        # --
 
         #<_end of the method_>
