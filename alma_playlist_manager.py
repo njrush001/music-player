@@ -11,7 +11,7 @@ class PlaylistManager:
         ''' Get songs from the passed artist '''
         # --
         data_file = self.playlist_dir / 'artists_playlists.json'
-        data = self.app.dbm.read_data(data_file)
+        data = self.app.dbm.read_data(data_file, {})
         tracks = data.get(args[0], None)
 
         if not isinstance(tracks['songs'], list):
@@ -34,7 +34,7 @@ class PlaylistManager:
         visualisation_data = {}
         for r, _, files in os.walk(self.playlist_dir):
             for f in files:
-                data = self.app.dbm.read_data(self.playlist_dir / f)
+                data = self.app.dbm.read_data(self.playlist_dir / f, {})
                 for name in data:
                     if len(data[name]) == 0:
                         # -- Empty playlist
