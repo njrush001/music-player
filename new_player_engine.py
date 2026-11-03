@@ -80,7 +80,7 @@ class PlayerEngine:
 		self.format_time = format_time
 
 		# -- Set startup volume
-		self.set_volume(vol=self.app.pda.player_data['volume_level'])
+		self.set_volume(vol=self.app.pda.playback_data['volume_level'])
 
 		#<_end of the method_>
 
@@ -89,7 +89,7 @@ class PlayerEngine:
 		# --
 		pygame.mixer.music.set_volume(vol)
 
-		self.app.pda.player_data['volume_level'] = vol
+		self.app.pda.playback_data['volume_level'] = vol
 
 		#<_end of the function_>
 
@@ -165,7 +165,7 @@ class PlayerEngine:
 		self.start_time = time.time() if delta is None else (time.time() - delta)
 		self.app.uiu.update_text_on(
 			object=self.app.pub.remaining_time,
-			text=self.app.pda.player_data['tracks_data'][base]['duration']
+			text=self.app.pda.tracks_data[base]['duration']
 		)
 
 		# -- Get artist, song_name and artwork
@@ -277,8 +277,8 @@ class PlayerEngine:
 		play next.
 		'''
 		# -- Get play mode
-		loop_on: bool = self.app.pda.player_data['loop_on']
-		shuffle_on: bool = self.app.pda.player_data['shuffle_on']
+		loop_on: bool = self.app.pda.playback_data['loop_on']
+		shuffle_on: bool = self.app.pda.playback_data['shuffle_on']
 
 		if not loop_on:
 			# -- Repeat one mode
@@ -431,9 +431,12 @@ class PlayerEngine:
 
 		# -- Save waveform data
 		base = os.path.basename(path).replace('.mp3', '')
-		self.app.pda.player_data['tracks_data'][base]['waveform_data'] = waveform_data
+		self.app.pda.wave_data[base] = waveform_data
 
-		self.app.pda.save_player_data()
+		self.app.dbm.save_data(
+			data=self.app.pda.wave_data,
+			path=self.app.dbm.WAVE_DATA_FILE
+		)
 
 		# -- Not generating
 		self.app.uiu.generating_data = False
