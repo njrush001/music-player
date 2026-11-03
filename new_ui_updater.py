@@ -430,7 +430,7 @@ class UIUpdates:
 		# -- Get waveform data
 		try:
 			# --
-			waveform_data = self.app.pda.player_data['tracks_data'][base]['waveform_data']
+			waveform_data = self.app.pda.wave_data[base]
 		except KeyError:
 			# -- If generation in progress, skip
 			if self.generating_data:
