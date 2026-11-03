@@ -1,6 +1,6 @@
 __pycache__/
-settings_data/
+user_data/
 playlists/
 music/
 errors/
-data/
+recommendations/
