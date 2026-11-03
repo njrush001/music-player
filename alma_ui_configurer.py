@@ -367,7 +367,7 @@ class ProgramUIConfigurer():
             return
         m_b = self.app.main_basenames
         t_i = self.app.pyr.track_index
-        t_d = self.app.pda.player_data['tracks_data']
+        t_d = self.app.pda.tracks_data.copy()
         artist = t_d[m_b[t_i]].get('artist', None)
         if (artist is None) or (artist.lower() == 'alma'):
             # -- Artist unavailable
