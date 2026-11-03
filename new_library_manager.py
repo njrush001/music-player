@@ -72,7 +72,7 @@ class LibraryManager:
 	def _search_file(self, track) -> None:
 		''' Find the location of the given song '''
 		# -- Folders To Search
-		FOLDERS: list = self.app.pda.player_data['music_folders'].copy()
+		FOLDERS: list = self.app.pda.music_folders.copy()
 
 		# -- Attempt search
 		for _dir in FOLDERS:
