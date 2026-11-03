@@ -1079,15 +1079,11 @@ class LastPlayedUI:
             bg=a_p['secondary_bg']
         )
 
-        try:
-            # --
-            s_n, p_r, t_d = self.app.pda.get_last_played_data()
+        # -- Get last played song path
+        s_n, _, _ = self.app.pda.get_last_played_data()
 
-        except ValueError:
-            # -- no data available
-            s_n = None
+        if not s_n:
             cleaned = 'Data Unavailable ...'
-
         else:
             cleaned = clean_title(
                 path=s_n,
@@ -1609,7 +1605,7 @@ class SettingsUI:
         )
 
         # -- Get folders & Build
-        folders = self.app.pda.player_data['music_folders']
+        folders = self.app.pda.music_folders.copy()
         self.show_folder(folders=folders, win=content)
 
         add_fd = build_label(
@@ -2686,7 +2682,7 @@ class MainUI:
 
         # -- Get saved states for consistency
         shuffle_text: str = '🔀'
-        if self.app.pda.player_data['shuffle_on']:
+        if self.app.pda.playback_data['shuffle_on']:
             # -- Shuffle mode was active
             shuffle_text = '🔃'
 
@@ -2700,7 +2696,7 @@ class MainUI:
 
         # -- Get saved states for consistency
         loop_text: str = '🔂'
-        if self.app.pda.player_data['loop_on']:
+        if self.app.pda.playback_data['loop_on']:
             # -- Shuffle mode was active
             loop_text = '🔁'
 
@@ -2744,7 +2740,7 @@ class MainUI:
         )
 
         # -- Get saved volume level
-        vol: float = self.app.pda.player_data['volume_level']
+        vol: float = self.app.pda.playback_data['volume_level']
 
         self.volume_level = build_label(
             parent=progress_frame,
@@ -3559,8 +3555,8 @@ class MainUI:
 
             # -- Get track details from saved data
             try:
-                artist = self.app.pda.player_data['tracks_data'][song_name]['artist']
-                duration = self.app.pda.player_data['tracks_data'][song_name]['duration']
+                artist = self.app.pda.tracks_data[song_name]['artist']
+                duration = self.app.pda.tracks_data[song_name]['duration']
             except KeyError:
                 # -- time formater
                 from alma_music_player import format_time as f_t
@@ -3571,7 +3567,7 @@ class MainUI:
                 duration = f_t(get_track_duration(path))
 
                 # -- Save
-                self.app.pda.player_data['tracks_data'][song_name] = {
+                self.app.pda.tracks_data[song_name] = {
                     'artist': artist,
                     'duration': duration
                 }
@@ -3758,7 +3754,7 @@ class ProgramUI(PlaylistManagerUI, LastPlayedUI, SettingsUI, AudioDownloaderUI, 
         self.app.uiu.root = self.root
 
         # -- Themes
-        self.app_theme = AlmaDataPaths.APP_THEMES[self.app.pda.player_data['active_theme']]
+        self.app_theme = AlmaDataPaths.APP_THEMES[self.app.pda.active_theme['active_theme']]
 
         self.build_main_ui()
 
