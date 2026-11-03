@@ -263,7 +263,7 @@ class MusicApp(ProgramPlaylists):
 	def __init__(self) -> None:
 		# ======================================================================================
 		# ============================================ ALL DEPENDENCIES
-		self.dbm = AlmaDatabaseManager(self)
+		self.dbm = AlmaDatabaseManager()
 		self.pda = PlayerData(self)
 		self.pst = PlaylistManager(self)
 		self.lib = LibraryManager(self)
@@ -284,15 +284,15 @@ class MusicApp(ProgramPlaylists):
 	def toggle_shuffle(self, shuffle_btn) -> None:
 		''' Update the current playback mode '''
 		# --
-		if self.pda.player_data['shuffle_on']:
+		if self.pda.playback_data['shuffle_on']:
 			# -- Toggle shuffle off
 			text: str = '🔀'
-			self.pda.player_data['shuffle_on'] = False
+			self.pda.playback_data['shuffle_on'] = False
 
 		else:
 			# -- Toggle shuffle on
 			text: str = '🔃'
-			self.pda.player_data['shuffle_on'] = True
+			self.pda.playback_data['shuffle_on'] = True
 
 		# -- Update text on button
 		self.uiu.update_text_on(
@@ -305,15 +305,15 @@ class MusicApp(ProgramPlaylists):
 	def toggle_loop(self, loop_btn) -> None:
 		''' Update the current playback mode '''
 		# --
-		if self.pda.player_data['loop_on']:
+		if self.pda.playback_data['loop_on']:
 			# -- Repeat one
 			text: str = '🔂'
-			self.pda.player_data['loop_on'] = False
+			self.pda.playback_data['loop_on'] = False
 
 		else:
 			# -- Loop all
 			text: str = '🔁'
-			self.pda.player_data['loop_on'] = True
+			self.pda.playback_data['loop_on'] = True
 
 		# -- Update text on button
 		self.uiu.update_text_on(
@@ -346,14 +346,38 @@ class MusicApp(ProgramPlaylists):
 				# -- Save
 
 				# --
-				self.pda.player_data['last_played_data'] = {
+				last_played_data = {
 					'song': song,
 					'progress_ratio': progress_ratio,
 					'track_duration': self.pyr.track_duration
 				}
 
-		# --
-		self.pda.save_player_data()
+				# --
+				self.dbm.save_data(
+					data=last_played_data,
+					path=self.dbm.LAST_PLAYED_FILE
+				)
+
+		# -- Save data
+		self.dbm.save_data(
+			data=self.pda.music_folders,
+			path=self.dbm.MUSIC_FOLDERS_FILE
+		)
+
+		self.dbm.save_data(
+			data=self.pda.playback_data,
+			path=self.dbm.PLAYBACK_DATA
+		)
+
+		self.dbm.save_data(
+			data=self.pda.active_theme,
+			path=self.dbm.THEME_FILE
+		)
+
+		self.dbm.save_data(
+			data=self.pda.tracks_data,
+			path=self.dbm.TRACKS_DATA_FILE
+		)
 
 		# -- Close window
 		self.pub.root.destroy()
