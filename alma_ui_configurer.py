@@ -66,6 +66,28 @@ def _scroll(e, canvas) -> None:
 def on_mousewheel(obj, canvas) -> None:
     obj.bind('<MouseWheel>', lambda e: _scroll(e, canvas))
 
+def _on_drop(event, callback_1, callback_2) -> None:
+    '''
+    When user drags and drops, Pass the
+    data dropped to the callback to clean
+    the data & call the helper methods as
+    well.
+    '''
+    # --
+    thread_worker(
+        target=callback_1,
+        arguments=(event.data, callback_2),
+        daemon=True
+    )
+
+    #<_end of the function_>
+
+def bind_on_drop(object, callback_1, callback_2) -> None:
+    object.drop_target_register(DND_FILES)
+    object.dnd_bind('<<Drop>>', lambda e: _on_drop(e, callback_1, callback_2))
+
+    #<_end of the function_>
+
 
 # ========================================================================================================================
 # ========================================================================================================================
