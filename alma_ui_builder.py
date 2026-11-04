@@ -5,10 +5,11 @@ from tkinter import TclError
 from datetime import datetime
 from PIL import Image, ImageTk
 from config import AlmaDataPaths
+from tkinterdnd2 import TkinterDnD
 from new_ui_updater import set_image
 from new_ui_updater import clean_title
 from new_player_engine import get_track_duration
-from alma_ui_configurer import on_seek, on_mousewheel, on_update
+from alma_ui_configurer import on_seek, on_mousewheel, on_update, bind_on_drop
 from new_ui_updater import extract_track_artwork, extract_metadata_for_track
 # <====================================>
 
@@ -637,20 +638,21 @@ class PlaylistManagerUI:
             width=789, height=345
         )
 
-        canvas = build_canvas(
+        self.SCROLLABLE_CANVAS = build_canvas(
             parent=f,
             bg=a_p['secondary_bg'], bd=0,
             highlightthickness=0
         )
 
-        content_frame = build_frame(
-            parent=canvas,
+        # -- frae holding all playlists
+        self.CONTENT_FRAME = build_frame(
+            parent=self.SCROLLABLE_CANVAS,
             bg=a_p['secondary_bg']
         )
 
-        canvas.create_window(
+        self.SCROLLABLE_CANVAS.create_window(
             (0, 0),
-            window=content_frame,
+            window=self.CONTENT_FRAME,
             anchor='nw'
         )
 
@@ -676,7 +678,7 @@ class PlaylistManagerUI:
         )
 
         self.app.uiu.pack_object(
-            object=canvas, delta=20,
+            object=self.SCROLLABLE_CANVAS, delta=20,
             fill='both', expand=True
         )
         # -------------------------------------------
@@ -700,7 +702,7 @@ class PlaylistManagerUI:
 
             # -- row frame: hold approximately four framess
             row_frame = build_frame(
-                parent=content_frame,
+                parent=self.CONTENT_FRAME,
                 bg=a_p['secondary_bg'],
                 width=784, height=180
             )
@@ -786,10 +788,10 @@ class PlaylistManagerUI:
                 # -------------------
 
                 # -- configure
-                on_mousewheel(playlist_frame, canvas)
-                on_mousewheel(cover_art, canvas)
-                on_mousewheel(playlist_name, canvas)
-                on_mousewheel(total_songs, canvas)
+                on_mousewheel(playlist_frame, self.SCROLLABLE_CANVAS)
+                on_mousewheel(cover_art, self.SCROLLABLE_CANVAS)
+                on_mousewheel(playlist_name, self.SCROLLABLE_CANVAS)
+                on_mousewheel(total_songs, self.SCROLLABLE_CANVAS)
                 self.app.puc.configure_frame_and_labels(configuration_data)
                 # --
             
@@ -803,11 +805,11 @@ class PlaylistManagerUI:
             # --
 
             # -- Configure
-            on_mousewheel(row_frame, canvas)
+            on_mousewheel(row_frame, self.SCROLLABLE_CANVAS)
             # --
 
             # -- Schedule
-            self.root.after(
+            self.PLAYLIST_BUILD_ID = self.root.after(
                 10,
                 lambda: _build(maximum_frames - 1, start=start+4, end=end+4)
             )
@@ -815,8 +817,8 @@ class PlaylistManagerUI:
         _build(maximum_frames)
 
         # --
-        on_update(content_frame, canvas)
-        on_mousewheel(content_frame, canvas)
+        on_update(self.CONTENT_FRAME, self.SCROLLABLE_CANVAS)
+        on_mousewheel(self.CONTENT_FRAME, self.SCROLLABLE_CANVAS)
 
         #<_end of the method_>
 
@@ -840,6 +842,98 @@ class PlaylistManagerUI:
             bg=a_p['frame_highlight_bg']
         )
         self.tabs_data['active_tab'] = str(id(tab))
+
+        # -- Stop previous build
+        self.root.after_cancel(self.PLAYLIST_BUILD_ID)
+
+        # -- Build UI for creating new playlists
+        for obj in self.CONTENT_FRAME.winfo_children():
+            # -- Destroy 
+            obj.destroy()
+
+        # --------------------------
+        # -- prompt user to drag and drop
+        c = build_canvas(
+            parent=self.CONTENT_FRAME,
+            highlightthickness=0, bd=0,
+            width=789, height=345,
+            bg=a_p['primary_bg'],
+            cursor='cross'
+        )
+
+        drag_drop_prompt = build_label(
+            parent=c, text='Drag & Drop Your Files', cursor='cross',
+            font=('Franklin Gothic Heavy', 12), justify='center',
+            bg=a_p['primary_bg'], fg=a_p['third_text_colour']
+        )
+
+        # ------------------------------
+        # -- placements
+
+        # -- dashed rectangle
+        c.create_rectangle(
+            40, 20, 749, 325,
+            outline=a_p['border'],
+            fill='', dash=(4, 10)  
+        )
+
+        # -- drag and drop prompt
+        self.app.uiu.place_object(
+            object=drag_drop_prompt,
+            delta=0, x=310, y=150
+        )
+
+        # canvas for prompt
+        self.app.uiu.pack_object(
+            object=c, delta=10
+            #padx=(130, 0), pady=(50, 0)
+        )
+        # -------------------------------
+        # -------------------------------
+
+        # -- Method to add tracks for new playlist
+        def _add(paths: dict) -> None:
+            # -- Destroy c and drag_drop_prompt
+            try:
+                c.destroy()
+                drag_drop_prompt.destroy()
+            except TclError:
+                pass # -- Already destroyed
+
+            # -- Builds frames progressively
+            for p in paths:
+                # --
+                p_frame = build_frame(
+                    parent=self.CONTENT_FRAME,
+                    bg='black', width=785,
+                    height=45
+                )
+
+                # --------------------
+                # -- Placements
+
+                # -- p_frame
+                self.app.uiu.pack_object(
+                    object=p_frame, delta=10,
+                    padx=(2, 0), pady=(3, 0)
+                )
+                # --------------------
+
+            #<_end of the function_>
+
+        # -- Bind dropping files on c & drag_drop_prompt
+        bind_on_drop(
+            object=c,
+            callback_1=self.app.lib.choose_mp3,
+            callback_2=_add
+        )
+
+        bind_on_drop(
+            object=drag_drop_prompt,
+            callback_1=self.app.lib.choose_mp3,
+            callback_2=_add
+        )
+
 
         #<_end of the method_>
 
@@ -3737,7 +3831,7 @@ class ProgramUI(PlaylistManagerUI, LastPlayedUI, SettingsUI, AudioDownloaderUI, 
         # ======================================================================================
         # ======================================================================================
         self.app = app
-        self.root = tk.Tk()
+        self.root = TkinterDnD.Tk()
         self.root.title('Lurk')                            # Window Name
         self.root.geometry('1020x540')                     # Width(1020 pixels) x height(540 pixels)
         self.root.resizable(False, False)                  # The window size should not be resizable
