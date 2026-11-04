@@ -23,6 +23,37 @@ class LibraryManager:
 
 		#<_end of the method_>
 
+	def choose_mp3(self, data: str, callback) -> dict:
+		'''
+		Clean data, select mp3 songs, and call the method responsible
+		for adding tracks to playlists.
+		Callback is any function or method that decides what happens
+		with the data cleaned by this method.
+		'''
+		# -- Data to add to playlists
+		paths = {}
+		# -- Step 1: Separate tracks
+		step_1_data = data.split('}')
+
+		# -- Step 2: Remove whitespaces and remaining '{' character
+		for unclean_path in step_1_data:
+			# -- Remove '{' character
+			step_2_path = unclean_path.replace('{', '')
+
+			# -- Remove whitespace
+			clean = step_2_path.strip()
+
+			# -- Get basenames
+			base = os.path.basename(clean)
+
+			# --
+			paths[base.replace('.mp3', '')] = clean
+
+		# --
+		callback(paths)
+
+		#<_end of the method_>
+
 	def get_music_from_folder(self, *args) -> None:
 		''' Return list of paths from the directory user will choose'''
 		user_folder: str = self.select_folder()
