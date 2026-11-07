@@ -64,7 +64,7 @@ class AlmaDatabaseManager:
 			with open(path, 'r') as database:
 				return json.load(database)
 
-		except Exception as e:
+		except FileNotFoundError:
 			return return_value
 
 		#<__ end of the method __>
