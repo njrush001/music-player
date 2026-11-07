@@ -2,6 +2,7 @@
 import pygame, os, time
 from typing import Optional
 from mutagen.mp3 import MP3
+from tkinter import TclError
 from pydub import AudioSegment
 from new_ui_updater import update_text, extract_metadata_for_track, extract_track_artwork
 # <====================================>
@@ -142,91 +143,95 @@ class PlayerEngine:
 	# ------------------------------- PLAYBACK CONTROLS -----------------------------------
 
 	def initialise(self, build_mini_queue: bool, track_index: int, delta=None, build_data=None, start: float = 0.0) -> None:
-		''' Load and play track. And initiate UI updates '''
-		if build_mini_queue:
-
-			# -- Update queue
-			self.app.pub.mini_queue(
-				# -- tracks from the current playing to end
-				tracks=build_data[0],
-				start_point=build_data[1]
-			)
-
-		# -- Update track index
+		'''
+		Called whenever a song ends to trigger playback of new song, and update UI
+		dispalying details for the new song.
+		'''
+		# -----------
+		# -- Load and play
 		self.track_index = track_index if track_index is not None else self.track_index
+		self.start_time = time.time() if delta is None else (time.time() - delta)
 		path = self.app.main_playlist[self.track_index]
 		base = self.app.main_basenames[self.track_index]
+		self.track_duration = get_track_duration(path)
 
-		# -- Load and play
 		load_song(path)
 		play_song(start=start)
+		self.app.pub.root.after(0, self.update_track_progress)
+		# -----------
 
-		# -- Set time
-		self.start_time = time.time() if delta is None else (time.time() - delta)
-		self.app.uiu.update_text_on(
-			object=self.app.pub.remaining_time,
-			text=self.app.pda.tracks_data[base]['duration']
-		)
+		def ui_for_track() -> None:
+			# -- Update queue
+			if build_mini_queue:
+				self.app.pub.mini_queue(
+					tracks=build_data[0],     # Tracks to display
+					start_point=build_data[1] # Number of song
+				)
 
-		# -- Get artist, song_name and artwork
+			# --
+			self.app.uiu.update_text_on(
+				object=self.app.pub.remaining_time,
+				text=self.format_time(self.track_duration)
+			)
+
+			self.app.uiu.animate_text(
+				object=self.app.pub.song_title,
+				text=track_name,
+				orig_col=a_p['primary_text_colour'],
+				target_col=a_p['secondary_bg'],
+				animation_style='fade'
+			)
+
+			self.app.uiu.animate_text(
+				object=self.app.pub.artist,
+				text=artist,
+				orig_col=a_p['secondary_text_colour'],
+				target_col=a_p['secondary_bg'],
+				animation_style='fade'
+			)
+
+			self.app.uiu.crossfade_images(
+				label=self.app.pub.audio_thumbnail,
+				new_img=artwork
+			)
+
+			self.app.uiu.crossfade_images(
+				label=self.app.pub.sub_audio_thumbnail,
+				new_img=artwork,
+				size=(55, 55)
+			)
+
+			try:
+				# --
+				self.app.uiu.remove_highlight(
+					frame=f_d[f_d['active_frame']]
+				)
+			except (KeyError, TclError):
+				# --
+				pass
+
+			self.app.uiu.highlight_playing() # Highlights frame representing the playing song
+
+			# -- Waveform for song
+			self.app.pub.root.after(
+				100,
+				self.app.uiu.draw_wave_for_track,
+				path
+			)
+
+			#<_end of inner function_>
+
+		# --
 		track_name, artist = extract_metadata_for_track(path)
 		artwork = extract_track_artwork(path)
-
-		# -- Update track name and artist
-		a_p = self.app.pub.app_theme
-		self.app.uiu.animate_text(
-			object=self.app.pub.song_title,
-			text=track_name,
-			orig_col=a_p['primary_text_colour'],
-			target_col=a_p['secondary_bg'],
-			animation_style='fade'
-		)
-
-		self.app.uiu.animate_text(
-			object=self.app.pub.artist,
-			text=artist,
-			orig_col=a_p['secondary_text_colour'],
-			target_col=a_p['secondary_bg'],
-			animation_style='fade'
-		)
-
-		# -- Cross_fade images
-
-		self.app.uiu.crossfade_images(
-			label=self.app.pub.audio_thumbnail,
-			new_img=artwork
-		)
-
-		self.app.uiu.crossfade_images(
-			label=self.app.pub.sub_audio_thumbnail,
-			new_img=artwork,
-			size=(55, 55)
-		)
-
-		# -- Highlight playing
 		f_d = self.app.puc.track_frames_data
+		a_p = self.app.pub.app_theme
 
-		try:
-			# --
-			self.app.uiu.remove_highlight(
-				frame=f_d[f_d['active_frame']]
-			)
-		except KeyError:
-			# --
-			pass
-
-		self.app.uiu.highlight_playing() # Highlights frame representing the playing song
-
-		# -- Waveform for song
+		# -----
 		self.app.pub.root.after(
-			100,
-			self.app.uiu.draw_wave_for_track,
-			path
+			0,
+			ui_for_track
 		)
-
-		# -- Update  progress
-		self.track_duration = get_track_duration(path)
-		self.update_track_progress()
 
 		#<_end of the method_>
 
