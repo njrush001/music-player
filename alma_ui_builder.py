@@ -7,8 +7,8 @@ from PIL import Image, ImageTk
 from config import AlmaDataPaths
 from tkinterdnd2 import TkinterDnD
 from new_ui_updater import set_image
-from new_ui_updater import clean_title
 from new_player_engine import get_track_duration
+from new_ui_updater import clean_title, retrieve_photo
 from alma_ui_configurer import on_seek, on_mousewheel, on_update, bind_on_drop
 from new_ui_updater import extract_track_artwork, extract_metadata_for_track
 # <====================================>
@@ -688,7 +688,10 @@ class PlaylistManagerUI:
         visualisation_data: dict = self.app.pst.load_users_playlist()
         data = list(visualisation_data.items())
         total_playlists = len(data)
-        photo = set_image('', '', size=(100, 100), return_photo=True)
+        photo = retrieve_photo(
+            img=AlmaDataPaths.BG_DIR / 'alma_bgd.png',
+            size=(100, 100)
+        )
 
         # -- Get the total number of frames needed
         if (total_playlists % 4) == 0:
