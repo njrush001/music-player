@@ -167,34 +167,36 @@ def open_image_path(img_path):
 
 	#<_end of the function_>
 
-def set_image(label, img, size: tuple[int, int], blended_img=None, return_photo=False) -> None:
-	''' Set Image '''
+def retrieve_photo(img, size, blended_img=None) -> ImageTk.PhotoImage:
+	# --
 	if blended_img is None:
-	# -- Open img and resize
+		# -- Open img and resize
 		try:
-			_img = img.resize(size)
-
+			# -- Resize to fit need
+			img = img.resize(size)
 		except AttributeError:
-			# -- Use default artwork
-			_img = open_image_path(
-				img_path=AlmaDataPaths.BG_DIR / 'alma_bgd.png'
-			).resize(size)
+			# -- Use default image
+			img = open_image_path(AlmaDataPaths.BG_DIR / 'alma_bgd.png')
+			img = img.resize(size)
 
-		finally:
-			_photo = ImageTk.PhotoImage(_img)
+		# --
+		return ImageTk.PhotoImage(img)
 
-			if return_photo:
-				return _photo
+	# --
+	return ImageTk.PhotoImage(blended_img)
 
-	else:
-		# -- cross fading in action
-		_photo = ImageTk.PhotoImage(blended_img)
+	#<_end of the function_>
 
-	# -- Display image
-	label.config(image=_photo)
-	label.image = _photo
+def set_image(label, img, size: tuple[int, int], blended_img=None) -> None:
+	''' Set image on the passed label '''
+	# -- Get photo
+	photo = retrieve_photo(img, size, blended_img=blended_img)
 
-#<_end of the function_>
+	# -- Set image
+	label.config(image=photo)
+	label.image = photo  # Prevents garbage collection
+
+	#<_end of the function_>
 
 def extract_track_artwork(path):
 	''' Extract the thumbnail of the current playing '''
@@ -207,7 +209,7 @@ def extract_track_artwork(path):
 				# -- Return the img
 				return img
 
-	except Exception:
+	except FileNotFoundError:
 		# --- Such songs do not start with an ID3 Tag
 		return None
 
@@ -422,7 +424,7 @@ class UIUpdates:
 
 		#<_end of the method_>
 
-	def draw_wave_for_track(self, path, center: int = 30, animation_type='transform') -> None:
+	def draw_wave_for_track(self, path, center: int = 30, animation_type='swipe_both') -> None:
 		''' Draw wave for song given the norm '''
 		# --
 		base = os.path.basename(path).replace('.mp3', '')
